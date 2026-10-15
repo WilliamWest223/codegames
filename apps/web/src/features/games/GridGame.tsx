@@ -7,6 +7,7 @@ import { SymbolBar } from '../editor/SymbolBar';
 import { GridBoard } from './GridBoard';
 import { Blocked, Warnings, Console, ErrorBox } from './Output';
 import { useDraft } from './useDraft';
+import { playCompile } from '../../lib/soundFx';
 import type { GameProps } from './types';
 
 /** Commands the level actually uses, so early levels don't show sensors before they're taught. */
@@ -39,6 +40,7 @@ export function GridGame({ level, language, onPass, onFail, draftScope = '' }: G
   const run = async () => {
     if (busyRef.current) return;
     busyRef.current = true;
+    playCompile();
     setBusy(true);
     try {
       const result = await gradeSubmission(level, language, code, executorFor(language));

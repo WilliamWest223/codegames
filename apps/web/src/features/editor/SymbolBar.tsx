@@ -1,6 +1,7 @@
 import type { RefObject } from 'react';
 import type { PlayableLanguage } from '@codegames/shared';
 import type { CodeEditorHandle } from './CodeEditor';
+import { playClick } from '../../lib/soundFx';
 import './SymbolBar.css';
 
 const SYMBOLS: Record<PlayableLanguage, string[]> = {
@@ -19,16 +20,16 @@ export function SymbolBar({ editor, language, hasBlanks }: { editor: RefObject<C
   return (
     <div className="symbol-bar" role="toolbar" aria-label="Insert symbols">
       {hasBlanks && (
-        <button type="button" className="symbol-key symbol-key-wide" onClick={() => editor.current?.nextBlank()}>
+        <button type="button" className="symbol-key symbol-key-wide" onClick={() => { playClick(); editor.current?.nextBlank(); }}>
           ⏭ Next blank
         </button>
       )}
       <div className="symbol-keys">
-        <button type="button" className="symbol-key symbol-key-wide" onClick={() => editor.current?.insert(indent)} aria-label="Indent">
+        <button type="button" className="symbol-key symbol-key-wide" onClick={() => { playClick(); editor.current?.insert(indent); }} aria-label="Indent">
           ⇥ Tab
         </button>
         {SYMBOLS[language].map((s) => (
-          <button key={s} type="button" className="symbol-key" onClick={() => editor.current?.insert(s)}>
+          <button key={s} type="button" className="symbol-key" onClick={() => { playClick(); editor.current?.insert(s); }}>
             {s}
           </button>
         ))}

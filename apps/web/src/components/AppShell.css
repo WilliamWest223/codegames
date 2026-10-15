@@ -208,3 +208,45 @@
 .shell-streak-pop p {
   margin: 0 0 6px;
 }
+
+/* ── Audio Toggle Switch ── */
+.shell-audio-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-control);
+  background: var(--bezel);
+  color: var(--text-muted);
+  font: 600 11px/1 var(--font-code);
+  cursor: pointer;
+  box-shadow: var(--btn-shadow-sm);
+  transition: all 0.15s var(--ease);
+}
+.shell-audio-toggle:hover {
+  background: var(--raised);
+  border-color: var(--border-contrast);
+  color: var(--text);
+}
+.shell-audio-toggle:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+.shell-audio-toggle.is-active {
+  color: var(--text);
+  border-color: var(--border-contrast);
+}
+.shell-audio-led {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.shell-audio-led.is-on {
+  background: var(--signal);
+  box-shadow: 0 0 6px var(--signal);
+}
+

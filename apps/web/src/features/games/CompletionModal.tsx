@@ -9,6 +9,7 @@ import { Markdown } from '../../lib/markdown';
 import { MASTERY_LABELS } from '../../lib/labels';
 import type { ParResult } from './types';
 import { workshopForBoss } from './creatorWorkshops';
+import { ParticleBurstCanvas, RollingOdometer } from './ParticleBurstCanvas';
 
 export interface CompletionInfo {
   level: Level;
@@ -57,11 +58,7 @@ export function CompletionModal({ info, language, takeaway, onClose, onRetry }: 
   return createPortal(
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
       <div className="modal panel" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="complete-title" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-sparks" aria-hidden="true">
-          {SPARKS.map((i) => (
-            <span key={i} style={{ '--i': i } as React.CSSProperties} />
-          ))}
-        </div>
+        <ParticleBurstCanvas />
         <p className="eyebrow">{boss ? 'Region cleared' : 'Level complete'}</p>
         <h2 id="complete-title">{boss ? `You beat ${info.level.title}!` : 'Nice work!'}</h2>
         <p className="modal-stars" aria-label={`${info.stars} of 3 stars`}>
@@ -84,7 +81,9 @@ export function CompletionModal({ info, language, takeaway, onClose, onRetry }: 
           </p>
         )}
         {info.xp > 0 ? (
-          <p className="modal-xp">+{info.xp} XP</p>
+          <p className="modal-xp">
+            <RollingOdometer targetXp={info.xp} />
+          </p>
         ) : (
           <p className="modal-replay">{info.improved ? 'New best! ' : ''}Replays don't award XP again, but can improve your stars.</p>
         )}

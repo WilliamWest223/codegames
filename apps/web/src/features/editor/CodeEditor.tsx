@@ -20,6 +20,7 @@ import {
 } from '@codemirror/view';
 import type { PlayableLanguage } from '@codegames/shared';
 import { editorHighlight, editorTheme } from './theme';
+import { playClick } from '../../lib/soundFx';
 import './CodeEditor.css';
 
 /** The most the editor will hold (about 50 KB of code). Real programs here are a few hundred characters. */
@@ -159,6 +160,7 @@ export function CodeEditor({
       EditorView.editable.of(!readOnly),
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
+          playClick();
           onChangeRef.current?.(update.state.doc.toString());
           if (update.state.doc.length <= MAX_EDITOR_CHARS - 1000) setTooLong(false);
         }

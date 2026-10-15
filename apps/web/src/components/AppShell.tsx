@@ -8,6 +8,7 @@ import { STORAGE_FULL_EVENT, useProgress } from '../features/progress/store';
 import { Workshop } from '../features/workshop/Workshop';
 import { rankFor } from '../features/workshop/rewards';
 import { LanguageSwitch } from './LanguageSwitch';
+import { AudioToggle } from './AudioToggle';
 import { AnnouncementBanner } from './AnnouncementBanner';
 import { useAuth } from '../features/auth/useAuth';
 import { logout } from '../features/auth/logout';
@@ -93,6 +94,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {language && (
           <div className="shell-actions">
             <LanguageSwitch />
+            <AudioToggle />
             <button className="btn btn-ghost btn-sm" onClick={() => setGlossaryOpen(true)} title="Glossary (press ?)">
               📖<span className="shell-label"> Glossary</span>
             </button>
