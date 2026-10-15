@@ -9,9 +9,11 @@ interface AuthState {
   status: AuthStatus;
   session: Session | null;
   user: User | null;
+  isGuest: boolean;
   ageOk: boolean;
   displayName: string | null;
   initAuth: () => Promise<void>;
+  continueAsGuest: () => void;
   setAgeConfirmed: () => void;
   setDisplayName: (name: string) => void;
   refreshProfile: () => Promise<void>;
@@ -21,8 +23,13 @@ export const useAuth = create<AuthState>((set, get) => ({
   status: isSupabaseConfigured ? 'loading' : 'signed-out',
   session: null,
   user: null,
+  isGuest: false,
   ageOk: false,
   displayName: null,
+
+  continueAsGuest: () => {
+    set({ status: 'signed-in', isGuest: true, displayName: 'Guest' });
+  },
 
   initAuth: async () => {
     if (!isSupabaseConfigured) {
