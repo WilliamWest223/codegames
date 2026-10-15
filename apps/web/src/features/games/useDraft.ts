@@ -23,8 +23,17 @@ export function useDraft(levelId: string, language: PlayableLanguage, starter: s
   // Leaving the level or closing the tab saves whatever is pending.
   useEffect(() => {
     window.addEventListener('pagehide', flush);
+    const handleFill = (e: Event) => {
+      const custom = e as CustomEvent<{ solution: string; levelId: string; language: string }>;
+      if (custom.detail?.solution && (custom.detail.levelId === levelId || levelId.endsWith(custom.detail.levelId))) {
+        setCode(custom.detail.solution);
+      }
+    };
+    window.addEventListener('codegames:fill-solution', handleFill);
+
     return () => {
       window.removeEventListener('pagehide', flush);
+      window.removeEventListener('codegames:fill-solution', handleFill);
       flush();
     };
   }, [flush, language, levelId]);

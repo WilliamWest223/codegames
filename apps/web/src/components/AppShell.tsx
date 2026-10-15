@@ -8,12 +8,14 @@ import { STORAGE_FULL_EVENT, useProgress } from '../features/progress/store';
 import { Workshop } from '../features/workshop/Workshop';
 import { rankFor } from '../features/workshop/rewards';
 import { LanguageSwitch } from './LanguageSwitch';
+import { AnnouncementBanner } from './AnnouncementBanner';
 import { useAuth } from '../features/auth/useAuth';
 import { logout } from '../features/auth/logout';
 import './AppShell.css';
 
 export function AppShell({ children }: { children: ReactNode }) {
   const authStatus = useAuth((s) => s.status);
+  const isAdmin = useAuth((s) => s.isAdmin);
   const userEmail = useAuth((s) => s.user?.email);
   const displayName = useAuth((s) => s.displayName);
   const xp = useProgress((s) => s.xp);
@@ -163,6 +165,11 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <button role="menuitem" className="btn btn-ghost btn-sm" onClick={reset}>
                     Reset progress
                   </button>
+                  {isAdmin && (
+                    <Link role="menuitem" className="btn btn-ghost btn-sm" to="/admin" onClick={() => setMenuOpen(false)}>
+                      ⚡ Admin Dashboard
+                    </Link>
+                  )}
                   {authStatus === 'signed-in' ? (
                     <button role="menuitem" className="btn btn-ghost btn-sm" onClick={() => { setMenuOpen(false); logout(); }}>
                       Sign out ({displayName || userEmail})
@@ -185,6 +192,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         )}
       </header>
+      <AnnouncementBanner />
       {storageFull && (
         <p className="panel" role="status">
           Your browser couldn't save progress just now (its storage may be full). You can keep playing; use the menu to export a backup.

@@ -2,16 +2,27 @@ import { useMemo, useState } from 'react';
 import { computeMastery, conceptsFor, levelsFor, pickReview, REVIEW_MIN_CONCEPTS, type MasteryLevel } from '@codegames/curriculum';
 import { PLAYABLE_LANGUAGES, type PlayableLanguage } from '@codegames/shared';
 import { useProgress } from './store';
+import { useAuth } from '../auth/useAuth';
 
 /** Mastery of every concept for one language, recomputed when progress changes. */
 export function useMastery(language: PlayableLanguage): Record<string, MasteryLevel> {
   const completed = useProgress((s) => s.completed[language]);
   const reviews = useProgress((s) => s.reviews[language]);
   const transfer = useTransfer(language);
-  return useMemo(
-    () => computeMastery(conceptsFor(language), levelsFor(language), new Set(Object.keys(completed)), reviewCounts(reviews), transfer, weakLevels(completed)),
-    [completed, reviews, transfer, language],
-  );
+  const isAdmin = useAuth((s) => s.isAdmin);
+  const simulatePlayer = useAuth((s) => s.simulatePlayer);
+  const isMasterUnlocked = (isAdmin && !simulatePlayer) || (useAuth.getState().isAdmin && !useAuth.getState().simulatePlayer);
+  return useMemo(() => {
+    if (isMasterUnlocked) {
+      const allConcepts = conceptsFor(language);
+      const full: Record<string, MasteryLevel> = {};
+      for (const c of allConcepts) {
+        full[c.id] = 'proficient';
+      }
+      return full;
+    }
+    return computeMastery(conceptsFor(language), levelsFor(language), new Set(Object.keys(completed)), reviewCounts(reviews), transfer, weakLevels(completed));
+  }, [completed, reviews, transfer, language, isMasterUnlocked]);
 }
 
 /** Concepts practiced in the *other* language(s), which unlock prerequisites here too. */
