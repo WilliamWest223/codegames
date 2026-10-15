@@ -1,26 +1,20 @@
-# Security policy
+# Security Policy
 
-## Reporting a vulnerability
+## Reporting a Vulnerability
 
-Please report vulnerabilities privately through GitHub private vulnerability reporting:
-open the repository's **Security** tab, then choose **Report a vulnerability**.
+Please report vulnerabilities privately via GitHub Private Vulnerability Reporting:
+navigate to the repository's **Security** tab and click **Report a vulnerability**.
 
-Do not open a public issue or pull request for a security problem.
+Do not submit public issues or pull requests for suspected vulnerabilities. You will receive an initial response within **48 hours**.
 
-You can expect an acknowledgement within **7 days**.
+## Security Architecture & Scope
 
-## Scope
+### In Scope
+- **Client Execution Sandbox:** Web Worker isolation for JavaScript and Pyodide WebAssembly for Python, memory boundaries, and interrupt handling.
+- **Data & Persistence:** Offline IndexedDB / localStorage integrity, Supabase Row-Level Security (RLS) policies, passwordless authentication, and session handling.
+- **Edge & Transport:** Content Security Policy (CSP), Cross-Origin Opener / Embedder Policies (COOP/COEP), and token storage.
+- **API & RPC Layer:** Public and private PostgreSQL stored procedures, rate limiting, and administrative access controls.
 
-In scope:
-- The web app (`apps/web`) and everything it ships to the browser.
-- The API, once it exists (server functions, authentication, scoring and verification).
-
-Out of scope:
-- The local runner (`apps/runner`). It is a development tool that binds only to `127.0.0.1`
-  and is never deployed.
-
-## Security side-quest content
-
-The Security side quest in the curriculum is intentionally fictional teaching material. Its
-vulnerable toy apps, weak ciphers and hashes are deliberate, labeled as not real security, and
-are not vulnerabilities in CodeGames.
+### Out of Scope
+- **Local Runner:** `apps/runner` is a development skeleton restricted strictly to `127.0.0.1`.
+- **Educational Side Quests:** The curriculum's Security side quest intentionally features vulnerable toy ciphers, weak hashing demonstrations, and mock SQL targets. These are labeled as fictional teaching aids and do not constitute security defects in the platform.
