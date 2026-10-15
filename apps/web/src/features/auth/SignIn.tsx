@@ -77,6 +77,11 @@ export function SignIn({ onSuccess }: SignInProps) {
       return;
     }
 
+    if (!cleanEmail.includes('@')) {
+      setError(`Please enter your full email address (e.g. ${cleanEmail}@gmail.com). Accounts use your email to sign in.`);
+      return;
+    }
+
     setBusy(true);
     setError(null);
 
@@ -92,8 +97,12 @@ export function SignIn({ onSuccess }: SignInProps) {
         if (nextAttempts >= 5) {
           setLockoutSeconds(60);
           setError('Too many failed attempts. Login locked for 60 seconds.');
+        } else if (authError.message === 'Email not confirmed') {
+          setError(`Email not confirmed yet. Please check your inbox at ${cleanEmail} for the activation link.`);
+        } else if (authError.message === 'Invalid login credentials') {
+          setError('Incorrect email or password. Please check your credentials and make sure you enter your full email.');
         } else {
-          setError(authError.message === 'Invalid login credentials' ? 'Incorrect email or password.' : authError.message);
+          setError(authError.message);
         }
         return;
       }
@@ -270,7 +279,8 @@ export function SignIn({ onSuccess }: SignInProps) {
               <input
                 id="signin-email"
                 className="auth-input"
-                type="email"
+                type="text"
+                inputMode="email"
                 required
                 disabled={busy || lockoutSeconds > 0}
                 value={email}
