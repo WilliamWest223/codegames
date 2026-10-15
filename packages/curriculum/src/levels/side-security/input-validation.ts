@@ -32,7 +32,7 @@ export const inputValidationLevels: Level[] = [
     game: 'predict-output',
     mode: 'hybrid',
     prompt: 'Two ways to keep dangerous input out. A **block-list** rejects known-bad text; an **allow-list** accepts only known-good characters and rejects everything else. Which output is right?',
-    reinforces: ['strings'],
+    reinforces: ['encoding'],
     choices: {
       python: ['True\nFalse\nFalse\nTrue', 'True\nTrue\nFalse\nTrue', 'True\nFalse\nTrue\nTrue', 'False\nFalse\nFalse\nTrue'],
       javascript: ['true\nfalse\nfalse\ntrue', 'true\ntrue\nfalse\ntrue', 'true\nfalse\ntrue\ntrue', 'false\nfalse\nfalse\ntrue'],
@@ -88,7 +88,7 @@ export const inputValidationLevels: Level[] = [
     game: 'build-it',
     mode: 'guided',
     prompt: `Write ${lang('`valid_username(name)`', '`validUsername(name)`')} that **returns** the first problem it finds, checking in this order:\n1. \`Too short\` (under 3 characters)\n2. \`Too long\` (over 12)\n3. \`Must start with a letter\` (a–z)\n4. \`Only a-z, 0-9 and _\` (the allow-list)\n\n...or \`OK\`. Read names until \`done\` and print \`NAME: RESULT\`.`,
-    reinforces: ['else-if-chains', 'strings', 'functions', 'return-values', 'iterating-collections', 'input'],
+    reinforces: ['encoding'],
     hints: [
       'Return as soon as you find a problem: the first `return` ends the function.',
       lang('"Starts with a letter": `name[0] >= "a" and name[0] <= "z"`.', '"Starts with a letter": `name[0] >= "a" && name[0] <= "z"`.'),
@@ -144,7 +144,7 @@ export const inputValidationLevels: Level[] = [
     game: 'build-it',
     mode: 'guided',
     prompt: `Phishing emails hide fake links that **look** like your bank. Read links until \`done\` (ignore capitals) and judge each one against the trusted list:\n\n- \`SAFE: DOMAIN\` if the real domain is trusted and the link starts with \`https://\`\n- \`UNSAFE: DOMAIN (no https)\` if the domain is trusted but the link isn't encrypted\n- \`PHISHY: DOMAIN\` otherwise\n\nWrite ${lang('`domain_of(url)`', '`domainOf(url)`')}: take the **host** (between \`://\` and the next \`/\`); if it contains \`@\`, only the part **after** the last \`@\` counts; drop any \`:port\`; the real domain is the **last two** dot-separated parts.\n\n\`https://paypal.com.secure-login.xyz/verify\` → \`secure-login.xyz\`, which is PHISHY.`,
-    reinforces: ['strings', 'functions', 'return-values', 'collections', 'while-loops', 'else-if-chains', 'booleans', 'input'],
+    reinforces: ['encoding'],
     hints: [
       '`url.split("://")[1]` drops the scheme; then `.split("/")[0]` keeps the host.',
       lang('`host.split("@")[-1]` keeps what comes after the last `@`; `.split(":")[0]` drops a port.', '`host.split("@").at(-1)` keeps what comes after the last `@`; `.split(":")[0]` drops a port.'),

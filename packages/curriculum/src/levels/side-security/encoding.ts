@@ -12,7 +12,7 @@ export const encodingLevels: Level[] = [
     game: 'predict-output',
     mode: 'hybrid',
     prompt: `Computers only store numbers, so every character has a number code: \`A\` is 65, \`a\` is 97. ${lang('`ord(ch)` gives a character\'s code; `chr(n)` gives the character for a code.', '`ch.charCodeAt(0)` gives a character\'s code; `String.fromCharCode(n)` gives the character for a code.')} Which output is right?`,
-    reinforces: ['strings-basics'],
+    reinforces: [],
     choices: {
       python: ['65\n97\nHi\n1\nd', '1\n1\nHi\n1\nd', '65\n65\nHi\n1\nd', '65\n97\n177\n1\nd'],
       javascript: ['65\n97\nHi\n1\nd', '1\n1\nHi\n1\nd', '65\n65\nHi\n1\nd', '65\n97\n177\n1\nd'],
@@ -48,7 +48,7 @@ export const encodingLevels: Level[] = [
     game: 'build-it',
     mode: 'fill-blanks',
     prompt: `A signal arrives as groups of 8 **bits** (binary digits), one group per character: \`01001000 01101001 00100001\`. Each group is a character code written in base 2. ${lang('`int("01001000", 2)`', '`parseInt("01001000", 2)`')} reads it as a number (72), and 72 is \`H\`. Decode the whole signal: \`Hi!\`.`,
-    reinforces: ['type-conversion', 'iterating-collections', 'strings', 'input'],
+    reinforces: [],
     hints: [
       lang('`signal.split()` gives the groups. The base goes second: `int(group, 2)`.', '`signal.split(" ")` gives the groups. The base goes second: `parseInt(group, 2)`.'),
       lang('Add `chr(code)` to the message each time round.', 'Add `String.fromCharCode(code)` to the message each time round.'),
@@ -108,7 +108,7 @@ export const encodingLevels: Level[] = [
     game: 'build-it',
     mode: 'guided',
     prompt: 'Messages arrive with a **checksum**: `pay bob 10|825`. The sender computed a number from the text; if the text changed on the way, the number won\'t match.\n\n`checksum(text)`: add up (position + 1) × character code for every character (positions start at 0), then take the remainder after dividing by 997.\n\nRead lines until `done`. Print `OK: TEXT` or `TAMPERED: TEXT`, or `Bad line` when there\'s no `|`. Finish with `Checked N, tampered M` (bad lines don\'t count as checked).',
-    reinforces: ['functions', 'return-values', 'strings', 'while-loops', 'else-if-chains', 'input', 'type-conversion', 'string-formatting'],
+    reinforces: [],
     hints: [
       lang('`for i in range(len(text)):` gives each position; the character is `text[i]` and its code is `ord(text[i])`.', '`for (let i = 0; i < text.length; i++)` gives each position; the code is `text.charCodeAt(i)`.'),
       `\`line.split("|")\` splits a line in two: ${lang('`text, number = line.split(...)`', '`const [text, number] = line.split(...);`')}. The number is still text: ${lang('`int(number)`', '`Number(number)`')}.`,

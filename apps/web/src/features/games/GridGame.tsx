@@ -70,8 +70,9 @@ export function GridGame({ level, language, onPass, onFail, draftScope = '' }: G
           : { success: true, message: 'Level solved!' }
       : { success: false, message: outcome.reason ?? 'Not solved yet.' }
     : undefined;
-  const commands = commandsFor(level, language);
-  const par = codeLines(level.solution[language] ?? '', language);
+  const langKey: 'python' | 'javascript' = language === 'cybersecurity' ? 'python' : language;
+  const commands = commandsFor(level, langKey);
+  const par = codeLines(level.solution[langKey] ?? '', langKey);
   // Fill-in-the-blank levels have a fixed length, so par would be meaningless there.
   const hasPar = level.mode !== 'fill-blanks';
 

@@ -56,6 +56,9 @@
 .welcome-card.lang-javascript {
   --accent: var(--lang-javascript);
 }
+.welcome-card.lang-cybersecurity {
+  --accent: var(--lang-cybersecurity);
+}
 .welcome-card:hover {
   transform: translateY(-3px);
   border-color: var(--accent);

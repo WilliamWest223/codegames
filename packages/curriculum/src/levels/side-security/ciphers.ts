@@ -70,7 +70,7 @@ export const ciphersLevels: Level[] = [
     game: 'bug-hunt',
     mode: 'guided',
     prompt: `The first input line is the key, the second the text. \`caesar(text, key)\` should shift **only the letters a–z** and leave everything else alone, so decrypting is just a negative key:\n\n- key \`3\`, \`meet at noon\` → \`phhw dw qrrq\`\n- key \`-3\`, \`phhw dw qrrq\` → \`meet at noon\`\n\nBut spaces and punctuation get scrambled${lang('', ', and negative keys give junk')}. Fix it.`,
-    reinforces: ['encoding', 'strings', 'iterating-collections', 'conditionals', 'input', 'type-conversion'],
+    reinforces: ['encoding'],
     hints: [
       'A space has its own code (32). Shifting it like a letter turns it into something else. Only shift when `ch` is between `"a"` and `"z"`; otherwise add it unchanged.',
       lang('Characters compare by their codes, so `ch >= "a" and ch <= "z"` means "a small letter".', 'Characters compare by their codes, so `ch >= "a" && ch <= "z"` means "a small letter".'),
@@ -140,7 +140,7 @@ export const ciphersLevels: Level[] = [
     game: 'build-it',
     mode: 'guided',
     prompt: 'You\'re the ship\'s analyst checking whether **your own** old Caesar cipher is safe. (Only ever test codes and systems you own or have permission to test.) You intercepted `tlla tl ha aol vsk tpss` but you don\'t know the key. There are only 26 keys, so **try them all**!\n\nFor each key 0–25, decrypt with `caesar(text, -key)` and **score** the result: how many of its words are in the `COMMON` list. Keep the best key (the first one, if two tie). Print:\n\n```\nKey: 7\nMessage: meet me at the old mill\n```',
-    reinforces: ['functions', 'return-values', 'loops', 'strings', 'collections', 'conditionals', 'input', 'string-formatting'],
+    reinforces: ['encoding'],
     hints: [
       lang('`score(text)`: split into words and count those `in COMMON`.', '`score(text)`: split into words and count those where `COMMON.includes(word)`.'),
       `Best-so-far pattern: start with ${lang('`best_key = 0` and `best_score = -1`', '`bestKey = 0` and `bestScore = -1`')}; for each key, if the score **beats** the best, remember both.`,

@@ -13,7 +13,7 @@ export const passwordsLevels: Level[] = [
     game: 'predict-output',
     mode: 'hybrid',
     prompt: 'A simple password checker gives one point each for: 12+ characters, a digit, a capital letter. Trace it on three passwords. Which output is right?',
-    reinforces: ['iterating-collections'],
+    reinforces: ['encoding'],
     choices: {
       python: ['0\n2\n1', '0\n3\n1', '1\n2\n1', '0\n2\n0'],
       javascript: ['0\n2\n1', '0\n3\n1', '1\n2\n1', '0\n2\n0'],
@@ -86,7 +86,7 @@ export const passwordsLevels: Level[] = [
     game: 'predict-output',
     mode: 'hybrid',
     prompt: 'Websites shouldn\'t store your password, only a **fingerprint** of it (a *hash*): a number computed from the text. At login they hash what you typed and compare fingerprints. Here are two toy hash functions (**NOT real security**!). Which output is right?',
-    reinforces: ['encoding', 'functions', 'loops'],
+    reinforces: ['encoding'],
     choices: {
       python: ['True\nTrue\nFalse\n98262', 'True\nFalse\nFalse\n98262', 'True\nTrue\nTrue\n98262', 'True\nTrue\nFalse\n312'],
       javascript: ['true\ntrue\nfalse\n98262', 'true\nfalse\nfalse\n98262', 'true\ntrue\ntrue\n98262', 'true\ntrue\nfalse\n312'],
@@ -141,7 +141,7 @@ export const passwordsLevels: Level[] = [
     game: 'build-it',
     mode: 'guided',
     prompt: `Build the account system of a tiny site. Accounts are stored like a real password file: one \`name:fingerprint\` string per user, made with ${lang('`toy_hash(password)`', '`toyHash(password)`')}. The password itself is **never** stored.\n\nCommands until \`done\`:\n- \`signup NAME PASSWORD\`: \`Too weak: use 8+ characters and a digit\`, \`Name taken\`, or store it and print \`Welcome, NAME\`\n- \`login NAME PASSWORD\`: \`Logged in\`, or \`Wrong name or password\` (the **same** message for an unknown name)\n- \`leak\`: print every stored line (pretend an attacker stole the file)\n\nWrite ${lang('`strong_enough(pw)`', '`strongEnough(pw)`')} and \`check(users, name, pw)\`, which **return** ${lang('`True`/`False`', '`true`/`false`')}.`,
-    reinforces: ['functions', 'return-values', 'strings', 'collections', 'while-loops', 'else-if-chains', 'booleans', 'input'],
+    reinforces: ['encoding'],
     hints: [
       lang('A stored line splits back into its parts: `stored_name, fingerprint = line.split(":")`. The fingerprint is text, so compare it with `str(toy_hash(pw))`.', 'A stored line splits back into its parts: `const [storedName, fingerprint] = line.split(":");`. The fingerprint is text, so compare it with `String(toyHash(pw))`.'),
       lang('"Name taken" means some stored line starts with `name + ":"`: loop and check `line.split(":")[0] == name`.', '"Name taken" means some stored line starts with `name + ":"`: loop and check `line.split(":")[0] === name`.'),

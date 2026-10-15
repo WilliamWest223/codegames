@@ -195,38 +195,152 @@
   color: var(--text-muted);
 }
 
-/* The track is a horizontal transit line; stations sit on it. */
-.map-track {
-  position: relative;
-  display: flex;
-  gap: 4px;
-  padding: 22px 4px 6px;
-  overflow-x: auto;
-  scrollbar-width: thin;
+/* ── Arcade Grid & Station Cards ────────────────── */
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 16px;
+  padding: 16px 0 6px;
 }
-.map-track::before {
-  content: '';
-  position: absolute;
-  left: 48px;
-  right: 48px;
-  top: 54px;
-  height: 2px;
-  background: repeating-linear-gradient(90deg, var(--border-strong) 0 8px, transparent 8px 14px);
-}
-.map-station {
-  position: relative;
-  flex: 0 0 auto;
-  width: 112px;
+
+.station-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 4px;
+  gap: 12px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  transition: transform 0.2s var(--ease), border-color 0.2s, box-shadow 0.2s;
 }
+.station-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+.station-card.is-selected {
+  border-color: var(--signal);
+  box-shadow: 0 0 0 2px var(--signal-soft), var(--signal-glow);
+}
+.station-card-boss {
+  border-color: rgba(255, 181, 71, 0.4);
+  background: linear-gradient(135deg, rgba(255, 181, 71, 0.1), var(--surface-2));
+}
+.station-card-locked {
+  opacity: 0.6;
+}
+
+.station-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.station-card-meta {
+  flex: 1;
+  min-width: 0;
+}
+.station-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.station-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  line-height: 1.25;
+}
+.station-title:hover {
+  color: var(--signal);
+}
+.station-summary {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.station-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.station-level-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-3);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.station-level-btn:hover {
+  background: var(--surface-solid);
+  border-color: var(--signal);
+  transform: translateX(2px);
+}
+.station-level-btn.is-done {
+  border-color: rgba(94, 242, 184, 0.25);
+  background: rgba(94, 242, 184, 0.05);
+}
+.station-level-num {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface);
+  font: 700 11px/1 var(--font-code);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.station-level-btn.is-done .station-level-num {
+  background: var(--signal-soft);
+  color: var(--signal);
+}
+.station-level-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.station-level-stars {
+  color: var(--amber);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.station-level-go {
+  color: var(--signal);
+  font-size: 11px;
+  opacity: 0.8;
+}
+.station-locked-hint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+
 .station {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -260,13 +374,13 @@
 }
 .station-core {
   position: absolute;
-  inset: 12px;
+  inset: 10px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   background: var(--surface-2);
   color: var(--ring);
-  font: 700 16px/1 var(--font-ui);
+  font: 700 15px/1 var(--font-ui);
 }
 .station-available {
   --ring: var(--mastery-available);
@@ -288,7 +402,7 @@
   opacity: 0.45;
 }
 .station-locked .station-core {
-  font-size: 14px;
+  font-size: 13px;
   filter: grayscale(1);
 }
 .station-boss {
@@ -297,16 +411,7 @@
 .station-boss .station-core {
   background: var(--amber-soft);
   color: var(--amber);
-  font-size: 20px;
-}
-.station-label {
-  margin-top: 6px;
-  font: 600 13px/1.25 var(--font-ui);
-  color: var(--text);
-}
-.station-state {
-  font-size: 11px;
-  color: var(--text-faint);
+  font-size: 18px;
 }
 @keyframes pulse {
   0%,
@@ -444,19 +549,8 @@
 }
 
 @media (max-width: 760px) {
-  /* Stations scroll sideways on narrow screens: fade the edge and say so. */
-  .map-track {
-    mask-image: linear-gradient(90deg, #000 85%, transparent);
-    scroll-snap-type: x proximity;
-  }
-  .map-station {
-    scroll-snap-align: start;
-  }
-  .map-region-head::after {
-    content: 'swipe →';
-    margin-left: auto;
-    font-size: 11px;
-    color: var(--text-faint);
+  .map-grid {
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 640px) {

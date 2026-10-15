@@ -19,7 +19,7 @@ export function LanguageSwitch() {
           <span className="lang-dot" aria-hidden="true" />
           <span className="lang-long">{LANGUAGE_LABELS[lang]}</span>
           <span className="lang-short" aria-hidden="true">
-            {lang === 'python' ? 'Py' : 'JS'}
+            {lang === 'python' ? 'Py' : lang === 'javascript' ? 'JS' : 'Sec'}
           </span>
         </button>
       ))}

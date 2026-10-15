@@ -68,11 +68,10 @@ export const concepts: Concept[] = [
   { id: 'value-vs-reference', title: 'Copies and Shared Data', summary: 'Two names, one list: aliases and copies.', canDo: 'Predict when two names share one list (array), and make a real copy when you need one', region: 5, requires: ['map-filter-reduce'] },
   { id: 'boss-5', title: 'Boss: Minesweeper', summary: 'Clear a minefield with classes, recursion and a command table.', region: 5, requires: ['value-vs-reference', 'closures', 'recursive-data', 'polymorphism'], boss: true },
 
-  // Side quest (optional, after Region 3): Security. Nothing core may require these.
-  { id: 'encoding', title: 'Letters Are Numbers', summary: 'Characters are stored as numbers.', canDo: 'Turn letters into the numbers the computer stores, and back again', region: 10, requires: ['boss-3'], sideQuest: true },
+  { id: 'encoding', title: 'Letters Are Numbers', summary: 'Characters are stored as numbers.', canDo: 'Turn letters into the numbers the computer stores, and back again', region: 10, requires: [], sideQuest: true },
   { id: 'ciphers', title: 'Secret Codes', summary: 'Hide a message with a key, then test how strong it is.', canDo: 'Encrypt and decrypt a message with a key, and test how easily it can be cracked', region: 10, requires: ['encoding'], sideQuest: true },
   { id: 'passwords', title: 'Strong Passwords', summary: 'Measure strength, and store fingerprints, never passwords.', canDo: 'Score how strong a password is, and store a fingerprint (hash) instead of the password', region: 10, requires: ['encoding'], sideQuest: true },
-  { id: 'input-validation', title: 'Trust No Input', summary: 'Allow-lists, username rules and fake links.', canDo: 'Check input against an allow-list and clear rules, and reject anything that does not fit', region: 10, requires: ['boss-3'], sideQuest: true },
+  { id: 'input-validation', title: 'Trust No Input', summary: 'Allow-lists, username rules and fake links.', canDo: 'Check input against an allow-list and clear rules, and reject anything that does not fit', region: 10, requires: ['encoding'], sideQuest: true },
   { id: 'boss-security', title: 'Boss: The Vault', summary: 'A login vault with lockout and a hidden secret.', region: 10, requires: ['ciphers', 'passwords', 'input-validation'], boss: true, sideQuest: true },
 
   // Region 6: Algorithms (docs/specs/regions6-8.md Part A). Counting steps first, then the
@@ -118,5 +117,5 @@ export const REGION_NAMES: Record<number, string> = {
   6: 'Algorithms',
   7: 'Data Structures',
   8: 'Side Quest: Web Pages',
-  10: 'Side Quest: Security',
+  10: 'Cyber Range: Security Operations',
 };
