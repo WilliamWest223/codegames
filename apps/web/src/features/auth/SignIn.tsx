@@ -318,10 +318,6 @@ export function SignIn({ onSuccess }: SignInProps) {
                   ? 'Signing in…'
                   : 'Sign In →'}
             </button>
-
-            <div style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Quick test login: <strong>admin@email.com</strong> / <strong>[redacted]</strong>
-            </div>
           </form>
         )}
 
