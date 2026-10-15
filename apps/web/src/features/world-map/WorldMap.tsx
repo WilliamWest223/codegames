@@ -8,6 +8,8 @@ import { useDueConcepts, useMastery, useNextLevel, useReviewPicks } from '../pro
 import { GAME_LABELS, MASTERY_HELP, MASTERY_LABELS, ROLE_LABELS } from '../../lib/labels';
 import { ConceptNode } from './ConceptNode';
 import { ConceptPanel } from './ConceptPanel';
+import { CircuitBusCanvas } from './CircuitBusCanvas';
+import { playSwitch } from '../../lib/soundFx';
 import './WorldMap.css';
 
 export function WorldMap({ language }: { language: PlayableLanguage }) {
@@ -32,7 +34,10 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
     .filter((region) => playable.some((c) => c.region === region && mastery[c.id] !== 'locked'))
     .map((region) => ({ region, after: sideQuestGate(region) }));
 
-  const select = (id: string | null) => setParams(id ? { concept: id } : {}, { replace: true });
+  const select = (id: string | null) => {
+    if (id) playSwitch();
+    setParams(id ? { concept: id } : {}, { replace: true });
+  };
 
   // Python takes seconds to start: begin loading it once the map has settled, so the
   // first level doesn't wait (round-5 developer audit).
@@ -44,6 +49,7 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
 
   return (
     <div className="map">
+      <CircuitBusCanvas language={language} />
       <section className="map-hero">
         <div>
           <p className="eyebrow">Your journey in {LANGUAGE_LABELS[language]}</p>

@@ -13,6 +13,7 @@ import { INPUT_LIMITS, clampInputText } from './inputLimits';
 import { PagePreview } from './play/PagePreview';
 import { StepThrough } from './StepThrough';
 import { useDraft } from './useDraft';
+import { playCompile } from '../../lib/soundFx';
 import type { GameProps } from './types';
 
 /** Build It and Bug Hunt: write or fix code until the tests pass. */
@@ -67,6 +68,7 @@ export function BuildItGame({ level, language, onPass, onFail, onScaffold, draft
   const doStep = async () => {
     if (busyRef.current) return;
     busyRef.current = true;
+    playCompile();
     setBusy('step');
     setGrade(null);
     setRun(null);
@@ -81,6 +83,7 @@ export function BuildItGame({ level, language, onPass, onFail, onScaffold, draft
   const doRun = async () => {
     if (busyRef.current) return;
     busyRef.current = true;
+    playCompile();
     setRunCount((n) => n + 1);
     setBusy('run');
     setGrade(null);
@@ -97,6 +100,7 @@ export function BuildItGame({ level, language, onPass, onFail, onScaffold, draft
     // Ctrl+Enter bypasses the disabled button, so guard against double submits here.
     if (busyRef.current) return;
     busyRef.current = true;
+    playCompile();
     setRunCount((n) => n + 1);
     setBusy('check');
     setRun(null);

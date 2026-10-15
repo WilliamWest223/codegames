@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import type { Concept, Level } from '@codegames/shared';
 import type { MasteryLevel } from '@codegames/curriculum';
 import { MASTERY_HELP, MASTERY_LABELS, ROLE_LABELS } from '../../lib/labels';
+import { playSwitch } from '../../lib/soundFx';
 
 const R = 26;
 const CIRC = 2 * Math.PI * R;
@@ -40,7 +41,7 @@ export function ConceptNode({
       <div className="station-card-top">
         <button
           className={`station station-${mastery}${concept.boss ? ' station-boss' : ''}`}
-          onClick={onSelect}
+          onClick={() => { playSwitch(); onSelect(); }}
           aria-pressed={selected}
           aria-label={`${concept.title}: ${MASTERY_LABELS[mastery]}${due ? ', due for review' : ''}`}
           title={`${MASTERY_LABELS[mastery]}: ${MASTERY_HELP[mastery]}`}

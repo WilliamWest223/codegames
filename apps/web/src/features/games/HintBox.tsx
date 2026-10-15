@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Language } from '@codegames/shared';
 import { Markdown } from '../../lib/markdown';
+import { playSwitch } from '../../lib/soundFx';
 
 interface Props {
   hints: string[];
@@ -18,6 +19,7 @@ interface Props {
 export function HintBox({ hints, language, nudge, onReveal, initialShown = 0, lockedFor = 0 }: Props) {
   const [shown, setShown] = useState(() => Math.min(initialShown, hints.length));
   const reveal = () => {
+    playSwitch();
     const next = Math.min(shown + 1, hints.length);
     setShown(next);
     onReveal(next);

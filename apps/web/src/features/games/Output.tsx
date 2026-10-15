@@ -6,6 +6,8 @@ import type { Language, PlayableLanguage } from '@codegames/shared';
 import { useMastery } from '../progress/useMastery';
 import { useProgress } from '../progress/store';
 import { Markdown } from '../../lib/markdown';
+import { OscilloscopeCanvas } from './OscilloscopeCanvas';
+import { playPass, playError } from '../../lib/soundFx';
 import './Output.css';
 
 const MAX_LINES = 60;
@@ -132,6 +134,18 @@ function MarkedLine({ text, col }: { text: string; col: number }) {
 
 export function TestResults({ tests, language }: { tests: TestResult[]; language?: Language }) {
   const passed = tests.filter((t) => t.passed).length;
+  const allPassed = tests.length > 0 && passed === tests.length;
+
+  useEffect(() => {
+    if (tests.length > 0) {
+      if (allPassed) {
+        playPass();
+      } else {
+        playError();
+      }
+    }
+  }, [tests, allPassed]);
+
   // The same crash in every test is one problem: show it once, above the list.
   const errors = tests.filter((t) => t.error).map((t) => t.error!);
   const shared = errors.length > 1 && errors.every((e) => e.name === errors[0]!.name && e.message === errors[0]!.message) ? errors[0] : undefined;
@@ -140,6 +154,10 @@ export function TestResults({ tests, language }: { tests: TestResult[]; language
       <div className="out-tests-head">
         Tests <span className={passed === tests.length ? 'is-pass' : 'is-fail'}>{passed}/{tests.length} passed</span>
       </div>
+      <OscilloscopeCanvas
+        state={allPassed ? 'pass' : 'fail'}
+        label={`CH1 TELEMETRY · ${passed}/${tests.length} OK`}
+      />
       {shared && (
         <div className="out-tests-shared">
           <p>{errors.length === tests.length ? 'Every test' : `${errors.length} of ${tests.length} tests`} stopped with the same error:</p>
