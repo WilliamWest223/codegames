@@ -46,14 +46,14 @@ describe('Admin RBAC and Master Pass Verification', () => {
   });
 
   describe('checkIsAdmin', () => {
-    it('identifies primary owner email wwest0708@gmail.com as admin', () => {
-      const user = { email: 'wwest0708@gmail.com' } as User;
+    it('identifies dedicated admin account admin@email.com as admin', () => {
+      const user = { email: 'admin@email.com' } as User;
       expect(checkIsAdmin(user)).toBe(true);
     });
 
-    it('identifies admin@email.com as admin', () => {
-      const user = { email: 'admin@email.com' } as User;
-      expect(checkIsAdmin(user)).toBe(true);
+    it('treats wwest0708@gmail.com as a regular player account', () => {
+      const user = { email: 'wwest0708@gmail.com' } as User;
+      expect(checkIsAdmin(user)).toBe(false);
     });
 
     it('identifies users with user_metadata.role = "admin" as admin', () => {
