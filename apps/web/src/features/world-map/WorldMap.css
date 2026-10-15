@@ -30,22 +30,26 @@
   color: var(--text);
   font-family: var(--font-code);
 }
+
+/* Solid opaque surface. Left accent border. Micro-bevel. Physical button. */
 .map-continue {
   position: relative;
   display: grid;
   gap: 4px;
   min-width: 300px;
   padding: 18px 64px 18px 20px;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(94, 242, 184, 0.35);
-  background: linear-gradient(135deg, rgba(94, 242, 184, 0.14), rgba(94, 242, 184, 0.03));
+  border-radius: 0;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--signal);
+  background: var(--raised);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   color: var(--text);
   text-decoration: none;
-  transition: transform 0.2s var(--ease), box-shadow 0.2s;
+  transition: border-color 0.2s;
 }
 .map-continue:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--signal-glow);
+  border-color: var(--border-contrast);
+  border-left-color: var(--signal);
 }
 .map-continue .eyebrow {
   color: var(--signal);
@@ -57,6 +61,7 @@
   color: var(--text-muted);
   font-size: 13px;
 }
+/* Physical button — square corners, hard drop shadow */
 .map-continue-go {
   position: absolute;
   right: 18px;
@@ -66,10 +71,11 @@
   place-items: center;
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--signal);
   color: #04130d;
   font-size: 13px;
+  box-shadow: 0 2px 0 #000;
 }
 .map-cards {
   display: flex;
@@ -77,28 +83,31 @@
   gap: 12px;
   align-items: stretch;
 }
+/* Warmup card — same mechanical treatment, amber accent */
 .map-warmup {
   display: grid;
   gap: 4px;
   min-width: 240px;
   padding: 18px 20px;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 181, 71, 0.35);
-  background: linear-gradient(135deg, rgba(255, 181, 71, 0.12), rgba(255, 181, 71, 0.02));
+  border-radius: 0;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--amber);
+  background: var(--raised);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   color: var(--text);
   text-decoration: none;
-  transition: transform 0.2s var(--ease), box-shadow 0.2s;
+  transition: border-color 0.2s;
 }
 .map-warmup:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 0 1px rgba(255, 181, 71, 0.4), 0 0 24px rgba(255, 181, 71, 0.15);
+  border-color: var(--border-contrast);
+  border-left-color: var(--amber);
 }
 .map-warmup .eyebrow {
   color: var(--amber);
 }
 .map-continue-done {
-  border-color: rgba(255, 181, 71, 0.4);
-  background: var(--amber-soft);
+  border-left-color: var(--amber);
+  background: var(--raised);
   padding-right: 20px;
 }
 
@@ -132,7 +141,7 @@
   width: 10px;
   height: 10px;
   margin-right: 8px;
-  border-radius: 50%;
+  border-radius: 0;
   border: 2px solid;
 }
 .mastery-dot-learned {
@@ -151,13 +160,14 @@
 }
 
 /* ── Regions ──────────────────────────────────────── */
+/* Remove backdrop-filter. Solid panel bg. Top accent hairline. */
 .map-region {
   margin-bottom: 28px;
   padding: 22px 24px 18px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  backdrop-filter: blur(8px);
+  border-top: 2px solid var(--border-contrast);
+  border-radius: 0;
+  background: var(--panel);
   animation: rise 0.6s var(--ease) both;
 }
 .map-region-head {
@@ -169,24 +179,26 @@
   font: 600 13px/1 var(--font-code);
   color: var(--signal);
   padding: 5px 8px;
-  border-radius: 6px;
+  border-radius: 0;
   background: var(--signal-soft);
 }
 .map-region-head h2 {
   font-size: 22px;
   font-weight: 700;
 }
+/* Flat progress bar — no border-radius, 2px height, divider style */
 .map-region-progress {
   flex: 1;
   max-width: 220px;
-  height: 4px;
+  height: 2px;
   margin-left: auto;
-  border-radius: 4px;
-  background: var(--surface-3);
+  border-radius: 0;
+  background: var(--bezel);
   overflow: hidden;
 }
 .map-region-progress > div {
   height: 100%;
+  border-radius: 0;
   background: var(--signal);
   transition: width 0.6s var(--ease);
 }
@@ -203,28 +215,29 @@
   padding: 16px 0 6px;
 }
 
+/* var(--raised) bg, 1px border, micro-bevel. Hover: border brightens, NO float, NO glow. */
 .station-card {
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 16px;
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   border: 1px solid var(--border);
-  background: var(--surface-2);
-  transition: transform 0.2s var(--ease), border-color 0.2s, box-shadow 0.2s;
+  background: var(--raised);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.2s;
 }
 .station-card:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  border-color: var(--border-contrast);
 }
 .station-card.is-selected {
   border-color: var(--signal);
-  box-shadow: 0 0 0 2px var(--signal-soft), var(--signal-glow);
+  box-shadow: 0 0 0 2px var(--ring);
 }
+/* Boss card: amber top hairline instead of gradient */
 .station-card-boss {
-  border-color: rgba(255, 181, 71, 0.4);
-  background: linear-gradient(135deg, rgba(255, 181, 71, 0.1), var(--surface-2));
+  border-top: 2px solid var(--amber);
+  background: var(--raised);
 }
 .station-card-locked {
   opacity: 0.6;
@@ -271,36 +284,39 @@
   padding-top: 10px;
   border-top: 1px solid var(--border);
 }
+/* Horizontal bar with left accent line. No radius. */
 .station-level-btn {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 8px 12px;
-  border-radius: var(--radius);
+  border-radius: 0;
   border: 1px solid var(--border);
-  background: var(--surface-3);
+  border-left: 2px solid transparent;
+  background: var(--bezel);
   color: var(--text);
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
-  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  transition: background 0.15s, border-color 0.15s, border-left-color 0.15s, transform 0.15s;
 }
 .station-level-btn:hover {
-  background: var(--surface-solid);
-  border-color: var(--signal);
+  background: var(--panel);
+  border-color: var(--border-contrast);
+  border-left-color: var(--signal);
   transform: translateX(2px);
 }
 .station-level-btn.is-done {
-  border-color: rgba(94, 242, 184, 0.25);
-  background: rgba(94, 242, 184, 0.05);
+  border-left-color: var(--signal);
+  background: rgba(16, 185, 129, 0.05);
 }
 .station-level-num {
   display: grid;
   place-items: center;
   width: 22px;
   height: 22px;
-  border-radius: 50%;
-  background: var(--surface);
+  border-radius: 0;
+  background: var(--panel);
   font: 700 11px/1 var(--font-code);
   color: var(--text-muted);
   flex-shrink: 0;
@@ -336,6 +352,8 @@
   border-top: 1px dashed var(--border);
 }
 
+/* ── Station Nodes — Mechanical Switches ─────────── */
+/* NOT soft circular blobs — square/hex mechanical aesthetic */
 .station {
   position: relative;
   width: 52px;
@@ -343,17 +361,18 @@
   flex-shrink: 0;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: var(--surface-solid);
+  border-radius: 0;
+  background: var(--panel);
   cursor: pointer;
-  transition: transform 0.2s var(--ease), box-shadow 0.2s;
+  transition: transform 0.2s var(--ease);
   --ring: var(--mastery-available);
 }
 .station:hover {
   transform: scale(1.07);
 }
+/* Tight structural ring — NOT glow spread */
 .station.is-selected {
-  box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--ring);
+  box-shadow: 0 0 0 2px var(--ring);
 }
 .station-ring {
   position: absolute;
@@ -362,32 +381,35 @@
 }
 .station-ring-track {
   fill: none;
-  stroke: var(--surface-3);
+  stroke: var(--bezel);
   stroke-width: 5;
 }
 .station-ring-fill {
   fill: none;
   stroke: var(--ring);
   stroke-width: 5;
-  stroke-linecap: round;
+  stroke-linecap: butt;
   transition: stroke-dashoffset 0.8s var(--ease);
 }
+/* Core: completed = bezel bg + 2px solid mastery border. No SVG ring glow. */
 .station-core {
   position: absolute;
   inset: 10px;
   display: grid;
   place-items: center;
-  border-radius: 50%;
-  background: var(--surface-2);
+  border-radius: 0;
+  background: var(--raised);
+  border: 2px solid var(--ring);
   color: var(--ring);
   font: 700 15px/1 var(--font-ui);
 }
+/* Available: sharp border pulse — opacity blink only, NO glow */
 .station-available {
   --ring: var(--mastery-available);
 }
 .station-available .station-core {
-  box-shadow: inset 0 0 0 2px var(--border-strong);
-  animation: pulse 2.4s ease-in-out infinite;
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+  animation: mechanical-blink 2s step-start infinite;
 }
 .station-learned {
   --ring: var(--mastery-learned);
@@ -398,8 +420,10 @@
 .station-proficient {
   --ring: var(--mastery-proficient);
 }
+/* Locked: reduced opacity, no interaction */
 .station-locked {
-  opacity: 0.45;
+  opacity: 0.35;
+  pointer-events: none;
 }
 .station-locked .station-core {
   font-size: 13px;
@@ -413,13 +437,15 @@
   color: var(--amber);
   font-size: 18px;
 }
-@keyframes pulse {
+
+/* Sharp mechanical pulse — opacity toggle only, NO glow */
+@keyframes mechanical-blink {
   0%,
   100% {
-    box-shadow: inset 0 0 0 2px var(--border-strong);
+    opacity: 1;
   }
   50% {
-    box-shadow: inset 0 0 0 2px var(--signal), 0 0 18px rgba(94, 242, 184, 0.25);
+    opacity: 0.4;
   }
 }
 
@@ -429,14 +455,14 @@
   gap: 12px;
   padding: 14px;
   border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-lg);
+  border-radius: 0;
 }
 .map-side-quest-label {
   margin: 0;
 }
 .map-range-rules {
   padding: 10px 14px;
-  border-radius: var(--radius);
+  border-radius: 0;
   background: var(--amber-soft);
   color: var(--text);
   font-size: 14px;
@@ -446,6 +472,7 @@
 }
 
 /* ── Concept panel ────────────────────────────────── */
+/* Near-opaque. Left accent border. Structural drop shadow — NOT glow. */
 .concept-panel {
   position: fixed;
   top: 76px;
@@ -455,8 +482,9 @@
   width: min(380px, calc(100vw - 40px));
   padding: 20px;
   overflow-y: auto;
-  background: rgba(17, 23, 36, 0.96);
-  box-shadow: var(--shadow);
+  background: rgba(15, 17, 23, 0.98);
+  border-left: 1px solid var(--border-contrast);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.6);
   animation: slide-in 0.3s var(--ease) both;
 }
 @keyframes slide-in {
@@ -480,8 +508,8 @@
 }
 .concept-panel-locked {
   padding: 14px 16px;
-  border-radius: var(--radius);
-  background: var(--surface-2);
+  border-radius: 0;
+  background: var(--raised);
   border: 1px dashed var(--border-strong);
 }
 .concept-panel-locked p {
@@ -502,20 +530,23 @@
   display: grid;
   gap: 8px;
 }
+/* Concept level rows: solid raised bg, structural border, lateral slide on hover */
 .concept-level {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: var(--radius);
+  border-radius: 0;
   border: 1px solid var(--border);
-  background: var(--surface-2);
+  border-left: 2px solid transparent;
+  background: var(--raised);
   color: var(--text);
   text-decoration: none;
-  transition: border-color 0.15s, transform 0.15s var(--ease);
+  transition: border-color 0.15s, border-left-color 0.15s, transform 0.15s var(--ease);
 }
 .concept-level:hover {
-  border-color: var(--signal);
+  border-color: var(--border-contrast);
+  border-left-color: var(--signal);
   transform: translateX(2px);
 }
 .concept-level-status {
@@ -523,8 +554,8 @@
   place-items: center;
   flex: 0 0 28px;
   height: 28px;
-  border-radius: 50%;
-  background: var(--surface-3);
+  border-radius: 0;
+  background: var(--bezel);
   font: 600 12px/1 var(--font-code);
   color: var(--text-muted);
 }
@@ -585,9 +616,10 @@
   letter-spacing: 1px;
 }
 .concept-level-stars .is-off {
-  color: var(--surface-3);
+  color: var(--bezel);
 }
 
+/* Due badge — square, hard outline ring, no glow */
 .station-due {
   position: absolute;
   top: -4px;
@@ -596,7 +628,7 @@
   place-items: center;
   width: 20px;
   height: 20px;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--amber);
   color: #1a1204;
   font: 700 12px/1 var(--font-ui);

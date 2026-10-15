@@ -1,75 +1,115 @@
 /*
- * Design tokens. The look: a night observatory / mission control. Deep ink background,
- * phosphor-mint "signal" for progress, amber for XP and bosses.
- * Use these variables everywhere; never hardcode colors in components.
+ * Design tokens — Machined Instrument / Matte Chassis
+ * Inspired by Teenage Engineering OP-1, Dieter Rams / Braun, PCB schematics.
+ * Rule: NO ambient glow box-shadows, NO backdrop-filter blur, NO gradient backgrounds.
  */
 :root {
   color-scheme: dark;
 
-  --bg: #0a0e16;
-  --bg-dot: rgba(148, 170, 214, 0.07);
-  --surface: #10162290;
-  --surface-solid: #111724;
-  --surface-2: #161e2e;
-  --surface-3: #1d2740;
-  --border: #222c42;
-  --border-strong: #34425f;
-  /* Edges of things you type into: 3:1 against the page. */
-  --border-control: #55637f;
+  /* ── Surface Elevations (matte chassis layers) ─────── */
+  --chassis: #090A0F;       /* page ground — deep obsidian */
+  --panel: #0F1117;         /* primary panel surface */
+  --raised: #161820;        /* raised cards */
+  --bezel: #1D2030;         /* button / input bezels */
+  --overlay: #252840;       /* modals, drawers */
 
-  --text: #e9eef7;
-  --text-muted: #8d9ab3;
-  --text-faint: #7b88a4; /* ≥ 4.5:1 on --bg for small text */
+  /* Legacy aliases (keep for backward compat) */
+  --bg: var(--chassis);
+  --bg-dot: transparent;
+  --surface: var(--panel);
+  --surface-solid: var(--raised);
+  --surface-2: var(--raised);
+  --surface-3: var(--bezel);
+  --signal-glow: 0 0 0 transparent;
 
-  --signal: #5ef2b8;
-  --signal-strong: #2fdc9b;
-  --signal-soft: rgba(94, 242, 184, 0.12);
-  --signal-glow: 0 0 0 1px rgba(94, 242, 184, 0.35), 0 0 24px rgba(94, 242, 184, 0.18);
-  --amber: #ffb547;
-  --amber-soft: rgba(255, 181, 71, 0.13);
-  --danger: #ff6b7a;
-  --danger-soft: rgba(255, 107, 122, 0.12);
-  --info: #7cc4ff;
-  --info-soft: rgba(124, 196, 255, 0.12);
+  /* ── Border System (physical hairlines, NO glow) ───── */
+  --border-subtle:   #1E2235;  /* lowest contrast divider */
+  --border:          #252840;  /* standard structural border */
+  --border-contrast: #343858;  /* high-contrast border */
+  --border-control:  #404468;  /* input/button edge */
+  --border-focus:    #5B6AFF;  /* keyboard focus ring */
+  --border-strong:   var(--border-contrast); /* legacy alias */
 
-  /* Per-language accents */
-  --lang-python: #5aa7ef;
-  --lang-javascript: #f2d34b;
-  --lang-cybersecurity: #ff6b7a;
-  --lang-java: #f08a3c;
-  --lang-cpp: #6f8cff;
+  /* ── Typography ──────────────────────────────────── */
+  --text:       #E8ECF4;   /* primary — near-white */
+  --text-muted: #8892AA;   /* secondary */
+  --text-faint: #5C6680;   /* tertiary — still ≥4.5:1 on chassis */
+  --text-dim:   #3A4055;   /* disabled state */
 
-  /* Mastery ring colors */
-  --mastery-available: var(--text-muted);
-  --mastery-learned: var(--info);
-  --mastery-practiced: var(--signal);
+  /* ── Functional Signal Accents (surgical, no halos) ── */
+  /* Mastery / Pass — signal green */
+  --signal:       #10B981;
+  --signal-strong: #0D9268;
+  --signal-soft:  rgba(16, 185, 129, 0.10);
+  /* LED indicator only — no ambient glow on non-LED elements */
+  --signal-led:   0 0 0 2px #10B981;  /* ONLY for literal LED dots */
+
+  /* Python — technical cobalt */
+  --lang-python:  #3B82F6;
+  --lang-python-soft: rgba(59, 130, 246, 0.10);
+
+  /* JavaScript — cadmium amber */
+  --amber:        #F59E0B;
+  --lang-javascript: #F59E0B;
+  --amber-soft:   rgba(245, 158, 11, 0.10);
+
+  /* Cybersecurity — infrared */
+  --danger:       #EF4444;
+  --lang-cybersecurity: #EF4444;
+  --danger-soft:  rgba(239, 68, 68, 0.10);
+
+  /* Info / System */
+  --info:         #6B7FD4;
+  --info-soft:    rgba(107, 127, 212, 0.10);
+
+  /* Gem / puzzle accent */
+  --gem:          #A78BFA;
+
+  /* Per-language aliases (legacy) */
+  --lang-java:    #F97316;
+  --lang-cpp:     #6B7FD4;
+
+  /* ── Mastery States ──────────────────────────────── */
+  --mastery-available:  var(--border-contrast);
+  --mastery-learned:    var(--info);
+  --mastery-practiced:  var(--signal);
   --mastery-proficient: var(--amber);
 
-  /* Grid world */
-  --tile: #141c2c;
-  /* Walls need 3:1 against floor tiles (WCAG non-text contrast). */
-  --tile-wall: #56668f;
-  --tile-wall-stripe: #46557d;
-  --robot: var(--signal);
-  --gem: #c792ff;
-  /* Belt colours (progression, docs/PEDAGOGY_PLAN.md) */
-  --belt-none: #3a4560;
-  --belt-white: #eef2f8;
-  --belt-yellow: #ffd84a;
-  --belt-orange: #ff9d3c;
-  --belt-green: #4fd17a;
-  --belt-stripe: #11161f;
-  --flag: var(--amber);
+  /* ── Grid World ──────────────────────────────────── */
+  --tile:           #0C0E16;
+  --tile-wall:      #4A5275;
+  --tile-wall-stripe: #3A4060;
+  --robot:          var(--signal);
+  --flag:           var(--amber);
 
-  --radius-sm: 6px;
-  --radius: 12px;
-  --radius-lg: 18px;
-  --space: 8px;
-  --shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  /* ── Belt Colors ─────────────────────────────────── */
+  --belt-none:    #2A3050;
+  --belt-white:   #D8DDE8;
+  --belt-yellow:  #F59E0B;
+  --belt-orange:  #F97316;
+  --belt-green:   #10B981;
+  --belt-stripe:  #0C0E14;
 
+  /* ── Spacing & Geometry ──────────────────────────── */
+  --radius-sm: 4px;   /* tight: inputs, small chips */
+  --radius:    6px;   /* standard cards */
+  --radius-lg: 8px;   /* large panels */
+  --space:     8px;
+
+  /* ── Physical Button Press Shadow ───────────────── */
+  /* This is a DROP SHADOW for physical depth — NOT a glow */
+  --btn-shadow:    0 2px 0 #000;
+  --btn-shadow-sm: 0 1px 0 #000;
+
+  /* Modal elevation shadow — structural, not decorative glow */
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+
+  /* ── Typography Families ─────────────────────────── */
   --font-display: 'Bricolage Grotesque Variable', 'Trebuchet MS', sans-serif;
-  --font-ui: 'Instrument Sans', 'Segoe UI', sans-serif;
-  --font-code: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --font-ui:      'Instrument Sans', 'Segoe UI', sans-serif;
+  --font-code:    'JetBrains Mono Variable', ui-monospace, monospace;
 
-  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* ── Easing ──────────────────────────────────────── */
+  --ease:        cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-press:  cubic-bezier(0.4, 0, 0.2, 1);
 }

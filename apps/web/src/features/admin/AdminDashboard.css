@@ -9,14 +9,14 @@
   animation: fadeIn 0.25s var(--ease);
 }
 
-/* Dashboard Header */
+/* ─── Dashboard Header ─────────────────────────────────────── */
 .admin-header {
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-strong);
+  border-bottom: 1px solid var(--border-contrast);
 }
 
 .admin-header-top {
@@ -37,13 +37,13 @@
   width: 44px;
   height: 44px;
   border-radius: var(--radius);
-  background: linear-gradient(135deg, rgba(94, 242, 184, 0.2), rgba(124, 196, 255, 0.1));
-  border: 1px solid var(--signal);
+  background: var(--bezel);
+  border: 1px solid var(--border-contrast);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  box-shadow: 0 0 20px rgba(94, 242, 184, 0.25);
+  /* no gradient, no glow */
 }
 
 .admin-header h1 {
@@ -53,7 +53,7 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #fff;
-  text-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
+  /* no text-shadow */
 }
 
 .admin-header-subtitle {
@@ -90,17 +90,16 @@
   color: var(--signal);
 }
 
-/* Tabs Navigation */
+/* ─── Tab Bar ──────────────────────────────────────────────── */
 .admin-tabs {
   display: flex;
-  gap: 4px;
-  background: var(--surface-solid);
-  padding: 6px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
+  gap: 0;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border-contrast);
   margin-bottom: 24px;
   overflow-x: auto;
   scrollbar-width: none;
+  /* flat bar — no rounded container, no border around tabs */
 }
 
 .admin-tabs::-webkit-scrollbar {
@@ -115,31 +114,31 @@
   justify-content: center;
   gap: 8px;
   padding: 10px 16px;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   background: transparent;
-  border: 1px solid transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
   color: var(--text-muted);
-  font-family: var(--font-code);
+  font-family: var(--font-ui);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s var(--ease);
+  transition: color 0.15s var(--ease), border-color 0.15s var(--ease);
 }
 
 .admin-tab-btn:hover {
-  background: var(--surface-2);
   color: var(--text);
 }
 
 .admin-tab-btn.is-active {
-  background: var(--surface-3);
   color: var(--signal);
-  border-color: var(--signal);
-  box-shadow: 0 0 16px rgba(94, 242, 184, 0.15);
+  border-bottom: 2px solid var(--signal);
+  background: transparent;
+  /* underline ONLY — no box-shadow glow, no background tint */
 }
 
-/* Common Card & Section Layout */
+/* ─── Common Card & Section Layout ────────────────────────── */
 .admin-tab-content {
   display: flex;
   flex-direction: column;
@@ -154,7 +153,7 @@
 }
 
 .admin-card {
-  background: var(--surface-solid);
+  background: var(--raised);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px 20px;
@@ -163,7 +162,8 @@
   gap: 10px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  /* micro-bevel only — no drop shadow */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
   transition: border-color 0.2s var(--ease);
 }
 
@@ -190,12 +190,11 @@
 }
 
 .admin-card-title {
-  font-family: var(--font-code);
+  font-family: var(--font-ui);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  /* sentence case — no uppercase, no letter-spacing, no font-code */
 }
 
 .admin-card-value {
@@ -206,6 +205,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  font-variant-numeric: tabular-nums;
 }
 
 .admin-card-desc {
@@ -215,7 +215,7 @@
   margin: 0;
 }
 
-/* Pulse status indicators */
+/* ─── Status LED Dots (physical LEDs — glow intentional) ───── */
 .status-dot {
   width: 10px;
   height: 10px;
@@ -238,21 +238,25 @@
   box-shadow: 0 0 10px var(--danger);
 }
 
-/* Tab 1: System Hub Details */
+/* ─── Tab 1: System Hub — Rate Limits ─────────────────────── */
 .admin-rate-limits-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
 }
 
+/* Renamed: .rate-limit-pill → .rate-limit-row — horizontal accent rows */
+.rate-limit-row,
 .rate-limit-pill {
-  background: #090e18;
+  background: var(--raised);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--signal);
+  border-radius: 0;
   padding: 10px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  /* no pill rounding */
 }
 
 .rate-limit-name {
@@ -265,12 +269,12 @@
   font-family: var(--font-code);
   font-size: 11px;
   color: var(--signal);
-  background: rgba(94, 242, 184, 0.1);
+  background: rgba(94, 242, 184, 0.08);
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
-/* Tab 2: Player & Role Manager */
+/* ─── Tab 2: Player & Role Manager ────────────────────────── */
 .player-manager-controls {
   display: flex;
   align-items: center;
@@ -299,8 +303,10 @@
 }
 
 .search-input:focus {
-  border-color: var(--signal);
-  box-shadow: 0 0 0 1px var(--signal);
+  border-color: var(--border-focus);
+  box-shadow: none;
+  outline: 2px solid var(--border-focus);
+  outline-offset: -1px;
 }
 
 .search-icon {
@@ -325,11 +331,12 @@
 }
 
 .players-table-container {
-  background: var(--surface-solid);
+  background: var(--raised);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow-x: auto;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  /* micro-bevel, no drop shadow */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .players-table {
@@ -342,11 +349,10 @@
 .players-table th {
   background: var(--surface-2);
   padding: 12px 16px;
-  font-family: var(--font-code);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  /* sentence case — no uppercase, no letter-spacing, no font-code */
   color: var(--text-muted);
   border-bottom: 1px solid var(--border);
 }
@@ -355,6 +361,11 @@
   padding: 12px 16px;
   border-bottom: 1px solid rgba(34, 44, 66, 0.6);
   vertical-align: middle;
+}
+
+/* Alternating rows for readability */
+.players-table tbody tr:nth-child(even) td {
+  background: rgba(22, 30, 46, 0.3);
 }
 
 .players-table tr:hover td {
@@ -371,8 +382,8 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--surface-3);
-  border: 1px solid var(--border);
+  background: var(--bezel);
+  /* no border — initials provide contrast */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -407,17 +418,24 @@
   border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 600;
-  font-family: var(--font-code);
+  font-family: var(--font-ui);
   cursor: pointer;
   border: 1px solid var(--border);
   background: var(--surface-2);
   color: var(--text);
-  transition: all 0.15s var(--ease);
+  box-shadow: var(--btn-shadow-sm);
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease), box-shadow 0.1s var(--ease);
 }
 
 .action-btn:hover {
   background: var(--surface-3);
   border-color: var(--border-strong);
+  /* no glow shadow */
+}
+
+.action-btn:active {
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
 .action-btn.btn-promote {
@@ -460,7 +478,7 @@
   border-color: var(--amber);
 }
 
-/* Tab 3: Curriculum & Stuck Points */
+/* ─── Tab 3: Curriculum & Stuck Points ────────────────────── */
 .stuck-levels-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -468,14 +486,14 @@
 }
 
 .stuck-level-card {
-  background: var(--surface-solid);
+  background: var(--raised);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .stuck-level-head {
@@ -518,6 +536,7 @@
   font-family: var(--font-code);
   font-weight: 700;
   font-size: 14px;
+  font-variant-numeric: tabular-nums;
 }
 
 .stuck-metric-val.high-fail {
@@ -531,13 +550,14 @@
 }
 
 .error-types-breakdown {
-  background: var(--surface-solid);
+  background: var(--raised);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .error-type-row {
@@ -567,16 +587,16 @@
   transition: width 0.3s var(--ease);
 }
 
-/* Tab 4: Announcement & Broadcast */
+/* ─── Tab 4: Announcement & Broadcast ─────────────────────── */
 .announcement-form-card {
-  background: var(--surface-solid);
+  background: var(--raised);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .form-group {
@@ -586,11 +606,9 @@
 }
 
 .form-label {
-  font-family: var(--font-code);
+  font-family: var(--font-ui);
   font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 600;
   color: var(--text);
 }
 
@@ -606,11 +624,12 @@
   font-size: 14px;
   resize: vertical;
   outline: none;
+  transition: border-color 0.15s var(--ease);
 }
 
 .form-textarea:focus {
-  border-color: var(--signal);
-  box-shadow: 0 0 0 1px var(--signal);
+  border-color: var(--border-focus);
+  box-shadow: none;
 }
 
 .style-selector-row {
@@ -631,28 +650,26 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s var(--ease);
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
 }
 
+/* Selected states: solid border, no glow */
 .style-option-btn.selected-info {
-  background: rgba(124, 196, 255, 0.15);
-  border-color: var(--info);
+  background: rgba(124, 196, 255, 0.1);
+  border: 2px solid var(--info);
   color: var(--info);
-  box-shadow: 0 0 12px rgba(124, 196, 255, 0.2);
 }
 
 .style-option-btn.selected-warning {
-  background: rgba(255, 181, 71, 0.15);
-  border-color: var(--amber);
+  background: rgba(255, 181, 71, 0.1);
+  border: 2px solid var(--amber);
   color: var(--amber);
-  box-shadow: 0 0 12px rgba(255, 181, 71, 0.2);
 }
 
 .style-option-btn.selected-celebration {
-  background: rgba(199, 146, 255, 0.15);
-  border-color: var(--gem);
+  background: rgba(199, 146, 255, 0.1);
+  border: 2px solid var(--gem);
   color: var(--gem);
-  box-shadow: 0 0 12px rgba(199, 146, 255, 0.2);
 }
 
 .checkbox-row {
@@ -677,9 +694,9 @@
 }
 
 .preview-box-container label {
-  font-family: var(--font-code);
+  font-family: var(--font-ui);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
   color: var(--text-muted);
 }
@@ -692,7 +709,7 @@
   padding: 12px;
 }
 
-/* Tab 5: Data & Simulation */
+/* ─── Tab 5: Data & Simulation ─────────────────────────────── */
 .simulation-deck {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -700,14 +717,14 @@
 }
 
 .deck-section {
-  background: var(--surface-solid);
+  background: var(--raised);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 22px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .deck-section-title {
@@ -731,12 +748,12 @@
   padding: 14px 16px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  background: var(--surface-2);
+  background: var(--raised);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: all 0.2s var(--ease);
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
 }
 
 .master-pass-option:hover {
@@ -744,16 +761,15 @@
   border-color: var(--border-strong);
 }
 
+/* Active states: solid border only, no glow */
 .master-pass-option.is-active-pass {
-  background: rgba(94, 242, 184, 0.1);
-  border-color: var(--signal);
-  box-shadow: 0 0 16px rgba(94, 242, 184, 0.15);
+  background: var(--raised);
+  border: 1px solid var(--signal);
 }
 
 .master-pass-option.is-active-sim {
-  background: rgba(124, 196, 255, 0.1);
-  border-color: var(--info);
-  box-shadow: 0 0 16px rgba(124, 196, 255, 0.15);
+  background: var(--raised);
+  border: 1px solid var(--info);
 }
 
 .teleporter-controls {
@@ -775,32 +791,37 @@
 }
 
 .teleporter-select:focus {
-  border-color: var(--signal);
+  border-color: var(--border-focus);
 }
 
+/* Teleport button: physical flat solid, no glow */
 .btn-arcade-teleport {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(135deg, var(--signal), var(--signal-strong));
+  background: var(--signal);
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius);
   color: #06090f;
-  font-family: var(--font-code);
+  font-family: var(--font-ui);
   font-size: 14px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(94, 242, 184, 0.35);
-  transition: all 0.15s var(--ease);
+  box-shadow: var(--btn-shadow);
+  transition: opacity 0.15s var(--ease), box-shadow 0.1s var(--ease);
+  /* no uppercase, no letter-spacing, no gradient, no glow */
 }
 
 .btn-arcade-teleport:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(94, 242, 184, 0.5);
+  opacity: 0.9;
+  /* no translateY lift, no glow */
 }
 
-/* Toast alert */
+.btn-arcade-teleport:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+/* ─── Toast Alert ──────────────────────────────────────────── */
 .admin-toast {
   position: fixed;
   bottom: 24px;
@@ -813,7 +834,8 @@
   font-family: var(--font-code);
   font-size: 13px;
   color: var(--signal);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 16px rgba(94, 242, 184, 0.25);
+  /* structural elevation only */
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -832,16 +854,16 @@
   }
 }
 
-/* Telemetry Panels */
+/* ─── Telemetry Panels ─────────────────────────────────────── */
 .telemetry-panel {
-  background: var(--surface-solid);
+  background: var(--raised);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .telemetry-panel-head {

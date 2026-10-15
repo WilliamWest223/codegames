@@ -10,8 +10,8 @@
   font-family: var(--font-ui);
   font-size: 14px;
   line-height: 1.4;
+  background: var(--raised);
   border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(8px);
   animation: slideDownBanner 0.25s var(--ease);
 }
 
@@ -67,7 +67,7 @@
 }
 
 .announcement-dismiss:hover {
-  background: var(--surface-3);
+  background: var(--raised);
   color: var(--text);
   border-color: var(--border);
 }
@@ -79,36 +79,33 @@
 
 /* Style variants */
 .announcement-banner.style-info {
-  background: linear-gradient(90deg, rgba(124, 196, 255, 0.12), rgba(16, 22, 34, 0.95));
-  border-bottom-color: rgba(124, 196, 255, 0.35);
-  box-shadow: 0 4px 16px rgba(124, 196, 255, 0.08);
+  background: var(--raised);
+  border-left: 3px solid var(--info);
+  border-bottom: 1px solid var(--border);
 }
 
 .announcement-banner.style-info .announcement-icon {
   color: var(--info);
-  filter: drop-shadow(0 0 6px rgba(124, 196, 255, 0.4));
 }
 
 .announcement-banner.style-warning {
-  background: linear-gradient(90deg, rgba(255, 181, 71, 0.14), rgba(16, 22, 34, 0.95));
-  border-bottom-color: rgba(255, 181, 71, 0.4);
-  box-shadow: 0 4px 16px rgba(255, 181, 71, 0.08);
+  background: var(--raised);
+  border-left: 3px solid var(--amber);
+  border-bottom: 1px solid var(--border);
 }
 
 .announcement-banner.style-warning .announcement-icon {
   color: var(--amber);
-  filter: drop-shadow(0 0 6px rgba(255, 181, 71, 0.5));
 }
 
 .announcement-banner.style-celebration {
-  background: linear-gradient(90deg, rgba(199, 146, 255, 0.16), rgba(94, 242, 184, 0.08), rgba(16, 22, 34, 0.95));
-  border-bottom-color: rgba(199, 146, 255, 0.45);
-  box-shadow: 0 4px 20px rgba(199, 146, 255, 0.12);
+  background: var(--raised);
+  border-left: 3px solid var(--gem);
+  border-bottom: 1px solid var(--border);
 }
 
 .announcement-banner.style-celebration .announcement-icon {
   color: var(--gem);
-  filter: drop-shadow(0 0 8px rgba(199, 146, 255, 0.6));
 }
 
 @media (max-width: 640px) {
