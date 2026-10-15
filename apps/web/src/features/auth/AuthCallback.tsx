@@ -15,12 +15,15 @@ export function AuthCallback() {
 
     async function handleExchange() {
       try {
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get('code');
-        const errDesc = params.get('error_description');
+        const searchParams = new URLSearchParams(window.location.search);
+        const hashStr = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash;
+        const hashParams = new URLSearchParams(hashStr);
+
+        const code = searchParams.get('code');
+        const errDesc = searchParams.get('error_description') || hashParams.get('error_description');
 
         if (errDesc) {
-          setError(errDesc);
+          setError(decodeURIComponent(errDesc.replace(/\+/g, ' ')));
           return;
         }
 
@@ -32,24 +35,40 @@ export function AuthCallback() {
           }
         }
 
-        // Auto-confirm age RPC if user was onboarding
-        try {
-          await supabase.rpc('confirm_age', {});
-        } catch {
-          // Ignore if already confirmed or error
+        // Wait for session to be parsed (either from code or Supabase's automatic hash parser)
+        let session = (await supabase.auth.getSession()).data.session;
+        if (!session && (hashParams.has('access_token') || code)) {
+          for (let i = 0; i < 8; i++) {
+            await new Promise((r) => setTimeout(r, 250));
+            session = (await supabase.auth.getSession()).data.session;
+            if (session) break;
+          }
         }
 
-        await useAuth.getState().refreshProfile();
+        if (session) {
+          // Auto-confirm age RPC if user was onboarding
+          try {
+            await supabase.rpc('confirm_age', {});
+          } catch {
+            // Ignore
+          }
 
-        // Safe redirect to requested next path
-        let next = '/';
-        const rawNext = sessionStorage.getItem('codegames.next');
-        sessionStorage.removeItem('codegames.next');
-        if (rawNext && /^\/(?!\/)[A-Za-z0-9/_-]{0,200}$/.test(rawNext)) {
-          next = rawNext;
+          await useAuth.getState().initAuth();
+
+          // Safe redirect to requested next path
+          let next = '/';
+          const rawNext = sessionStorage.getItem('codegames.next');
+          sessionStorage.removeItem('codegames.next');
+          if (rawNext && /^\/(?!\/)[A-Za-z0-9/_-]{0,200}$/.test(rawNext)) {
+            next = rawNext;
+          }
+
+          navigate(next, { replace: true });
+          return;
         }
 
-        navigate(next, { replace: true });
+        // If no session established, redirect to sign-in with a verified note
+        navigate('/signin', { replace: true });
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : 'Authentication exchange failed');
       }
