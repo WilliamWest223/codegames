@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import sw from '../../../public/sw.js?raw';
-import { contentSecurityPolicy } from '../../../build/csp';
+import { contentSecurityPolicy } from '../../csp';
 
 /** CSP tests verifying origin isolation in dev, preview, and service worker. */
 describe('Content-Security-Policy', () => {

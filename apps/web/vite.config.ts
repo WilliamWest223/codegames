@@ -1,6 +1,6 @@
 import { defineConfig, type Plugin, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-import { contentSecurityPolicy, ISOLATION_HEADERS } from './build/csp';
+import { contentSecurityPolicy, ISOLATION_HEADERS } from './src/csp';
 export { contentSecurityPolicy, ISOLATION_HEADERS };
 
 /** Long-lived vendor code in its own chunks, so it caches separately from the app. */

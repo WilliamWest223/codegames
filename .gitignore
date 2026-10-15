@@ -23,11 +23,18 @@ a.out
 # Pyodide local mirror (if downloaded for offline use)
 apps/web/public/pyodide/
 
-# Environment & secrets
+# Environment, API secrets & credentials
 .env
 .env*
 *.env
 *.env.*
+*.secret
+*.secrets
+*api*key*
+*credentials*
+*token*
+serviceAccount*.json
+api/
 
 # Logs
 logs/
