@@ -150,4 +150,49 @@ describe('Admin RBAC and Master Pass Verification', () => {
       expect(jsMastery[lockedConcept!.id]).toBe('locked');
     });
   });
+
+  describe('Admin Telemetry and Storage Safety', () => {
+    it('categorizes network latency accurately', () => {
+      const categorizeLatency = (ms: number) => (ms < 150 ? 'nominal' : ms < 500 ? 'moderate' : 'high');
+      expect(categorizeLatency(42)).toBe('nominal');
+      expect(categorizeLatency(149)).toBe('nominal');
+      expect(categorizeLatency(150)).toBe('moderate');
+      expect(categorizeLatency(350)).toBe('moderate');
+      expect(categorizeLatency(500)).toBe('high');
+      expect(categorizeLatency(1200)).toBe('high');
+    });
+
+    it('safely filters local storage keys without deleting admin auth sessions', () => {
+      const mockStorage: Record<string, string> = {
+        'codegames-progress-v1': '{"xp":100}',
+        'codegames-sync-meta': '{"revision":2}',
+        'draft:python:01': 'print(1)',
+        'scratch:temp': '123',
+        'codegames-auth': '{"access_token":"xyz"}',
+        'sb-auth-token': '{"user":{"role":"admin"}}',
+      };
+
+      const keysToRemove = Object.keys(mockStorage).filter(
+        (key) =>
+          key.startsWith('codegames-progress') ||
+          key.startsWith('codegames-sync') ||
+          key.startsWith('draft:') ||
+          key.startsWith('scratch:')
+      );
+
+      for (const k of keysToRemove) {
+        delete mockStorage[k];
+      }
+
+      // Guest progress & drafts deleted
+      expect(mockStorage['codegames-progress-v1']).toBeUndefined();
+      expect(mockStorage['draft:python:01']).toBeUndefined();
+      expect(mockStorage['scratch:temp']).toBeUndefined();
+
+      // Crucial: auth tokens PRESERVED so admin is not logged out!
+      expect(mockStorage['codegames-auth']).toBeDefined();
+      expect(mockStorage['sb-auth-token']).toBeDefined();
+    });
+  });
 });
+

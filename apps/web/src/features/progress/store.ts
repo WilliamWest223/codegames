@@ -455,3 +455,41 @@ if (typeof window !== 'undefined') {
     if (event.key === 'codegames-progress' && isOurStorage(event.storageArea)) void useProgress.persist.rehydrate();
   });
 }
+
+/** Measures count and size of local progress and cache entries */
+export function inspectStorageFootprint(): { count: number; bytes: number } {
+  let bytes = 0;
+  let count = 0;
+  if (typeof localStorage !== 'undefined') {
+    count = localStorage.length;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) {
+        const val = localStorage.getItem(key) || '';
+        bytes += (key.length + val.length) * 2;
+      }
+    }
+  }
+  return { count, bytes };
+}
+
+/** Wipes guest progress and drafts without invalidating auth credentials */
+export function clearGuestCache(): void {
+  if (typeof localStorage !== 'undefined') {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (
+        key &&
+        (key.startsWith('codegames-progress') ||
+          key.startsWith('codegames-sync') ||
+          key.startsWith('draft:') ||
+          key.startsWith('scratch:'))
+      ) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+  }
+  useProgress.setState({ ...empty() });
+}
