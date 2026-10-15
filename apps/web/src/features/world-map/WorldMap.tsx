@@ -25,9 +25,10 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
   const practicedCount = playable.filter((c) => atLeast(mastery[c.id]!, 'practiced')).length;
   const levelsDone = levels.filter((l) => completed[l.id]).length;
   const starsEarned = levels.reduce((sum, l) => sum + (completed[l.id] ? (completed[l.id]!.stars ?? 1) : 0), 0);
-  const regions = [...new Set(playable.filter((c) => !c.sideQuest).map((c) => c.region))].sort((a, b) => a - b);
+  const isSec = language === 'cybersecurity';
+  const regions = [...new Set(playable.filter((c) => isSec ? c.region === 10 : !c.sideQuest).map((c) => c.region))].sort((a, b) => a - b);
   // A side quest appears once any of its concepts opens, right after the region that gates it.
-  const sideQuests = [...new Set(playable.filter((c) => c.sideQuest).map((c) => c.region))]
+  const sideQuests = isSec ? [] : [...new Set(playable.filter((c) => c.sideQuest).map((c) => c.region))]
     .filter((region) => playable.some((c) => c.region === region && mastery[c.id] !== 'locked'))
     .map((region) => ({ region, after: sideQuestGate(region) }));
 
@@ -109,6 +110,12 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
         <p>Each concept has a few levels: <strong>Intro</strong> (meet the idea), <strong>Combine</strong> (mix it with something you know), <strong>Integrate</strong> (use it with several earlier skills). The ring around a station fills as you finish them.</p>
       </details>
 
+      {language === 'cybersecurity' && (
+        <aside className="map-range-rules" aria-label="Rules of the range" style={{ margin: '-12px 0 24px' }}>
+          <strong>Rules of the Cyber Range:</strong> Build secure code, test systems responsibly, and protect users. All challenges focus on hands-on defensive programming and applied cryptography.
+        </aside>
+      )}
+
       {regions.map((region, ri) => (
         <Fragment key={region}>
           {renderRegion(region, ri)}
@@ -117,7 +124,7 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
             .map((s) => (
               <div key={s.region} className="map-side-quest" role="group" aria-label="Side quests">
                 <p className="eyebrow map-side-quest-label">Side quests · optional</p>
-                {s.region === SECURITY_REGION && (
+                {s.region === SECURITY_REGION && language !== 'cybersecurity' && (
                   <aside className="map-range-rules" aria-label="Rules of the range">
                     <strong>Rules of the range.</strong> Only test code and systems you own or have permission to test.
                     Everything here is a fictional ship, and the toy tools you build are never real security.
@@ -155,7 +162,7 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
             {done === regionConcepts.length ? ' restored.' : `: ${REGION_STORY[region]!.beat}`}
           </p>
         )}
-        <div className="map-track" role="list">
+        <div className="map-grid" role="list">
           {regionConcepts.map((c) => {
             const core = coreLevels(c.id, levels);
             return (
@@ -166,6 +173,8 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
                 progress={core.length ? core.filter((l) => completed[l.id]).length / core.length : 0}
                 selected={c.id === selectedId}
                 due={due.has(c.id)}
+                levels={levels.filter((l) => l.conceptId === c.id)}
+                completed={completed}
                 onSelect={() => select(c.id === selectedId ? null : c.id)}
               />
             );
@@ -181,11 +190,12 @@ const SECURITY_REGION = 10;
 
 /** The core region a side quest hangs after: the latest core region its concepts require. */
 function sideQuestGate(region: number): number {
+  if (region === SECURITY_REGION) return 3;
   const byId = new Map(concepts.map((c) => [c.id, c]));
   const gates = concepts
     .filter((c) => c.region === region)
     .flatMap((c) => c.requires.map((id) => byId.get(id)))
     .filter((c) => c && !c.sideQuest)
     .map((c) => c!.region);
-  return Math.max(...gates);
+  return gates.length ? Math.max(...gates) : 3;
 }

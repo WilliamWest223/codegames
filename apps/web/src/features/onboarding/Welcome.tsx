@@ -5,6 +5,7 @@ import './Welcome.css';
 const PITCH: Record<PlayableLanguage, { line: string; sample: string }> = {
   python: { line: 'Clean and readable. A favorite first language, used for data, AI, and automation.', sample: 'print("Hello, World!")' },
   javascript: { line: 'The language of the web. Runs in every browser and powers interactive sites.', sample: 'console.log("Hello, World!");' },
+  cybersecurity: { line: 'Defense, cryptanalysis, and secure systems. Solve ciphers, sanitize inputs, and hack the vault.', sample: 'hash("secret_password")' },
 };
 
 /** First-run screen: what CodeGames is, and pick a starting language. */

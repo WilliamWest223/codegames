@@ -35,13 +35,13 @@ describe('Hangman word composition', () => {
   it('shares the boss reference engine', () => {
     const boss = levels.find((l) => l.id === 'boss-3');
     expect(boss && 'solution' in boss ? boss.solution : undefined).toEqual(HANGMAN);
-    for (const language of PLAYABLE_LANGUAGES) {
+    for (const language of ['python', 'javascript'] as const) {
       expect(hangmanWithWords(HANGMAN_WORDS)[language]).toContain(HANGMAN[language]!.split('\n').slice(-6).join('\n'));
     }
   });
 });
 
-describe.each(PLAYABLE_LANGUAGES)('word workshop (%s)', (language) => {
+describe.each(['python', 'javascript'] as const)('word workshop (%s)', (language) => {
   it("plays a learner's own word and lives", async () => {
     const run = await executors[language](hangmanWithWords(ONE_WORD)[language]!, { stdin: 'c\nx\na\nt\n', seed: 1 });
     expect(run.error).toBeUndefined();

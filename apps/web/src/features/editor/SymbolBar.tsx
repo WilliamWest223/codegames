@@ -6,6 +6,7 @@ import './SymbolBar.css';
 const SYMBOLS: Record<PlayableLanguage, string[]> = {
   python: [':', '(', ')', '"', '=', '==', '+', '<', '>', '#', '[', ']', '_'],
   javascript: [';', '(', ')', '{', '}', '"', '`', '=', '===', '+', '<', '>', '//'],
+  cybersecurity: [':', '(', ')', '"', '=', '==', '+', '%', '^', '#', '[', ']', '_'],
 };
 
 /**
@@ -14,7 +15,7 @@ const SYMBOLS: Record<PlayableLanguage, string[]> = {
  * Shown only for coarse pointers (CSS), plus the blank jump whenever blanks exist.
  */
 export function SymbolBar({ editor, language, hasBlanks }: { editor: RefObject<CodeEditorHandle | null>; language: PlayableLanguage; hasBlanks: boolean }) {
-  const indent = language === 'python' ? '    ' : '  ';
+  const indent = language === 'javascript' ? '  ' : '    ';
   return (
     <div className="symbol-bar" role="toolbar" aria-label="Insert symbols">
       {hasBlanks && (

@@ -34,7 +34,7 @@ describe('Text Adventure world composition', () => {
 
   it('keeps the boss reference program as the default world plus engine', () => {
     expect(ADVENTURE).toEqual(adventureWithWorld(ADVENTURE_WORLD));
-    for (const language of PLAYABLE_LANGUAGES) {
+    for (const language of ['python', 'javascript'] as const) {
       expect(ADVENTURE[language]!.startsWith(`${ADVENTURE_WORLD[language]}\n`)).toBe(true);
     }
   });
@@ -45,7 +45,7 @@ describe('Text Adventure world composition', () => {
   });
 });
 
-describe.each(PLAYABLE_LANGUAGES)('world builder (%s)', (language) => {
+describe.each(['python', 'javascript'] as const)('world builder (%s)', (language) => {
   it('plays the starter world through to the crown', async () => {
     const run = await executors[language](adventureWithWorld(ADVENTURE_WORLD)[language]!, {
       stdin: 'go east\ntake key\ngo west\ngo north\ngo north\ntake crown\n',

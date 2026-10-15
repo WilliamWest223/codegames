@@ -65,15 +65,25 @@ export { glossary, type GlossaryTerm } from './glossary';
 
 /** Languages a concept can be played in (`Concept.languages`, or every playable language). */
 export function conceptLanguages(concept: Concept): readonly Language[] {
-  return concept.languages ?? PLAYABLE_LANGUAGES;
+  return concept.languages ?? ['python', 'javascript'];
 }
 
 /** The world map as seen in one language: concepts restricted to other languages are left out. */
 export function conceptsFor(language: Language): Concept[] {
-  return concepts.filter((c) => conceptLanguages(c).includes(language));
+  if (language === 'cybersecurity') {
+    return concepts.filter((c) => c.region === 10);
+  }
+  return concepts.filter((c) => c.region !== 10 && conceptLanguages(c).includes(language));
 }
 
 /** Levels that exist in one language (Web Pages levels are JavaScript only). */
 export function levelsFor(language: Language): Level[] {
-  return levels.filter((l) => levelLanguages(l).includes(language));
+  if (language === 'cybersecurity') {
+    return sideSecurityLevels;
+  }
+  return levels.filter(
+    (l) =>
+      !['encoding', 'ciphers', 'passwords', 'input-validation', 'boss-security'].includes(l.conceptId) &&
+      levelLanguages(l).includes(language),
+  );
 }

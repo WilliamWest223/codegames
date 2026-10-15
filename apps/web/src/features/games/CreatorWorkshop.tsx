@@ -8,7 +8,7 @@ import { useDraft } from './useDraft';
 import './CreatorWorkshop.css';
 
 const MAX_FILE_BYTES = 50_000;
-const FILE_EXTENSION: Record<PlayableLanguage, string> = { python: 'py', javascript: 'js' };
+const FILE_EXTENSION: Record<PlayableLanguage, string> = { python: 'py', javascript: 'js', cybersecurity: 'py' };
 
 export interface WorkshopConfig {
   /** Draft key: the learner's data is saved per language, apart from every level's draft. */
@@ -68,14 +68,15 @@ export function sandboxLevel(
  * engine. Nothing here is graded, rewarded or written to progress (only the draft is saved).
  */
 export function CreatorWorkshop({ language, config }: { language: PlayableLanguage; config: WorkshopConfig }) {
-  const { code, setCode, reset } = useDraft(config.draftKey, language, config.starter[language] ?? '');
+  const langKey: 'python' | 'javascript' = language === 'cybersecurity' ? 'python' : language;
+  const { code, setCode, reset } = useDraft(config.draftKey, language, config.starter[langKey] ?? '');
   const [play, setPlay] = useState<{ run: number; code: string } | null>(null);
 
   const [fileError, setFileError] = useState<string | null>(null);
 
   const startPlaying = () => {
-    const data: LangCode = { [language]: code };
-    setPlay((p) => ({ run: (p?.run ?? 0) + 1, code: config.compose(data)[language] ?? '' }));
+    const data: LangCode = { [langKey]: code };
+    setPlay((p) => ({ run: (p?.run ?? 0) + 1, code: config.compose(data)[langKey] ?? '' }));
   };
 
   const fileName = `${config.fileBase}.${FILE_EXTENSION[language]}`;

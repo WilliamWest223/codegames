@@ -211,12 +211,12 @@ export const draftKey = (language: PlayableLanguage, levelId: string) => `${lang
 
 const empty = () => ({
   xp: 0,
-  completed: { python: {}, javascript: {} } as PerLanguage<Record<string, Completion>>,
+  completed: { python: {}, javascript: {}, cybersecurity: {} } as PerLanguage<Record<string, Completion>>,
   attempts: {} as Record<string, number>,
   hints: {} as Record<string, number>,
   reveals: {} as Record<string, number>,
   drafts: {} as Record<string, string>,
-  reviews: { python: {}, javascript: {} } as PerLanguage<Record<string, { count: number; at: number }>>,
+  reviews: { python: {}, javascript: {}, cybersecurity: {} } as PerLanguage<Record<string, { count: number; at: number }>>,
   activity: {} as Record<string, number>,
   errorCounts: {} as Record<string, number>,
   errorStreaks: {} as Record<string, number>,

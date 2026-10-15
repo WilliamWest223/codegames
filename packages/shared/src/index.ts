@@ -1,13 +1,14 @@
 /** Languages CodeGames can teach. */
-export type Language = 'python' | 'javascript' | 'java' | 'cpp';
+export type Language = 'python' | 'javascript' | 'cybersecurity' | 'java' | 'cpp';
 
 /** Languages with playable content in the current version. */
-export const PLAYABLE_LANGUAGES = ['python', 'javascript'] as const satisfies readonly Language[];
+export const PLAYABLE_LANGUAGES = ['python', 'javascript', 'cybersecurity'] as const satisfies readonly Language[];
 export type PlayableLanguage = (typeof PLAYABLE_LANGUAGES)[number];
 
 export const LANGUAGE_LABELS: Record<Language, string> = {
   python: 'Python',
   javascript: 'JavaScript',
+  cybersecurity: 'Cybersecurity',
   java: 'Java',
   cpp: 'C++',
 };

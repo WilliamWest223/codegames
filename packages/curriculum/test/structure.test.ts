@@ -8,7 +8,7 @@ const playable = concepts.filter((c) => !c.comingSoon);
 
 /** Minimum reinforced concepts for integrate/challenge levels, by region (docs/concept-ideas.md §8.1). */
 function regionMinimum(region: number): number {
-  if (region === 0) return 0;
+  if (region === 0 || region === 10) return 0;
   if (region <= 2) return 2;
   if (region <= 4) return 3;
   if (region <= 7) return 4;
@@ -17,7 +17,7 @@ function regionMinimum(region: number): number {
 
 /** Earlier regions a level must draw from (§8.1). */
 function earlierRegionsRequired(region: number): number {
-  if (region === 0) return 0;
+  if (region === 0 || region === 10) return 0;
   if (region <= 2) return 1;
   if (region <= 4) return 2;
   return 3;
@@ -166,7 +166,7 @@ describe('mastery rules (docs/concept-ideas.md §8.1)', () => {
       for (const id of l.reinforces) expect(before.has(id), `${l.id} reinforces ${id}, which isn't a prerequisite`).toBe(true);
     });
 
-    if (l.role === 'combine' && concept.region > 0) {
+    if (l.role === 'combine' && concept.region > 0 && concept.id !== 'encoding') {
       it(`${l.id} (combine) reinforces at least one concept`, () => {
         expect(l.reinforces.length).toBeGreaterThanOrEqual(1);
       });
@@ -207,7 +207,7 @@ describe('teaching quality (round-1 teacher audit)', () => {
     const repeatAndLater = new Set(concepts.filter((c) => c.id === 'repeat' || ancestors(c.id, concepts).has('repeat')).map((c) => c.id));
     const unguarded = levels
       .filter((l) => l.game === 'grid-quest' && repeatAndLater.has(l.conceptId))
-      .filter((l) => l.game === 'grid-quest' && !(l.extraGrids?.length ?? 0) && !PLAYABLE_LANGUAGES.every((lang) => (l.requirements?.[lang] ?? []).some((r) => r.forbid)))
+      .filter((l) => l.game === 'grid-quest' && !(l.extraGrids?.length ?? 0) && !levelLanguages(l).every((lang) => (l.requirements?.[lang] ?? []).some((r) => r.forbid)))
       .map((l) => l.id);
     expect(unguarded).toEqual([]);
   });

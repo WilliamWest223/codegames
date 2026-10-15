@@ -111,14 +111,14 @@ describe('sanitize: hostile input', () => {
       goalHistory: null,
       language: { toString: 'x' },
     });
-    expect(s.completed).toEqual({ python: {}, javascript: {} });
+    expect(s.completed).toEqual({ python: {}, javascript: {}, cybersecurity: {} });
     expect(s.attempts).toEqual({});
-    expect(s.reviews).toEqual({ python: {}, javascript: {} });
+    expect(s.reviews).toEqual({ python: {}, javascript: {}, cybersecurity: {} });
     expect(s.drafts).toEqual({});
     expect(s.reflections).toEqual({});
     expect(s.bestBelt).toEqual({});
     expect(s.language).toBeNull();
-    expect(sanitize({ completed: { python: { [LEVEL]: null }, javascript: { [LEVEL]: [good] } } }).completed).toEqual({ python: {}, javascript: {} });
+    expect(sanitize({ completed: { python: { [LEVEL]: null }, javascript: { [LEVEL]: [good] } } }).completed).toEqual({ python: {}, javascript: {}, cybersecurity: {} });
   });
 
   it('caps drafts at 50 KB each and 500 keys, and reflections at 300 chars', () => {

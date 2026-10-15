@@ -4,8 +4,7 @@ import { CreatorWorkshop, sandboxLevel, type WorkshopConfig } from './CreatorWor
 
 const DRAFT = 'hangman-word-builder';
 
-/** Per-language names, so the help text matches the variables in the editor. */
-const LIVES_NAME: Record<PlayableLanguage, string> = { python: 'start_lives', javascript: 'startLives' };
+const LIVES_NAME: Record<PlayableLanguage, string> = { python: 'start_lives', javascript: 'startLives', cybersecurity: 'start_lives' };
 
 function config(language: PlayableLanguage): WorkshopConfig {
   return {

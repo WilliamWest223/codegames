@@ -51,7 +51,7 @@ describe('cleanBackup', () => {
     expect(clean.state.xp).toBe(0);
     expect(clean.state.skin).toBe('mint');
     expect(clean.state).not.toHaveProperty('extra');
-    expect(clean.state.completed).toEqual({ python: { [LEVEL]: { at: 1_700_000_000_000, attempts: 0, hintsUsed: 0, stars: 3 } }, javascript: {} });
+    expect(clean.state.completed).toEqual({ python: { [LEVEL]: { at: 1_700_000_000_000, attempts: 0, hintsUsed: 0, stars: 3 } }, javascript: {}, cybersecurity: {} });
   });
 });
 

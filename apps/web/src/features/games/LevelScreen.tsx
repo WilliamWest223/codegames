@@ -19,6 +19,7 @@ const NUDGE_AFTER = 2;
 const BOSS_HINTS_AFTER = 2;
 
 export function LevelScreen({ language }: { language: PlayableLanguage }) {
+  const execLang: 'python' | 'javascript' = language === 'cybersecurity' ? 'python' : language;
   const { levelId } = useParams();
   const [searchParams] = useSearchParams();
   const level = levels.find((l) => l.id === levelId);
@@ -34,7 +35,7 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
   const resetLevelHelp = useProgress((s) => s.resetLevelHelp);
   // Hints opened before a reload stay open (and still count against stars).
   const savedHints = useProgress((s) => (level ? (s.hints[draftKey(language, level.id)] ?? 0) : 0));
-  const { status: engine, retry: retryEngine } = useEngineStatus(language);
+  const { status: engine, retry: retryEngine } = useEngineStatus(execLang);
   const [completion, setCompletion] = useState<CompletionInfo | null>(null);
   // Bumped by "Try it again from scratch" to remount the game and hints fresh.
   const [retry, setRetry] = useState(0);
@@ -131,7 +132,7 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
     );
   }
 
-  if (!levelLanguages(level).includes(language)) {
+  if (!levelLanguages(level).includes(execLang)) {
     return (
       <div className="level-missing">
         <h1>Not available in {LANGUAGE_LABELS[language]} yet</h1>
@@ -166,7 +167,7 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
   }
 
   const Game = gameFor(level);
-  const requirements = 'requirements' in level ? (level.requirements?.[language] ?? []).filter((r) => !r.forbid) : [];
+  const requirements = 'requirements' in level ? (level.requirements?.[execLang] ?? []).filter((r) => !r.forbid) : [];
   const done = !!completedMap[level.id];
   const allCompleted = useProgress.getState().completed;
   const drafts = useProgress.getState().drafts;
@@ -223,7 +224,7 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
 
       <div className="level-body">
         <aside className="level-brief panel">
-          <Markdown text={level.prompt} language={language} trusted />
+          <Markdown text={level.prompt} language={execLang} trusted />
           {requirements.length > 0 && (
             <div className="level-reqs">
               <span className="eyebrow">Must</span>
@@ -258,7 +259,7 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
           <HintBox
             key={`${level.id}-${language}-${retry}`}
             hints={level.hints}
-            language={language}
+            language={execLang}
             nudge={attempts >= NUDGE_AFTER}
             initialShown={savedHints}
             lockedFor={level.role === 'boss' ? Math.max(0, BOSS_HINTS_AFTER - attempts) : 0}
@@ -270,7 +271,7 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
         </aside>
         <section className="level-work" aria-label="Workspace">
           {Game ? (
-            <Game key={`${level.id}-${language}-${retry}`} level={level} language={language} onPass={onPass} onFail={onFail} onReveal={onReveal} onScaffold={onScaffold} />
+            <Game key={`${level.id}-${language}-${retry}`} level={level} language={execLang} onPass={onPass} onFail={onFail} onReveal={onReveal} onScaffold={onScaffold} />
           ) : (
             <p>This game type isn't built yet.</p>
           )}
@@ -281,7 +282,7 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
         <CompletionModal
           info={completion}
           language={language}
-          takeaway={level.takeaway ? localize(level.takeaway, language) : undefined}
+          takeaway={level.takeaway ? localize(level.takeaway, execLang) : undefined}
           onClose={() => setCompletion(null)}
           onRetry={onRetry}
         />
