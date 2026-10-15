@@ -7,7 +7,7 @@ export type AuthStatus = 'loading' | 'signed-out' | 'signed-in';
 
 export function checkIsAdmin(user: User | null): boolean {
   if (!user) return false;
-  if (user.email === 'admin@email.com' || user.email === 'wwest0708@gmail.com') return true;
+  if (user.email === 'admin@email.com') return true;
   const appRoles = (user.app_metadata?.app_roles ?? []) as string[];
   if (Array.isArray(appRoles) && appRoles.includes('admin')) return true;
   const userRole = (user.user_metadata?.role ?? '') as string;
