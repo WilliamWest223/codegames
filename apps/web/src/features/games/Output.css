@@ -4,7 +4,7 @@
 .out-blocked {
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  background: var(--surface-solid);
+  background: var(--panel);
   animation: rise 0.25s var(--ease) both;
 }
 .out-console-head,
@@ -47,9 +47,19 @@
   margin: 0;
   padding: 6px;
 }
+
+/* Test result rows: flat panel background with left accent */
 .out-tests li {
   padding: 8px 10px;
   border-radius: var(--radius-sm);
+  background: var(--panel);
+  border-left: 3px solid transparent;
+}
+.out-tests li.is-pass {
+  border-left-color: var(--signal);
+}
+.out-tests li.is-fail {
+  border-left-color: var(--danger);
 }
 .out-tests li + li {
   border-top: 1px solid var(--border);
@@ -91,9 +101,19 @@
   color: var(--text-muted);
   font-size: 13px;
 }
+
+/* Execution time badge */
+.test-time-badge {
+  font-family: var(--font-code);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
 .out-error {
   border-color: rgba(255, 107, 122, 0.4);
-  background: linear-gradient(180deg, var(--danger-soft), transparent);
+  background: var(--panel);
+  border-left: 3px solid var(--danger);
   padding: 12px 14px;
   margin-top: 8px;
 }
@@ -132,7 +152,8 @@
 .out-blocked {
   padding: 10px 14px;
   border-color: rgba(255, 181, 71, 0.45);
-  background: var(--amber-soft);
+  border-left: 3px solid var(--amber);
+  background: var(--bezel);
 }
 .out-blocked p {
   margin: 4px 0;
@@ -148,7 +169,8 @@
   padding: 10px 14px;
   border-radius: var(--radius);
   border: 1px solid rgba(124, 196, 255, 0.4);
-  background: var(--info-soft);
+  border-left: 3px solid var(--info);
+  background: var(--panel);
   animation: rise 0.25s var(--ease) both;
 }
 .out-warnings p {
@@ -196,7 +218,7 @@
   padding: 10px 12px;
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--amber);
-  background: var(--amber-soft);
+  background: var(--bezel);
   color: var(--text);
   font-size: 14px;
 }

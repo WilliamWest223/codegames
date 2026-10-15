@@ -12,8 +12,8 @@
   justify-content: space-between;
   gap: 16px;
   padding: 12px 24px;
-  background: rgba(10, 14, 22, 0.75);
-  backdrop-filter: blur(14px);
+  background: var(--panel);
+  box-shadow: 0 1px 0 var(--border-contrast);
   border-bottom: 1px solid var(--border);
 }
 .shell-logo {

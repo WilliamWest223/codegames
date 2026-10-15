@@ -34,7 +34,7 @@
 }
 .workshop-skin.is-selected {
   border-color: var(--signal);
-  box-shadow: var(--signal-glow);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 .workshop-skin:disabled {
   cursor: not-allowed;

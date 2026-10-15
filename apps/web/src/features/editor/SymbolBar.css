@@ -26,16 +26,19 @@
   min-width: 40px;
   min-height: 40px;
   padding: 0 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border-strong);
-  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-contrast);
+  background: var(--bezel);
   color: var(--text);
   font: 600 15px/1 var(--font-code);
   font-variant-ligatures: none;
   cursor: pointer;
+  box-shadow: 0 1px 0 #000;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
 .symbol-key:active {
-  background: var(--surface-3);
+  transform: translateY(1px);
+  box-shadow: none;
 }
 .symbol-key-wide {
   font-family: var(--font-ui);

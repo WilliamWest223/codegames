@@ -1,5 +1,6 @@
 /* apps/web/src/features/admin/AdminInspector.css */
 
+/* ─── Toggle Button (fixed floating) ──────────────────────── */
 .admin-inspector-wrap {
   position: fixed;
   bottom: 16px;
@@ -17,20 +18,23 @@
   color: var(--signal);
   padding: 8px 14px;
   border-radius: var(--radius);
-  font-family: var(--font-code);
+  font-family: var(--font-ui);
   font-size: 12px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(94, 242, 184, 0.25);
-  transition: all 0.2s var(--ease);
+  /* structural elevation — no ambient glow */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  transition: background 0.15s var(--ease), box-shadow 0.1s var(--ease);
 }
 
 .admin-inspector-toggle:hover {
   background: var(--surface-2);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7), 0 0 18px rgba(94, 242, 184, 0.4);
+  /* no lift, no glow */
+}
+
+.admin-inspector-toggle:active {
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
 .admin-inspector-toggle.is-open {
@@ -39,6 +43,7 @@
   border-color: var(--signal-strong);
 }
 
+/* ─── Slide-up Drawer ──────────────────────────────────────── */
 .admin-inspector-drawer {
   position: fixed;
   bottom: 64px;
@@ -50,7 +55,8 @@
   border: 1px solid var(--border-strong);
   border-top: 2px solid var(--signal);
   border-radius: var(--radius);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 24px rgba(94, 242, 184, 0.15);
+  /* structural elevation only — no ambient glow */
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -69,6 +75,7 @@
   }
 }
 
+/* ─── Drawer Header ────────────────────────────────────────── */
 .admin-inspector-head {
   display: flex;
   align-items: center;
@@ -94,6 +101,7 @@
   color: var(--text-muted);
 }
 
+/* ─── Drawer Body ──────────────────────────────────────────── */
 .admin-inspector-body {
   padding: 16px;
   overflow-y: auto;
@@ -116,6 +124,7 @@
   gap: 10px;
 }
 
+/* ─── Inspector Action Buttons ─────────────────────────────── */
 .admin-inspector-btn {
   display: flex;
   align-items: center;
@@ -129,57 +138,65 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s var(--ease);
+  box-shadow: var(--btn-shadow-sm);
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease), box-shadow 0.1s var(--ease);
 }
 
 .admin-inspector-btn:hover {
   background: var(--surface-3);
   border-color: var(--border-strong);
   transform: translateX(2px);
+  /* no glow shadow */
+}
+
+.admin-inspector-btn:active {
+  transform: translateY(1px) translateX(0);
+  box-shadow: none;
 }
 
 .admin-inspector-btn.btn-pass {
   border-color: rgba(255, 181, 71, 0.5);
-  background: rgba(255, 181, 71, 0.08);
+  background: rgba(255, 181, 71, 0.06);
   color: var(--amber);
 }
 
 .admin-inspector-btn.btn-pass:hover {
-  background: rgba(255, 181, 71, 0.18);
+  background: rgba(255, 181, 71, 0.14);
   border-color: var(--amber);
-  box-shadow: 0 0 16px rgba(255, 181, 71, 0.25);
+  /* no glow */
 }
 
 .admin-inspector-btn.btn-solution {
   border-color: rgba(124, 196, 255, 0.5);
-  background: rgba(124, 196, 255, 0.08);
+  background: rgba(124, 196, 255, 0.06);
   color: var(--info);
 }
 
 .admin-inspector-btn.btn-solution:hover {
-  background: rgba(124, 196, 255, 0.18);
+  background: rgba(124, 196, 255, 0.14);
   border-color: var(--info);
-  box-shadow: 0 0 16px rgba(124, 196, 255, 0.25);
+  /* no glow */
 }
 
 .admin-inspector-btn.btn-tests {
   border-color: rgba(199, 146, 255, 0.5);
-  background: rgba(199, 146, 255, 0.08);
+  background: rgba(199, 146, 255, 0.06);
   color: var(--gem);
 }
 
 .admin-inspector-btn.btn-tests:hover {
-  background: rgba(199, 146, 255, 0.18);
+  background: rgba(199, 146, 255, 0.14);
   border-color: var(--gem);
-  box-shadow: 0 0 16px rgba(199, 146, 255, 0.25);
+  /* no glow */
 }
 
+/* ─── Feedback & Solution Preview ──────────────────────────── */
 .admin-inspector-feedback {
   padding: 8px 12px;
   border-radius: var(--radius-sm);
   font-size: 12px;
   font-family: var(--font-code);
-  background: rgba(94, 242, 184, 0.1);
+  background: rgba(94, 242, 184, 0.08);
   border: 1px solid var(--signal);
   color: var(--signal);
   animation: fadeIn 0.2s var(--ease);
@@ -214,12 +231,11 @@
   tab-size: 2;
 }
 
-/* Modal for inspecting tests */
+/* ─── Tests Modal ──────────────────────────────────────────── */
 .admin-inspector-tests-modal {
   position: fixed;
   inset: 0;
-  background: rgba(4, 7, 12, 0.85);
-  backdrop-filter: blur(6px);
+  background: rgba(4, 7, 12, 0.92);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -236,7 +252,8 @@
   max-height: 85vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 32px rgba(199, 146, 255, 0.15);
+  /* structural elevation only — no ambient glow */
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
   overflow: hidden;
 }
 
@@ -267,6 +284,7 @@
   gap: 14px;
 }
 
+/* ─── Test Cards ───────────────────────────────────────────── */
 .admin-test-card {
   background: #090e17;
   border: 1px solid var(--border);
@@ -279,7 +297,7 @@
 
 .admin-test-card.is-hidden {
   border-color: rgba(199, 146, 255, 0.4);
-  background: linear-gradient(180deg, rgba(199, 146, 255, 0.04), #090e17);
+  /* flat tinted border — no gradient background */
 }
 
 .admin-test-card-head {
