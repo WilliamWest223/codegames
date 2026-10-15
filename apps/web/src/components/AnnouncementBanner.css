@@ -1,0 +1,119 @@
+/* apps/web/src/components/AnnouncementBanner.css */
+
+.announcement-banner {
+  position: relative;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.4;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+  animation: slideDownBanner 0.25s var(--ease);
+}
+
+@keyframes slideDownBanner {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.announcement-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.announcement-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.announcement-message {
+  color: var(--text);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.announcement-dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 12px;
+  flex-shrink: 0;
+  transition: all 0.15s var(--ease);
+}
+
+.announcement-dismiss:hover {
+  background: var(--surface-3);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.announcement-dismiss:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 1px;
+}
+
+/* Style variants */
+.announcement-banner.style-info {
+  background: linear-gradient(90deg, rgba(124, 196, 255, 0.12), rgba(16, 22, 34, 0.95));
+  border-bottom-color: rgba(124, 196, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(124, 196, 255, 0.08);
+}
+
+.announcement-banner.style-info .announcement-icon {
+  color: var(--info);
+  filter: drop-shadow(0 0 6px rgba(124, 196, 255, 0.4));
+}
+
+.announcement-banner.style-warning {
+  background: linear-gradient(90deg, rgba(255, 181, 71, 0.14), rgba(16, 22, 34, 0.95));
+  border-bottom-color: rgba(255, 181, 71, 0.4);
+  box-shadow: 0 4px 16px rgba(255, 181, 71, 0.08);
+}
+
+.announcement-banner.style-warning .announcement-icon {
+  color: var(--amber);
+  filter: drop-shadow(0 0 6px rgba(255, 181, 71, 0.5));
+}
+
+.announcement-banner.style-celebration {
+  background: linear-gradient(90deg, rgba(199, 146, 255, 0.16), rgba(94, 242, 184, 0.08), rgba(16, 22, 34, 0.95));
+  border-bottom-color: rgba(199, 146, 255, 0.45);
+  box-shadow: 0 4px 20px rgba(199, 146, 255, 0.12);
+}
+
+.announcement-banner.style-celebration .announcement-icon {
+  color: var(--gem);
+  filter: drop-shadow(0 0 8px rgba(199, 146, 255, 0.6));
+}
+
+@media (max-width: 640px) {
+  .announcement-banner {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}

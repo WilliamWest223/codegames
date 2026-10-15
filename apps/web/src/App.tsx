@@ -13,6 +13,7 @@ import { useAuth } from './features/auth/useAuth';
 const LevelScreen = lazy(() => import('./features/games/LevelScreen').then((m) => ({ default: m.LevelScreen })));
 const JournalScreen = lazy(() => import('./features/journal/JournalScreen').then((m) => ({ default: m.JournalScreen })));
 const ReviewScreen = lazy(() => import('./features/review/ReviewScreen').then((m) => ({ default: m.ReviewScreen })));
+const AdminDashboard = lazy(() => import('./features/admin/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
 
 export function App() {
   const authStatus = useAuth((s) => s.status);
@@ -58,6 +59,14 @@ export function App() {
         <Routes>
           <Route path="/signin" element={<Navigate to="/" replace />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route
+            path="/admin"
+            element={
+              <Suspense fallback={<p className="route-loading">Loading admin dashboard…</p>}>
+                <AdminDashboard />
+              </Suspense>
+            }
+          />
           {language ? (
             <>
               <Route path="/" element={<WorldMap language={language} />} />

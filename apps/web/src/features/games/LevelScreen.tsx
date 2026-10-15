@@ -12,6 +12,7 @@ import { HintBox } from './HintBox';
 import { workshopForRoute } from './creatorWorkshops';
 import type { ParResult } from './types';
 import { gameFor } from './registry';
+import { AdminInspector } from '../admin/AdminInspector';
 import './Level.css';
 
 const NUDGE_AFTER = 2;
@@ -287,6 +288,7 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
           onRetry={onRetry}
         />
       )}
+      <AdminInspector level={level} language={language} onPass={onPass} />
     </div>
   );
 }
