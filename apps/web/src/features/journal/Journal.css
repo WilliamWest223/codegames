@@ -1,0 +1,130 @@
+.journal {
+  display: grid;
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+.journal-head h1 {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+}
+.journal-card {
+  padding: 16px 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+}
+.journal-card h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+.journal-card h3 {
+  margin: 10px 0 4px;
+  font-size: 14px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.journal-muted {
+  margin: 4px 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.journal-good {
+  margin: 8px 0 0;
+  color: var(--signal);
+  font-size: 14px;
+}
+.journal-belts ol {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.journal-belts li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  opacity: 0.55;
+}
+.journal-belts li.is-earned,
+.journal-belts li.is-working {
+  opacity: 1;
+}
+.journal-patch {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.journal-patch strong {
+  color: var(--signal);
+}
+.journal-belts li p {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.journal-belt-swatch {
+  flex: none;
+  width: 40px;
+  height: 12px;
+  margin-top: 5px;
+  border-radius: 3px;
+  background: var(--belt-none);
+}
+.belt-white .journal-belt-swatch { background: var(--belt-white); }
+.belt-yellow .journal-belt-swatch { background: var(--belt-yellow); }
+.belt-orange .journal-belt-swatch { background: var(--belt-orange); }
+.belt-green .journal-belt-swatch { background: var(--belt-green); }
+.journal-stats dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+.journal-stats dt {
+  color: var(--text-faint);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.journal-stats dd {
+  margin: 2px 0 0;
+  font: 700 22px/1.2 var(--font-display);
+}
+.journal-stats dd span {
+  color: var(--text-muted);
+  font: 400 13px/1 var(--font-ui);
+}
+.journal-region ul,
+.journal-notes,
+.journal-errors {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+.journal-region li span {
+  color: var(--text-muted);
+}
+.journal-notes q {
+  display: block;
+  color: var(--text-muted);
+}
+.journal-card details {
+  margin: 6px 0;
+}
+.journal-card details pre {
+  margin: 6px 0 0;
+  max-height: 320px;
+  overflow: auto;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font: 13px/1.5 var(--font-code);
+}

@@ -1,0 +1,85 @@
+.welcome {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 72px 24px 48px;
+  animation: rise 0.6s var(--ease) both;
+}
+.welcome-title {
+  margin-top: 14px;
+  font-size: clamp(38px, 6vw, 64px);
+  font-weight: 800;
+}
+.welcome-title span {
+  color: var(--signal);
+}
+.welcome-lede {
+  max-width: 620px;
+  margin: 20px 0 44px;
+  color: var(--text-muted);
+  font-size: 17px;
+}
+.welcome-pick {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+.welcome-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.welcome-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
+  text-align: left;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+  color: var(--text);
+  cursor: pointer;
+  animation: rise 0.6s var(--ease) both;
+  transition: transform 0.2s var(--ease), border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.welcome-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--accent);
+}
+.welcome-card.lang-python {
+  --accent: var(--lang-python);
+}
+.welcome-card.lang-javascript {
+  --accent: var(--lang-javascript);
+}
+.welcome-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+.welcome-card-name {
+  font: 700 26px/1 var(--font-display);
+}
+.welcome-card-line {
+  color: var(--text-muted);
+}
+.welcome-card-sample {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: #070a11;
+  color: var(--signal);
+}
+.welcome-card-go {
+  margin-top: 6px;
+  color: var(--accent);
+  font-weight: 600;
+}
+.welcome-note {
+  margin-top: 24px;
+  color: var(--text-faint);
+  font-size: 13px;
+}

@@ -1,0 +1,216 @@
+.out-console,
+.out-tests,
+.out-error,
+.out-blocked {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+  animation: rise 0.25s var(--ease) both;
+}
+.out-console-head,
+.out-tests-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  font: 600 12px/1.4 var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.out-console-input {
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--font-code);
+  color: var(--info);
+}
+.out-console pre {
+  margin: 0;
+  padding: 12px 14px;
+  max-height: 240px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+.out-console pre.is-empty {
+  color: var(--text-faint);
+  font-style: italic;
+}
+.out-tests-head .is-pass {
+  color: var(--signal);
+}
+.out-tests-head .is-fail {
+  color: var(--danger);
+}
+.out-tests ul {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+}
+.out-tests li {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+}
+.out-tests li + li {
+  border-top: 1px solid var(--border);
+}
+.out-test-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+.out-tests li.is-pass .out-test-name span:first-child {
+  color: var(--signal);
+}
+.out-tests li.is-fail .out-test-name span:first-child {
+  color: var(--danger);
+}
+.out-test-detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+.out-test-detail pre {
+  margin: 4px 0 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: #070a11;
+  white-space: pre-wrap;
+  font-size: 13px;
+}
+.out-label {
+  font: 600 11px/1 var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.out-test-hint {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.out-error {
+  border-color: rgba(255, 107, 122, 0.4);
+  background: linear-gradient(180deg, var(--danger-soft), transparent);
+  padding: 12px 14px;
+  margin-top: 8px;
+}
+.out-error-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.out-error-name {
+  font: 700 15px/1.2 var(--font-display);
+  color: var(--danger);
+}
+.out-error-line {
+  font: 600 12px/1 var(--font-code);
+  color: var(--text-muted);
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: var(--surface-3);
+}
+.out-error-friendly {
+  margin: 8px 0;
+}
+.out-error-raw {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: #070a11;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  white-space: pre-wrap;
+}
+.out-error-raw-text {
+  margin: 0;
+  color: var(--text-muted);
+}
+.out-blocked {
+  padding: 10px 14px;
+  border-color: rgba(255, 181, 71, 0.45);
+  background: var(--amber-soft);
+}
+.out-blocked p {
+  margin: 4px 0;
+  color: var(--amber);
+  font-weight: 500;
+}
+.out-console-stderr {
+  border-top: 1px dashed var(--border);
+  color: var(--amber) !important;
+  font-size: 13px;
+}
+.out-warnings {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(124, 196, 255, 0.4);
+  background: var(--info-soft);
+  animation: rise 0.25s var(--ease) both;
+}
+.out-warnings p {
+  margin: 4px 0;
+  color: var(--info);
+}
+.out-diff {
+  margin-top: 8px;
+  font-size: 13.5px;
+}
+.out-diff p {
+  margin: 0 0 6px;
+  color: var(--amber);
+}
+.out-diff pre {
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  background: #070a11;
+  white-space: pre-wrap;
+}
+.out-diff-mark {
+  background: var(--danger);
+  color: #fff;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+.out-diff-tip {
+  color: var(--info) !important;
+}
+.out-diff-tip code {
+  color: var(--signal);
+}
+.out-tests-shared {
+  padding: 8px 12px 0;
+}
+.out-tests-shared p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.out-refresher {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--amber);
+  background: var(--amber-soft);
+  color: var(--text);
+  font-size: 14px;
+}
+.out-refresher p {
+  margin: 4px 0 0;
+}
+.out-refresher-practice {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--signal);
+  font-weight: 600;
+}
+.out-refresher-count {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 12px;
+}

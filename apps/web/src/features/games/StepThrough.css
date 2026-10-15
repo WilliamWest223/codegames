@@ -1,0 +1,123 @@
+.steps {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.steps:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+.steps-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+}
+.steps-where {
+  color: var(--text-muted);
+  font: 500 13px/1.4 var(--font-code);
+}
+.steps-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.steps-controls input[type='range'] {
+  flex: 1;
+  min-width: 100px;
+  accent-color: var(--signal);
+}
+.steps-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+.steps-vars {
+  width: 100%;
+  border-collapse: collapse;
+  font: 13px/1.5 var(--font-code);
+}
+.steps-vars caption {
+  text-align: left;
+  padding-bottom: 4px;
+  color: var(--text-faint);
+  font: 600 11px/1.4 var(--font-ui);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.steps-vars th,
+.steps-vars td {
+  padding: 3px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.steps-vars th {
+  width: 35%;
+  color: var(--info);
+  font-weight: 600;
+}
+.steps-vars tr.is-changed td {
+  color: var(--amber);
+  background: var(--amber-soft);
+}
+.steps-none {
+  color: var(--text-faint);
+}
+.steps-out pre {
+  margin: 4px 0 0;
+  min-height: 40px;
+  max-height: 180px;
+  overflow: auto;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font: 13px/1.5 var(--font-code);
+  white-space: pre-wrap;
+}
+.steps-note,
+.steps-empty {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+@media (max-width: 640px) {
+  .steps-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.steps-stack {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.steps-frames {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  max-height: 320px;
+  overflow: auto;
+  list-style: none;
+}
+.steps-frame {
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+.steps-frame:not(.is-current) {
+  opacity: 0.75;
+}
+.steps-frame.is-current {
+  border-color: var(--signal);
+}
+.steps-more {
+  margin: 0;
+  color: var(--text-faint);
+  font: 12px/1.4 var(--font-code);
+}

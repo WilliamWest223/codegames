@@ -1,0 +1,13 @@
+.code-editor {
+  display: flex;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-control);
+  background: #070a11;
+  overflow: hidden;
+}
+.code-editor:focus-within {
+  border-color: var(--border-strong);
+}
+.code-editor > .cm-editor {
+  flex: 1;
+}

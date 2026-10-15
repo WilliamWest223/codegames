@@ -1,0 +1,86 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Builds & caches
+dist/
+build/
+out/
+.vite/
+*.tsbuildinfo
+coverage/
+.cache/
+
+# Runner sandbox output (compiled Java/C++ scratch dirs)
+apps/runner/tmp/
+*.class
+*.o
+*.out
+*.exe
+a.out
+
+# Pyodide local mirror (if downloaded for offline use)
+apps/web/public/pyodide/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Editors & OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Deploy & backend tooling state
+.vercel/
+supabase/.temp/
+supabase/.branches/
+
+# Keys and certificates
+*.pem
+*.key
+
+# Playwright / screenshots
+test-results/
+playwright-report/
+screenshots/
+
+# Agent scratch space and local audit runs (never committed)
+.audit/
+.audit-tmp/
+.superpowers/
+
+# Phase 0 planning prompts kept outside the repo root
+/codegames-launch-prompt.md
+/claude-code-prompt-security-and-cyber-range.md
+
+# Local overrides, tool caches and more key material
+*.local
+vite.config.*.timestamp-*
+.npmrc
+CLAUDE.local.md
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+blob-report/
+playwright/.cache/
+
+# Claude Code agent worktrees
+.claude/worktrees/
+
+# Local AI handoff file (never committed)
+GEMINI.md

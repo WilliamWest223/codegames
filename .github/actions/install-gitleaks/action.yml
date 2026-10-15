@@ -1,0 +1,22 @@
+name: Install gitleaks
+description: Download a pinned gitleaks release and verify its SHA-256 before installing it.
+runs:
+  using: composite
+  steps:
+    - name: Install gitleaks 8.30.1 (checksum verified)
+      shell: bash
+      env:
+        GITLEAKS_VERSION: 8.30.1
+        # From gitleaks_8.30.1_checksums.txt in the official release. Update both together.
+        GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+      run: |
+        set -euo pipefail
+        tmp="$(mktemp -d)"
+        archive="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+        curl -sSfL --retry 3 -o "$tmp/$archive" \
+          "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/${archive}"
+        echo "${GITLEAKS_SHA256}  $tmp/$archive" | sha256sum --check --strict -
+        tar -xzf "$tmp/$archive" -C "$tmp" gitleaks
+        sudo install -m 0755 "$tmp/gitleaks" /usr/local/bin/gitleaks
+        rm -rf "$tmp"
+        gitleaks version

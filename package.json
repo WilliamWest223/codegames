@@ -1,0 +1,40 @@
+{
+  "name": "codegames",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Learn programming languages from the ground up through interactive games.",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @codegames/web",
+    "dev:runner": "npm run dev --workspace @codegames/runner",
+    "dev:all": "npm run dev:runner & npm run dev",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "playwright test",
+    "screenshots": "node scripts/screenshots.mjs",
+    "prepare": "simple-git-hooks",
+    "check:sinks": "node scripts/check-sinks.mjs",
+    "lint": "eslint ."
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react": "^7.37.5",
+    "simple-git-hooks": "^2.14.0",
+    "typescript-eslint": "^8.71.2"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "command -v gitleaks >/dev/null 2>&1 || { echo 'gitleaks is not installed. Install it with: brew install gitleaks' >&2; exit 1; }; gitleaks git --pre-commit --staged --redact --no-banner && npm run typecheck"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  }
+}

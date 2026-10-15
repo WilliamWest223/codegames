@@ -1,0 +1,43 @@
+.symbol-bar {
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.symbol-keys {
+  display: none;
+  gap: 6px;
+  /* Scroll sideways inside the bar; never widen the page. */
+  flex: 1 1 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+/* Phones and tablets: show the symbol keys. */
+@media (pointer: coarse) {
+  .symbol-keys {
+    display: flex;
+  }
+}
+.symbol-key {
+  flex: 0 0 auto;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text);
+  font: 600 15px/1 var(--font-code);
+  font-variant-ligatures: none;
+  cursor: pointer;
+}
+.symbol-key:active {
+  background: var(--surface-3);
+}
+.symbol-key-wide {
+  font-family: var(--font-ui);
+  font-size: 13px;
+}

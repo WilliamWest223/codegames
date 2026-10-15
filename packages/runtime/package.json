@@ -1,0 +1,29 @@
+{
+  "name": "@codegames/runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Environment-agnostic code execution core: JS runner, Python (Pyodide) runner, robot grid world.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@codegames/shared": "*",
+    "acorn": "^8.19.0",
+    "pyodide": "^314.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./javascript": "./src/javascript.ts",
+    "./python": "./src/python.ts",
+    "./node": "./src/node.ts"
+  }
+}

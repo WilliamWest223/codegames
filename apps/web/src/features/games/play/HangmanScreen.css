@@ -1,0 +1,128 @@
+.hangman {
+  display: grid;
+  grid-template-columns: minmax(0, 150px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.hangman-gallows {
+  width: 100%;
+  height: auto;
+}
+.hangman-frame line {
+  stroke: var(--text-faint);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.hangman-figure > * {
+  fill: none;
+  stroke: var(--danger);
+  stroke-width: 4;
+  stroke-linecap: round;
+  animation: hangman-draw 0.35s var(--ease) both;
+}
+.hangman.is-win .hangman-figure > * {
+  stroke: var(--signal);
+}
+@keyframes hangman-draw {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+    transform-origin: 120px 80px;
+  }
+}
+.hangman-side {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.hangman-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hangman-tile {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 42px;
+  border-bottom: 3px solid var(--border-strong);
+  font: 700 24px/1 var(--font-code);
+  text-transform: uppercase;
+  color: var(--text);
+}
+.hangman-tile.is-shown {
+  border-color: var(--signal);
+  animation: hangman-flip 0.3s var(--ease);
+}
+@keyframes hangman-flip {
+  from {
+    transform: rotateX(90deg);
+  }
+}
+.hangman-lives {
+  display: flex;
+  gap: 4px;
+  font-size: 18px;
+  color: var(--text-faint);
+}
+.hangman-lives .is-full {
+  color: var(--danger);
+}
+.hangman-guesses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.hangman-guesses span {
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font: 600 13px/1.4 var(--font-code);
+  text-transform: uppercase;
+}
+.hangman-guesses .is-hit {
+  background: var(--signal-soft);
+  color: var(--signal);
+}
+.hangman-guesses .is-miss {
+  background: var(--danger-soft);
+  color: var(--danger);
+  text-decoration: line-through;
+}
+.hangman-outcome {
+  margin: 0;
+  font-weight: 700;
+  color: var(--signal);
+}
+.hangman.is-lose .hangman-outcome {
+  color: var(--danger);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hangman-figure > *,
+  .hangman-tile.is-shown {
+    animation: none;
+  }
+}
+@media (max-width: 520px) {
+  .hangman {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+  .hangman-gallows {
+    width: 120px;
+  }
+  .hangman-side {
+    justify-items: center;
+  }
+  .hangman-tiles {
+    justify-content: center;
+  }
+  .hangman-tile {
+    width: 28px;
+    height: 36px;
+    font-size: 20px;
+  }
+}

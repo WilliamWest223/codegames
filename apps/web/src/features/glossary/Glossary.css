@@ -1,0 +1,61 @@
+.glossary-backdrop {
+  place-items: stretch end;
+  padding: 0;
+}
+.glossary {
+  width: min(420px, 100vw);
+  height: 100%;
+  padding: 20px;
+  border-radius: 0;
+  background: var(--surface-solid);
+  overflow-y: auto;
+  animation: slide-in 0.25s var(--ease) both;
+}
+.glossary-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.glossary-search {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: #070a11;
+  color: var(--text);
+  font: inherit;
+}
+.glossary-search:focus {
+  outline: none;
+  border-color: var(--signal);
+}
+.glossary-list {
+  margin: 16px 0 0;
+  display: grid;
+  gap: 12px;
+}
+.glossary-item dt {
+  font: 700 15px/1.3 var(--font-display);
+  color: var(--signal);
+}
+.glossary-item dd {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.glossary-example {
+  display: block;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: #070a11;
+  color: var(--text);
+  font-size: 12.5px;
+}
+.glossary-empty,
+.glossary-more {
+  color: var(--text-faint);
+  font-size: 13px;
+}

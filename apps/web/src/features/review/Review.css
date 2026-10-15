@@ -1,0 +1,52 @@
+.review-progress {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.review-progress span {
+  width: 36px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--surface-3);
+}
+.review-progress span.is-current {
+  background: var(--amber);
+}
+.review-progress span.is-done {
+  background: var(--signal);
+}
+.review-why {
+  margin: 0;
+  color: var(--amber);
+  font-size: 14px;
+}
+.review-next {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: var(--signal-soft);
+  border: 1px solid rgba(94, 242, 184, 0.35);
+  color: var(--signal);
+  font-weight: 600;
+  animation: rise 0.25s var(--ease) both;
+}
+.review-done {
+  max-width: 620px;
+  margin: 80px auto;
+  padding: 0 24px;
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+  animation: rise 0.4s var(--ease) both;
+}
+.review-done h1 {
+  font-size: 40px;
+}
+.review-done p {
+  color: var(--text-muted);
+  margin: 0;
+}

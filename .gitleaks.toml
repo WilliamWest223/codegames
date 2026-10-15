@@ -1,0 +1,3 @@
+# Extend gitleaks' default ruleset. Add path allowlists only for confirmed false positives.
+[extend]
+useDefault = true

@@ -1,0 +1,199 @@
+/* A small browser frame around the learner's page. Learner classes arrive prefixed `pg-`. */
+.page-preview {
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+}
+.page-preview-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-3);
+}
+.page-preview-bar > span:not(.page-preview-url) {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border-control);
+}
+.page-preview-url {
+  flex: 1;
+  margin-left: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-faint);
+  font: 500 12px/1.4 var(--font-code);
+}
+
+/* The page itself: plain web-page defaults, readable on the dark surface. Paint containment
+   keeps even a fixed-position element inside the frame. */
+.page-preview-body {
+  min-height: 72px;
+  padding: 16px 18px;
+  contain: layout paint style;
+  color: var(--text);
+  font: 15px/1.5 var(--font-ui);
+}
+.page-preview-body h1,
+.page-preview-body h2,
+.page-preview-body h3,
+.page-preview-body h4,
+.page-preview-body h5,
+.page-preview-body h6 {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+.page-preview-body h1 { font-size: 26px; }
+.page-preview-body h2 { font-size: 21px; }
+.page-preview-body h3 { font-size: 18px; }
+.page-preview-body p,
+.page-preview-body ul,
+.page-preview-body ol,
+.page-preview-body pre,
+.page-preview-body form,
+.page-preview-body table {
+  margin: 0 0 10px;
+}
+.page-preview-body ul,
+.page-preview-body ol {
+  padding-left: 22px;
+}
+.page-preview-body li {
+  margin: 2px 0;
+}
+.page-preview-body li > * + * {
+  margin-left: 8px;
+}
+.page-preview-body a {
+  color: var(--info);
+}
+.page-preview-body hr {
+  border: 0;
+  border-top: 1px solid var(--border-strong);
+}
+.page-preview-body code,
+.page-preview-body pre {
+  background: var(--surface-3);
+  border-radius: var(--radius-sm);
+}
+.page-preview-body code {
+  padding: 1px 5px;
+}
+.page-preview-body pre {
+  padding: 10px 12px;
+  overflow-x: auto;
+}
+.page-preview-body table {
+  border-collapse: collapse;
+}
+.page-preview-body th,
+.page-preview-body td {
+  padding: 4px 10px;
+  border: 1px solid var(--border-strong);
+  text-align: left;
+}
+
+/* Controls look like an ordinary page's, not like the app's pill buttons. */
+.page-preview-body button,
+.page-preview-body input,
+.page-preview-body select,
+.page-preview-body textarea {
+  margin: 2px 6px 2px 0;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-control);
+  background: var(--surface-3);
+  color: var(--text);
+  font: 500 14px/1.3 var(--font-ui);
+}
+.page-preview-body input,
+.page-preview-body textarea,
+.page-preview-body select {
+  background: var(--bg);
+}
+.page-preview-body input::placeholder,
+.page-preview-body textarea::placeholder {
+  color: var(--text-faint);
+}
+.page-preview-body input[type='checkbox'],
+.page-preview-body input[type='radio'] {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  vertical-align: middle;
+  accent-color: var(--signal);
+}
+.page-preview-body button {
+  cursor: pointer;
+}
+.page-preview-body button:hover:not(:disabled) {
+  border-color: var(--text-faint);
+  background: var(--border);
+}
+.page-preview-body button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.page-preview-body button:disabled,
+.page-preview-body input:disabled,
+.page-preview-body select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.page-preview-body [hidden] {
+  display: none;
+}
+.page-preview-body progress {
+  accent-color: var(--signal);
+}
+
+/* Something that isn't an element this page knows: shown as plain text. */
+.pg-unknown {
+  color: var(--text-faint);
+}
+.pg-img {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+/* Conventional class names the levels use, so state changes are visible without CSS lessons. */
+.page-preview-body .pg-active {
+  border-color: var(--signal);
+  background: var(--signal-soft);
+  color: var(--signal);
+}
+.page-preview-body .pg-done,
+.page-preview-body .pg-done > span {
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+.page-preview-body .pg-invalid {
+  border-color: var(--danger);
+}
+.page-preview-body .pg-error {
+  color: var(--danger);
+}
+.page-preview-body .pg-ok {
+  color: var(--signal);
+}
+.page-preview-body .pg-leader {
+  color: var(--amber);
+  font-weight: 700;
+}
+.page-preview-body .pg-tag {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--info-soft);
+  color: var(--info);
+  font-size: 13px;
+}
