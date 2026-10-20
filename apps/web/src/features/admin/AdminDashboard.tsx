@@ -100,6 +100,48 @@ const ALL_REGIONS = [
   { id: 10, name: 'Region 10: ' + REGION_NAMES[10] },
 ];
 
+/** Minimal client shape needed to call an RPC (keeps helpers unit-testable). */
+export interface RpcClient {
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>
+  ) => PromiseLike<{ data?: unknown; error?: { message?: string } | null }>;
+}
+
+/** Calls an admin RPC; returns null on success or a human-readable error message. */
+export async function callAdminRpc(
+  client: RpcClient,
+  fn: string,
+  args: Record<string, unknown>
+): Promise<string | null> {
+  try {
+    const { data, error } = await client.rpc(fn, args);
+    if (error) return error.message || 'request_failed';
+    if (data && typeof data === 'object' && (data as { ok?: unknown }).ok === false) {
+      const code = (data as { code?: unknown }).code;
+      return typeof code === 'string' ? code : 'request_failed';
+    }
+    return null;
+  } catch (e: unknown) {
+    return e instanceof Error && e.message ? e.message : 'request_failed';
+  }
+}
+
+export function applyPlayerPatch(
+  players: AdminPlayerRecord[],
+  id: string,
+  patch: Partial<AdminPlayerRecord>
+): AdminPlayerRecord[] {
+  return players.map((p) => (p.id === id ? { ...p, ...patch } : p));
+}
+
+export function restorePlayer(
+  players: AdminPlayerRecord[],
+  previous: AdminPlayerRecord
+): AdminPlayerRecord[] {
+  return players.map((p) => (p.id === previous.id ? previous : p));
+}
+
 export function AdminDashboard() {
   const navigate = useNavigate();
   const isAdmin = useAuth((s) => s.isAdmin);
@@ -389,55 +431,50 @@ export function AdminDashboard() {
     );
   }, [players, searchFilter]);
 
-  // Player action handlers
+  // Player action handlers: optimistic UI, but the server is authoritative.
+  // On RPC failure the affected player is restored and the error is surfaced.
+  const runPlayerAction = async (
+    playerId: string,
+    optimistic: Partial<AdminPlayerRecord>,
+    fn: string,
+    args: Record<string, unknown>,
+    successMsg: string
+  ) => {
+    const previous = players.find((p) => p.id === playerId);
+    setPlayers((cur) => applyPlayerPatch(cur, playerId, optimistic));
+    if (isSupabaseConfigured && supabase) {
+      const err = await callAdminRpc(supabase, fn, args);
+      if (err) {
+        if (previous) setPlayers((cur) => restorePlayer(cur, previous));
+        showToast(`Action failed: ${err}`);
+        return;
+      }
+    }
+    showToast(successMsg);
+  };
+
   const handleToggleRole = (playerId: string) => {
     const nextRole: 'Admin' | 'Player' =
       players.find((p) => p.id === playerId)?.role === 'Admin' ? 'Player' : 'Admin';
-    const updated = players.map((p) => {
-      if (p.id === playerId) {
-        return { ...p, role: nextRole };
-      }
-      return p;
-    });
-    setPlayers(updated);
-    if (isSupabaseConfigured && supabase) {
-      void (async () => {
-        try {
-          await supabase.rpc('admin_set_user_role', {
-            p_user_id: playerId,
-            p_role: nextRole.toLowerCase(),
-          });
-        } catch {
-          // Ignore RPC failure in simulation mode
-        }
-      })();
-    }
-    showToast('Player role successfully updated.');
+    return runPlayerAction(
+      playerId,
+      { role: nextRole },
+      'admin_set_user_role',
+      { p_user_id: playerId, p_role: nextRole.toLowerCase() },
+      'Player role successfully updated.'
+    );
   };
 
   const handleToggleStatus = (playerId: string) => {
     const nextStatus: 'Active' | 'Suspended' =
       players.find((p) => p.id === playerId)?.status === 'Active' ? 'Suspended' : 'Active';
-    const updated = players.map((p) => {
-      if (p.id === playerId) {
-        return { ...p, status: nextStatus };
-      }
-      return p;
-    });
-    setPlayers(updated);
-    if (isSupabaseConfigured && supabase) {
-      void (async () => {
-        try {
-          await supabase.rpc('admin_set_user_status', {
-            p_user_id: playerId,
-            p_status: nextStatus.toLowerCase(),
-          });
-        } catch {
-          // Ignore RPC failure in simulation mode
-        }
-      })();
-    }
-    showToast('Player account status updated.');
+    return runPlayerAction(
+      playerId,
+      { status: nextStatus },
+      'admin_set_user_status',
+      { p_user_id: playerId, p_status: nextStatus.toLowerCase() },
+      'Player account status updated.'
+    );
   };
 
   const handleResetProgress = (playerId: string) => {
@@ -445,23 +482,13 @@ export function AdminDashboard() {
     if (!window.confirm(`Reset progress and XP for ${target?.display_name || 'player'}?`)) {
       return;
     }
-    const updated = players.map((p) => {
-      if (p.id === playerId) {
-        return { ...p, xp: 0, completed_levels: 0 };
-      }
-      return p;
-    });
-    setPlayers(updated);
-    if (isSupabaseConfigured && supabase) {
-      void (async () => {
-        try {
-          await supabase.rpc('admin_reset_player_progress', { p_user_id: playerId });
-        } catch {
-          // Ignore RPC failure in simulation mode
-        }
-      })();
-    }
-    showToast('Player progress reset to 0 XP.');
+    return runPlayerAction(
+      playerId,
+      { xp: 0, completed_levels: 0 },
+      'admin_reset_player_progress',
+      { p_user_id: playerId },
+      'Player progress reset to 0 XP.'
+    );
   };
 
   // Tab 4: Save announcement handler
@@ -476,14 +503,14 @@ export function AdminDashboard() {
     };
 
     if (isSupabaseConfigured && supabase) {
-      try {
-        await supabase.rpc('admin_set_announcement', {
-          p_message: annMessage.trim(),
-          p_style: annStyle,
-          p_active: annActive,
-        });
-      } catch {
-        // Fallback to event broadcast
+      const err = await callAdminRpc(supabase, 'admin_set_announcement', {
+        p_message: annMessage.trim(),
+        p_style: annStyle,
+        p_active: annActive,
+      });
+      if (err) {
+        showToast(`Announcement failed: ${err}`);
+        return;
       }
     }
 

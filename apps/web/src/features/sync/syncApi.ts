@@ -1,5 +1,6 @@
 // apps/web/src/features/sync/syncApi.ts
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { sanitize } from '../progress/store';
 import { trimForSync } from './merge';
 
 export interface PushResult {
@@ -24,7 +25,8 @@ export interface PullResult {
 export async function pushSnapshot(data: any, schemaVersion: number, revision: number): Promise<PushResult> {
   if (!isSupabaseConfigured) return { ok: false, code: 'not_configured' };
 
-  const sanitized = trimForSync(data);
+  // Shape-check locally before wire; server progress_shape_ok is the real gate.
+  const sanitized = trimForSync(sanitize(data));
   const { data: result, error } = await supabase.rpc('push_snapshot', {
     p: {
       data: sanitized,

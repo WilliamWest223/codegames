@@ -13,8 +13,9 @@
     "dev:runner": "npm run dev --workspace @codegames/runner",
     "dev:all": "npm run dev:runner & npm run dev",
     "build": "npm run build --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present && tsc -p api/tsconfig.json",
+    "test": "npm run test --workspaces --if-present && npm run test:api",
+    "test:api": "vitest run --root api",
     "test:e2e": "playwright test",
     "screenshots": "node scripts/screenshots.mjs",
     "prepare": "simple-git-hooks",
@@ -35,6 +36,7 @@
     "pre-commit": "command -v gitleaks >/dev/null 2>&1 || { echo 'gitleaks is not installed. Install it with: brew install gitleaks' >&2; exit 1; }; gitleaks git --pre-commit --staged --redact --no-banner && npm run typecheck"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
     "zod": "^4.6.7"
   }
 }

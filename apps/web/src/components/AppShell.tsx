@@ -10,6 +10,7 @@ import { rankFor } from '../features/workshop/rewards';
 import { LanguageSwitch } from './LanguageSwitch';
 import { AudioToggle } from './AudioToggle';
 import { AnnouncementBanner } from './AnnouncementBanner';
+import { ScrollMotion } from './ScrollMotion';
 import { useAuth } from '../features/auth/useAuth';
 import { logout } from '../features/auth/logout';
 import './AppShell.css';
@@ -42,6 +43,27 @@ export function AppShell({ children }: { children: ReactNode }) {
     : `${beltName}: every belt earned! (${rank.title}, ${xp} XP)`) + (patched ? ` Plus the ${SECURITY_PATCH.name}.` : '');
   const goal = activity.goal;
   const fileInput = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
+
+  // Disclosure popover: Escape closes and returns focus to the trigger; a click outside closes it.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setMenuOpen(false);
+      menuTrigger.current?.focus();
+    };
+    const onPointer = (e: PointerEvent) => {
+      if (e.target instanceof Node && !menuRef.current?.contains(e.target)) setMenuOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPointer);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onPointer);
+    };
+  }, [menuOpen]);
   const [storageFull, setStorageFull] = useState(false);
 
   // The browser refused to save (storage full or blocked): keep playing, but say so.
@@ -95,7 +117,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="shell-actions">
             <LanguageSwitch />
             <AudioToggle />
-            <button className="btn btn-ghost btn-sm" onClick={() => setGlossaryOpen(true)} title="Glossary (press ?)">
+            <button className="btn btn-ghost btn-sm" onClick={() => setGlossaryOpen(true)} title="Glossary (press ?)" aria-label="Glossary">
               📖<span className="shell-label"> Glossary</span>
             </button>
             <div className="shell-streak-wrap">
@@ -146,38 +168,38 @@ export function AppShell({ children }: { children: ReactNode }) {
               <span className="shell-rank">{beltName}</span>
               {patched && <span className="shell-patch" aria-hidden="true">🛡</span>}
             </Link>
-            <div className="shell-menu">
-              <button className="btn btn-ghost btn-sm" aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)}>
+            <div className="shell-menu" ref={menuRef}>
+              <button ref={menuTrigger} className="btn btn-ghost btn-sm" aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)}>
                 ⋯<span className="visually-hidden">Menu</span>
               </button>
               {menuOpen && (
-                <div className="shell-menu-popover panel" role="menu">
-                  <Link role="menuitem" className="btn btn-ghost btn-sm" to="/journal" onClick={() => setMenuOpen(false)}>
+                <div className="shell-menu-popover panel">
+                  <Link className="btn btn-ghost btn-sm" to="/journal" onClick={() => setMenuOpen(false)}>
                     📓 Journal
                   </Link>
-                  <button role="menuitem" className="btn btn-ghost btn-sm" onClick={() => { setMenuOpen(false); setWorkshopOpen(true); }}>
+                  <button className="btn btn-ghost btn-sm" onClick={() => { setMenuOpen(false); setWorkshopOpen(true); }}>
                     🤖 Robot workshop
                   </button>
-                  <button role="menuitem" className="btn btn-ghost btn-sm" onClick={() => { setMenuOpen(false); exportProgress(); }}>
+                  <button className="btn btn-ghost btn-sm" onClick={() => { setMenuOpen(false); exportProgress(); }}>
                     Export progress
                   </button>
-                  <button role="menuitem" className="btn btn-ghost btn-sm" onClick={() => fileInput.current?.click()}>
+                  <button className="btn btn-ghost btn-sm" onClick={() => fileInput.current?.click()}>
                     Import progress…
                   </button>
-                  <button role="menuitem" className="btn btn-ghost btn-sm" onClick={reset}>
+                  <button className="btn btn-ghost btn-sm" onClick={reset}>
                     Reset progress
                   </button>
                   {isAdmin && (
-                    <Link role="menuitem" className="btn btn-ghost btn-sm" to="/admin" onClick={() => setMenuOpen(false)}>
+                    <Link className="btn btn-ghost btn-sm" to="/admin" onClick={() => setMenuOpen(false)}>
                       ⚡ Admin Dashboard
                     </Link>
                   )}
                   {authStatus === 'signed-in' ? (
-                    <button role="menuitem" className="btn btn-ghost btn-sm" onClick={() => { setMenuOpen(false); logout(); }}>
+                    <button className="btn btn-ghost btn-sm" onClick={() => { setMenuOpen(false); logout(); }}>
                       Sign out ({displayName || userEmail})
                     </button>
                   ) : (
-                    <Link role="menuitem" className="btn btn-ghost btn-sm" to="/signin" onClick={() => setMenuOpen(false)}>
+                    <Link className="btn btn-ghost btn-sm" to="/signin" onClick={() => setMenuOpen(false)}>
                       Sign in / Sync…
                     </Link>
                   )}
@@ -200,6 +222,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           Your browser couldn't save progress just now (its storage may be full). You can keep playing; use the menu to export a backup.
         </p>
       )}
+      <ScrollMotion />
       <main className="shell-main">{children}</main>
       {glossaryOpen && language && <GlossaryDrawer language={language} onClose={() => setGlossaryOpen(false)} />}
       {workshopOpen && <Workshop onClose={() => setWorkshopOpen(false)} />}

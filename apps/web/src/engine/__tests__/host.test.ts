@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { WorkerHost } from '../host';
 import type { RunMessage, WorkerMessage } from '../protocol';
 
-type Behavior = 'ok' | 'hang' | 'fail-load' | 'slow' | 'crash' | 'forge' | 'malformed';
+type Behavior = 'ok' | 'hang' | 'fail-load' | 'slow' | 'crash' | 'crash-other' | 'forge' | 'malformed';
 
 /** Minimal Worker stand-in: answers runs according to `behavior`. */
 class FakeWorker {
@@ -24,9 +24,10 @@ class FakeWorker {
   }
   postMessage(msg: RunMessage | { type: 'interrupt-buffer' }) {
     if (msg.type !== 'run' || this.behavior === 'hang') return;
-    if (this.behavior === 'crash') {
+    if (this.behavior === 'crash' || this.behavior === 'crash-other') {
       // The worker dies mid-run without answering (e.g. it ran out of memory).
-      queueMicrotask(() => this.listeners.get('error')?.forEach((fn) => fn({ data: { type: 'ready' } })));
+      const message = this.behavior === 'crash' ? 'Out of memory' : 'Script error.';
+      queueMicrotask(() => this.listeners.get('error')?.forEach((fn) => fn({ data: { type: 'ready' }, message } as never)));
       return;
     }
     if (this.behavior === 'slow') {
@@ -117,6 +118,13 @@ describe('WorkerHost', () => {
     } finally {
       vi.unstubAllGlobals();
     }
+  });
+
+  it('does not call a non-memory worker crash a MemoryError', async () => {
+    const h = host(['crash-other', 'ok'], { timeoutMs: 5_000 });
+    const crashed = await h.run('1');
+    expect(crashed.error?.name).toBe('InternalError');
+    expect(crashed.error?.kind).toBe('internal');
   });
 
   it('queues runs one at a time', async () => {

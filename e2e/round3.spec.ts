@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { REGION_0, pickLanguage, seedCompleted, typeCode } from './helpers';
 
 test.describe('phone', () => {
@@ -52,6 +52,6 @@ test('par and the workshop give rewards meaning', async ({ page }) => {
   await page.goto('/play/sequencing-1');
   await expect(page.locator('.game-par')).toContainText('Par');
   await page.getByRole('button', { name: /Menu/ }).click();
-  await page.getByRole('menuitem', { name: /Robot workshop/ }).click();
+  await page.getByRole('button', { name: /Robot workshop/ }).click();
   await expect(page.getByRole('dialog', { name: 'Robot workshop' })).toContainText('Mint');
 });

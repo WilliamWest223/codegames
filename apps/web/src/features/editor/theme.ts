@@ -7,7 +7,7 @@ export const editorTheme = EditorView.theme(
   {
     '&': {
       color: 'var(--text)',
-      backgroundColor: '#080A0F',
+      backgroundColor: 'var(--editor-bg)',
       fontSize: '14px',
       height: '100%',
     },
@@ -19,7 +19,7 @@ export const editorTheme = EditorView.theme(
       backgroundColor: 'rgba(59, 130, 246, 0.25) !important',
     },
     '.cm-gutters': {
-      backgroundColor: '#080A0F',
+      backgroundColor: 'var(--editor-bg)',
       color: 'var(--text-faint)',
       borderRight: '1px solid var(--border-subtle)',
       paddingRight: '6px',

@@ -33,6 +33,28 @@ export function ConceptNode({
 }: Props) {
   const locked = mastery === 'locked';
 
+  // Locked stations are a single compact button: name + what it teaches. The details panel
+  // explains what unlocks it, so the card doesn't need its own footer.
+  if (locked) {
+    return (
+      <div className={`station-card station-card-locked${concept.boss ? ' station-card-boss' : ''}${selected ? ' is-selected' : ''}`} role="listitem">
+        <button
+          type="button"
+          className="station-locked-btn"
+          onClick={() => { playSwitch(); onSelect(); }}
+          aria-pressed={selected}
+          aria-label={`${concept.title}: ${MASTERY_LABELS[mastery]}. Show what unlocks it`}
+        >
+          <span className="station-locked-icon" aria-hidden="true">{concept.boss ? '★' : '🔒'}</span>
+          <span className="station-locked-text">
+            <span className="station-title">{concept.title}</span>
+            {concept.summary && <span className="station-summary">{concept.summary}</span>}
+          </span>
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`station-card station-card-${mastery}${concept.boss ? ' station-card-boss' : ''}${selected ? ' is-selected' : ''}`}
@@ -58,14 +80,16 @@ export function ConceptNode({
             />
           </svg>
           <span className="station-core" aria-hidden="true">
-            {locked ? '🔒' : concept.boss ? '★' : mastery === 'proficient' ? '◆' : progress === 1 ? '✓' : ''}
+            {concept.boss ? '★' : mastery === 'proficient' ? '◆' : progress === 1 ? '✓' : ''}
           </span>
         </button>
 
         <div className="station-card-meta">
           <div className="station-card-title-row">
-            <h3 className="station-title" onClick={onSelect} title="Click for concept details">
-              {concept.title}
+            <h3 className="station-title">
+              <button type="button" className="station-title-btn" onClick={onSelect} title="Concept details">
+                {concept.title}
+              </button>
             </h3>
             {due && (
               <span className="chip chip-amber" title="Due for warm-up review">
@@ -80,7 +104,7 @@ export function ConceptNode({
         </div>
       </div>
 
-      {!locked && levels.length > 0 && (
+      {levels.length > 0 && (
         <div className="station-levels" aria-label={`${concept.title} levels`}>
           {levels.map((level, i) => {
             const done = !!completed[level.id];
@@ -110,14 +134,6 @@ export function ConceptNode({
         </div>
       )}
 
-      {locked && (
-        <div className="station-locked-hint">
-          <span>🔒 Prerequisite required</span>
-          <button className="btn btn-ghost btn-sm" onClick={onSelect} style={{ fontSize: '12px', padding: '2px 8px' }}>
-            View details
-          </button>
-        </div>
-      )}
     </div>
   );
 }

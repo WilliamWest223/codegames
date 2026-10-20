@@ -4,6 +4,9 @@ export function downloadText(filename: string, text: string, type = 'text/plain'
   const a = document.createElement('a');
   a.href = url;
   a.download = filename;
+  // Firefox/Safari need the anchor in the DOM, and the blob must outlive the click.
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

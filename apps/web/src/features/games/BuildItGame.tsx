@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { gradeSubmission, type ExecResult, type GradeResult } from '@codegames/runtime';
 import type { CodeLevel, ParsonsLevel } from '@codegames/shared';
 import { executorFor } from '../../engine';
@@ -124,16 +124,18 @@ export function BuildItGame({ level, language, onPass, onFail, onScaffold, draft
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
         e.preventDefault();
+        // The editor is hidden in puzzle mode and a passed level is done: don't grade stale code.
+        if (puzzle || grade?.passed) return;
         void doCheck();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [doCheck]);
+  }, [doCheck, puzzle, grade]);
 
-  if (puzzle) {
-    const parallel = level.parallelExample?.code[language] ? level.parallelExample : undefined;
-    const asPuzzle: ParsonsLevel = {
+  // Stable identity: ParsonsGame memoises its pieces on the level object.
+  const asPuzzle = useMemo<ParsonsLevel>(
+    () => ({
       id: `${level.id}-puzzle`,
       conceptId: level.conceptId,
       title: level.title,
@@ -145,7 +147,12 @@ export function BuildItGame({ level, language, onPass, onFail, onScaffold, draft
       game: 'parsons',
       solution: level.solution,
       tests: level.tests,
-    };
+    }),
+    [level],
+  );
+
+  if (puzzle) {
+    const parallel = level.parallelExample?.code[language] ? level.parallelExample : undefined;
     return (
       <div className="game">
         <div className="puzzle-banner">

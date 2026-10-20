@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { REGION_0, REGION_1, pickLanguage, seedCompleted, typeCode } from './helpers';
 
 test('a failed robot run followed by Reset code does not crash the page', async ({ page }) => {

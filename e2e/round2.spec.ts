@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { REGION_0, REGION_1, pickLanguage, seedCompleted, typeCode } from './helpers';
 
 const REGION_2_BEFORE_BOSS = ['conditionals', 'else-if-chains', 'while-loops', 'loops', 'loop-control', 'nested-loops'];
@@ -60,11 +60,11 @@ test('the guessing game boss can be played interactively', async ({ page }) => {
   await expect(page.locator('.play-screen')).toContainText('Too low');
 });
 
-test('glossary opens from the header and only shows reached terms', async ({ page }) => {
+test('glossary opens from the header and lists every term (unlocked glossary, de88b04)', async ({ page }) => {
   await pickLanguage(page, 'Python');
   await page.getByRole('button', { name: /Glossary/ }).click();
   await expect(page.getByRole('dialog', { name: 'Glossary' })).toContainText('Command');
-  await expect(page.getByRole('dialog', { name: 'Glossary' })).not.toContainText('Off-by-one');
+  await expect(page.getByRole('dialog', { name: 'Glossary' })).toContainText('Off-by-one');
 });
 
 test('switching language keeps the map unlocked for concepts practiced elsewhere', async ({ page }) => {

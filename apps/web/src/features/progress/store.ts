@@ -148,7 +148,21 @@ const langKey = (okRest: (rest: string) => boolean) => (k: string) => {
   return i > 0 && (LANGUAGES as readonly string[]).includes(k.slice(0, i)) && okRest(k.slice(i + 1));
 };
 const levelKey = langKey((rest) => LEVEL_IDS.has(rest));
-const draftOk = langKey((rest) => LEVEL_IDS.has(rest) || WORKSHOP_DRAFT_IDS.includes(rest));
+/** Modify-step drafts are keyed `${levelId}#modify`. */
+const MODIFY_SUFFIX = '#modify';
+const draftOk = langKey(
+  (rest) =>
+    LEVEL_IDS.has(rest) ||
+    WORKSHOP_DRAFT_IDS.includes(rest) ||
+    (rest.endsWith(MODIFY_SUFFIX) && LEVEL_IDS.has(rest.slice(0, -MODIFY_SUFFIX.length))),
+);
+/** A real calendar-day key: not before 2020 and not beyond tomorrow (a huge range would stall streak math). */
+const MIN_DAY_KEY = '2020-01-01';
+const dayKeyOk = (k: string): boolean => {
+  if (!DAY_KEY.test(k) || k < MIN_DAY_KEY) return false;
+  // +2 days of slack covers every timezone.
+  return k <= new Date(Date.now() + 2 * DAY_MS).toISOString().slice(0, 10);
+};
 const errorKey = langKey((rest) => ERROR_NAME.test(rest));
 
 /** Drop anything malformed from persisted progress (hand-edited, imported, or corrupted). */
@@ -185,7 +199,7 @@ export function sanitize(persisted: unknown): Partial<ProgressState> {
     attempts: pickMap(p.attempts, levelKey, counter),
     hints: pickMap(p.hints, levelKey, counter),
     reveals: pickMap(p.reveals, levelKey, (x) => (x === 1 ? 1 : undefined)),
-    activity: pickMap(p.activity, (k) => DAY_KEY.test(k), positive),
+    activity: pickMap(p.activity, dayKeyOk, positive),
     skin: typeof p.skin === 'string' && SKIN_IDS.has(p.skin) ? p.skin : DEFAULT_SKIN,
     reflections: pickMap(
       p.reflections,
@@ -195,7 +209,7 @@ export function sanitize(persisted: unknown): Partial<ProgressState> {
     errorCounts: pickMap(p.errorCounts, errorKey, counter),
     errorStreaks: pickMap(p.errorStreaks, errorKey, counter),
     dailyGoal: goal(p.dailyGoal) ?? 3,
-    goalHistory: pickMap(p.goalHistory, (k) => k === '' || DAY_KEY.test(k), goal),
+    goalHistory: pickMap(p.goalHistory, (k) => k === '' || dayKeyOk(k), goal),
     drafts: pickMap(p.drafts, draftOk, (x) => (typeof x === 'string' && x.length <= MAX_DRAFT_CHARS ? x : undefined), MAX_DRAFTS),
     reviews: perLang(p.reviews, (k) => CONCEPT_IDS.has(k), review),
     bestBelt: Object.fromEntries(
@@ -492,4 +506,9 @@ export function clearGuestCache(): void {
     keysToRemove.forEach((k) => localStorage.removeItem(k));
   }
   useProgress.setState({ ...empty() });
+}
+
+/** Drops this browser's local progress, drafts and sync meta (used on sign-out so the next account starts clean). */
+export function clearLocalProgress(): void {
+  clearGuestCache();
 }

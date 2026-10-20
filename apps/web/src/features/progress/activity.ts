@@ -44,7 +44,7 @@ export function computeActivity(
   };
   const todayKey = dayKey(now);
   const today = activity[todayKey] ?? 0;
-  const days = Object.keys(activity).filter((k) => (activity[k] ?? 0) > 0).sort();
+  const days = Object.keys(activity).filter((k) => k >= '2020-01-01' && (activity[k] ?? 0) > 0).sort();
   let streak = 0;
   let freezes = 0;
   if (!days.length) return { streak, today, freezes };

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { REGION_0, REGION_1, REGION_2, REGION_3, REGION_4, pickLanguage, seedCompleted, typeCode } from './helpers';
 
 test('Region 4 unlocks after Hangman and accepts object predictions typed any way', async ({ page }) => {

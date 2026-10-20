@@ -140,7 +140,7 @@ export function PredictGame({ level, language, onPass, onFail, onReveal, draftSc
   return (
     <div className="game">
       <CodeEditor value={source} language={language} readOnly activeLine={stepLine} label={`${level.title} code to read`} minHeight={120} />
-      <label className="predict-label" htmlFor={`predict-${level.id}`}>
+      <label className="predict-label" id={`predict-label-${level.id}`} htmlFor={!typing && choices ? undefined : `predict-${level.id}`}>
         What will it print?
         {level.expectError && (
           <span className="predict-error-note">
@@ -149,7 +149,7 @@ export function PredictGame({ level, language, onPass, onFail, onReveal, draftSc
         )}
       </label>
       {!typing && choices ? (
-        <div className="predict-choices" role="group" aria-label="Pick what it prints">
+        <div className="predict-choices" role="group" aria-labelledby={`predict-label-${level.id}`}>
           {orderChoices(choices, level.id + language).map((choice) => {
             const out = ruledOut.includes(choice);
             return (

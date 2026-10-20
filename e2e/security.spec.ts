@@ -1,45 +1,41 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from './fixtures';
+import type { Page } from '@playwright/test';
 import { levels } from '@codegames/curriculum';
 import { REGION_0, REGION_1, REGION_2, REGION_3, pickLanguage, seedCompleted, typeCode } from './helpers';
 
+// Security moved from a Python/JavaScript side quest to its own Cybersecurity track (de88b04).
+// That track runs learner code as Python.
 const THROUGH_BOSS_3 = [...REGION_0, ...REGION_1, ...REGION_2, ...REGION_3];
-const BEFORE_BOSS_3 = THROUGH_BOSS_3.filter((c) => c !== 'boss-3');
-const BEFORE_VAULT = [...THROUGH_BOSS_3, 'encoding', 'ciphers', 'passwords', 'input-validation'];
+const BEFORE_VAULT = ['encoding', 'ciphers', 'passwords', 'input-validation'];
 
 const vault = levels.find((l) => l.id === 'boss-security');
-const VAULT_JS = vault?.game === 'build-it' ? vault.solution.javascript! : '';
+const VAULT_PY = vault?.game === 'build-it' ? vault.solution.python! : '';
 
 async function command(page: Page, text: string) {
   await page.getByLabel('Your program is waiting for input:').fill(text);
   await page.getByRole('button', { name: /Enter/ }).click();
 }
 
-test('the security side quest stays hidden until boss-3 is beaten', async ({ page }) => {
+test('Python never shows security concepts, even after boss-3, and Region 4 opens', async ({ page }) => {
   await pickLanguage(page, 'Python');
-  await seedCompleted(page, 'python', BEFORE_BOSS_3);
+  await seedCompleted(page, 'python', THROUGH_BOSS_3);
   await page.reload();
   await expect(page.getByRole('heading', { name: 'World Map' })).toBeVisible();
   await expect(page.getByRole('group', { name: 'Side quests' })).toHaveCount(0);
-  await expect(page.getByText('Side Quest: Security')).toHaveCount(0);
+  await expect(page.getByText('Letters Are Numbers')).toHaveCount(0);
+  await expect(page.locator('.map-region:not(.is-side-quest) .map-region-number', { hasText: '04' })).toBeVisible();
 });
 
-test('after boss-3 the side quest appears as optional, next to the open Region 4', async ({ page }) => {
-  await pickLanguage(page, 'Python');
-  await seedCompleted(page, 'python', THROUGH_BOSS_3);
-  await page.reload();
-  const side = page.getByRole('group', { name: 'Side quests' });
-  await expect(side).toBeVisible();
-  await expect(side).toContainText('optional');
-  await expect(side.getByRole('heading', { name: 'Side Quest: Security' })).toBeVisible();
-  await expect(side.getByRole('complementary', { name: 'Rules of the range' })).toContainText('permission');
-  // Region 4 is open too: the side quest never blocks the core path.
-  await expect(page.locator('.map-region:not(.is-side-quest) .map-region-number', { hasText: '04' })).toBeVisible();
-  await expect(page.locator('.map-region.is-side-quest')).toHaveCount(1);
+test('the Cybersecurity track opens on encoding, with the rules of the range', async ({ page }) => {
+  await pickLanguage(page, 'Cybersecurity');
+  await expect(page.getByRole('complementary', { name: 'Rules of the range' })).toContainText('Cyber Range');
+  await expect(page.locator('.map-continue')).toContainText('Letters Are Numbers');
+  await page.goto('/play/ciphers-1');
+  await expect(page.getByRole('heading', { name: /locked/ })).toBeVisible();
 });
 
 test('encoding-1 is multiple choice: a wrong pick is ruled out, the right one passes', async ({ page }) => {
-  await pickLanguage(page, 'Python');
-  await seedCompleted(page, 'python', THROUGH_BOSS_3);
+  await pickLanguage(page, 'Cybersecurity');
   await page.goto('/play/encoding-1');
   await page.locator('.predict-choice', { hasText: /^65\s*65\s*Hi/ }).click();
   await expect(page.locator('.predict-choice.is-out')).toHaveCount(1);
@@ -48,20 +44,20 @@ test('encoding-1 is multiple choice: a wrong pick is ruled out, the right one pa
 });
 
 test('beating the Vault adds the Security patch without changing the belt', async ({ page }) => {
-  expect(VAULT_JS).toContain('checkLogin');
-  await pickLanguage(page, 'JavaScript');
-  await seedCompleted(page, 'javascript', BEFORE_VAULT);
+  expect(VAULT_PY).toContain('check_login');
+  await pickLanguage(page, 'Cybersecurity');
+  await seedCompleted(page, 'cybersecurity', BEFORE_VAULT);
   await page.reload();
   const beltBefore = await page.locator('.shell-rank').textContent();
   await expect(page.locator('.shell-belt')).not.toHaveAttribute('title', /Security patch/);
 
   await page.goto('/play/boss-security');
-  await typeCode(page, VAULT_JS);
+  await typeCode(page, VAULT_PY);
   await page.getByRole('button', { name: /Check/ }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
-  await page.waitForTimeout(600);
-  const completed = await page.evaluate(() => JSON.parse(localStorage.getItem('codegames-progress')!).state.completed.javascript);
-  expect(completed['boss-security']).toBeTruthy();
+  await expect
+    .poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('codegames-progress')!).state.completed.cybersecurity['boss-security']))
+    .toBeTruthy();
 
   await page.goto('/');
   await expect(page.locator('.shell-rank')).toHaveText(beltBefore ?? '');
@@ -71,10 +67,10 @@ test('beating the Vault adds the Security patch without changing the belt', asyn
 });
 
 test('Play it on the Vault lets you log in to your own vault', async ({ page }) => {
-  await pickLanguage(page, 'JavaScript');
-  await seedCompleted(page, 'javascript', BEFORE_VAULT);
+  await pickLanguage(page, 'Cybersecurity');
+  await seedCompleted(page, 'cybersecurity', BEFORE_VAULT);
   await page.goto('/play/boss-security');
-  await typeCode(page, VAULT_JS);
+  await typeCode(page, VAULT_PY);
   await page.getByRole('button', { name: /Play it/ }).click();
   await expect(page.getByRole('region', { name: 'Play your program' })).toContainText('Try logging in');
   await command(page, 'ana wrong1');

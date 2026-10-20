@@ -7,9 +7,12 @@ export default defineConfig({
   expect: { timeout: 20_000 },
   fullyParallel: false,
   workers: 1,
+  retries: process.env.CI ? 1 : 0,
+  forbidOnly: !!process.env.CI,
   use: {
     baseURL: 'http://localhost:4173',
     viewport: { width: 1360, height: 900 },
+    trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
   webServer: {

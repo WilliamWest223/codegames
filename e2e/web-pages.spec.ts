@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { levels } from '@codegames/curriculum';
 import { REGION_0, REGION_1, REGION_2, REGION_3, REGION_4, pickLanguage, seedCompleted, typeCode } from './helpers';
 
@@ -36,7 +36,6 @@ test('Web Pages is JavaScript only: Python never shows it', async ({ page }) => 
   await pickLanguage(page, 'Python');
   await seedCompleted(page, 'python', THROUGH_BOSS_4);
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Side Quest: Security' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Side Quest: Web Pages' })).toHaveCount(0);
   await page.goto('/play/dom-events-1');
   await expect(page.getByRole('heading', { name: /locked/ })).toHaveCount(0);

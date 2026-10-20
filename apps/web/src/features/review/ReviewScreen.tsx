@@ -41,13 +41,16 @@ export function ReviewScreen({ language }: { language: PlayableLanguage }) {
   const reviews = useProgress((s) => s.reviews[language]);
   const revealed = useRef(false);
   const fails = useRef(0);
+  // Set synchronously: `passed` only flips after a deferred celebration, so replays could re-record.
+  const passedSteps = useRef(new Set<number>());
   const graduateLevel = useProgress((s) => s.graduateLevel);
   const [runKey] = useState(() => `review-${Date.now()}:`);
 
   const current = picks[step];
   const onPass = useCallback(
     (options: { deferCelebration?: boolean } = {}) => {
-      if (!current || passed[step]) return () => undefined;
+      if (!current || passed[step] || passedSteps.current.has(step)) return () => undefined;
+      passedSteps.current.add(step);
       const id = current.concept.id;
       const lastTouched = Math.max(
         reviews[id]?.at ?? 0,

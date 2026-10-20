@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../fixtures';
 import { crashedScreen, expectRecovers, openLevel, runCode, typeCode, watch, type Lang } from './util';
 
 /**

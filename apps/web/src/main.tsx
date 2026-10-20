@@ -7,6 +7,7 @@ import { syncEngine } from './features/sync/engine';
 import { useProgress } from './features/progress/store';
 import './styles/tokens.css';
 import './styles/global.css';
+import './styles/theme.css';
 
 // Initialize auth state
 void useAuth.getState().initAuth();

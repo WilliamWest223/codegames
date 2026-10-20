@@ -136,6 +136,17 @@ describe('requirements', () => {
     expect(checkRequirements('for i in range(3):\n    print("#")', req, 'python')).toEqual([]);
   });
 
+  it('ignores words inside string literals but keeps string-syntax patterns', async () => {
+    const { checkRequirements } = await import('../src');
+    const len = [{ pattern: 'len\\(', message: 'use len' }];
+    expect(checkRequirements('x = \"\"\"len(\"\"\"', len, 'python')).toEqual(['use len']);
+    expect(checkRequirements('print(len("abc"))', len, 'python')).toEqual([]);
+    expect(checkRequirements('print("sorted(x)")', [{ pattern: 'sorted\\(', forbid: true, message: 'no sort' }], 'python')).toEqual([]);
+    expect(checkRequirements('name = "Ada"\nprint(f"Hi {name}")', [{ pattern: 'f"', message: 'f-string' }], 'python')).toEqual([]);
+    expect(checkRequirements('const s = "x";', [{ pattern: '`', message: 'template' }], 'javascript')).toEqual(['template']);
+    expect(checkRequirements('x = "open4sesame"', [{ pattern: 'open4sesame', forbid: true, message: 'no password' }], 'python')).toEqual(['no password']);
+  });
+
   it('keeps comment markers inside strings', async () => {
     const { stripComments } = await import('../src');
     expect(stripComments('print("#") # note', 'python')).toBe('print("#") ');
@@ -537,5 +548,30 @@ describe('Python output limit without console noise (round-8 P2)', () => {
     expect(r.error?.kind).toBe('output-limit');
     const next = await runPython(py, 'print("ok")');
     expect(next.stdout).toBe('ok\n');
+  });
+});
+
+describe('variant starting lines', () => {
+  const level = {
+    id: 't', conceptId: 'x', title: 't', role: 'intro', mode: 'guided', prompt: '', reinforces: [], hints: [],
+    game: 'build-it', starterCode: {}, solution: {},
+    tests: [{ name: 'prints', expectedOutput: '3' }],
+    variants: [{ name: 'five', replace: { javascript: [['pizzas = 3', 'pizzas = $& 5']] as [string, string][] }, expectedOutput: '5' }],
+  } as const;
+  const exec = async (code: string, o: object) => runJavaScript(code, o);
+
+  it('does not match inside a longer name', async () => {
+    const { gradeSubmission } = await import('../src');
+    const r = await gradeSubmission(level as never, 'javascript', 'let big_pizzas = 3;\nconsole.log(big_pizzas);', exec);
+    expect(r.blocked?.[0]).toMatch(/Keep the line/);
+  });
+
+  it('ignores commented copies and treats $ in the replacement literally', async () => {
+    const { gradeSubmission } = await import('../src');
+    const code = '// pizzas = 3\nlet pizzas = 3;\nconsole.log(pizzas);';
+    const lit = { ...level, variants: [{ name: 'five', replace: { javascript: [['pizzas = 3', 'pizzas = 5 /* $& */']] as [string, string][] }, expectedOutput: '5' }] };
+    const r = await gradeSubmission(lit as never, 'javascript', code, exec);
+    expect(r.blocked).toBeUndefined();
+    expect(r.passed).toBe(true);
   });
 });

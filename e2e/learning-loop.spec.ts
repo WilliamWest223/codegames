@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from './fixtures';
+import type { Page } from '@playwright/test';
 import { REGION_0, pickLanguage, seedCompleted, typeCode } from './helpers';
 
 type Saved = { completed: Record<string, Record<string, { stars?: number }>>; hints: Record<string, number>; drafts: Record<string, string> };

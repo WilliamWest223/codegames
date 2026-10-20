@@ -32,9 +32,11 @@ apps/web/public/pyodide/
 *.secrets
 *api*key*
 *credentials*
-*token*
+*.token
+*token*.json
+*token*.key
+!tokens.css
 serviceAccount*.json
-api/
 
 # Logs
 logs/

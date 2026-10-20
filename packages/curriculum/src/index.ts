@@ -81,9 +81,7 @@ export function levelsFor(language: Language): Level[] {
   if (language === 'cybersecurity') {
     return sideSecurityLevels;
   }
-  return levels.filter(
-    (l) =>
-      !['encoding', 'ciphers', 'passwords', 'input-validation', 'boss-security'].includes(l.conceptId) &&
-      levelLanguages(l).includes(language),
-  );
+  // Security concepts are hidden from the programming languages by region, same as `conceptsFor`.
+  const securityConcepts = new Set(concepts.filter((c) => c.region === 10).map((c) => c.id));
+  return levels.filter((l) => !securityConcepts.has(l.conceptId) && levelLanguages(l).includes(language));
 }

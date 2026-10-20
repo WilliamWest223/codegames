@@ -124,10 +124,10 @@ export function CreatorWorkshop({ language, config }: { language: PlayableLangua
               <span className="eyebrow">{config.editorEyebrow}</span>
               <h2>{config.editorTitle}</h2>
             </div>
-            <span className="chip">{language === 'python' ? 'Python' : 'JavaScript'}</span>
+            <span className="chip">{langKey === 'python' ? 'Python' : 'JavaScript'}</span>
           </div>
           <p>{config.editorHelp}</p>
-          <CodeEditor value={code} onChange={setCode} language={language} label={config.editorLabel} minHeight={360} />
+          <CodeEditor value={code} onChange={setCode} language={langKey} label={config.editorLabel} minHeight={360} />
           <div className="creator-files">
             <button className="btn btn-ghost btn-sm" onClick={() => downloadText(fileName, code)}>
               ⬇ Download {fileName}

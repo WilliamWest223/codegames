@@ -74,7 +74,8 @@ export const RULES = [
   {
     name: 'JSON.parse (must be followed by a validator)',
     re: /\bJSON\s*\.\s*parse\b/,
-    allow: [WEB + 'features/progress/backup.ts', RT + 'python.ts', WEB + 'features/sync/**'],
+    // api/_lib/handler.ts: every route's body goes through its Zod inputSchema right after parsing.
+    allow: [WEB + 'features/progress/backup.ts', RT + 'python.ts', WEB + 'features/sync/**', 'api/_lib/handler.ts'],
   },
   {
     name: 'fetch(/XMLHttpRequest/WebSocket/sendBeacon',
@@ -109,7 +110,7 @@ function listPackageSrcDirs() {
   }
 }
 
-const SCAN_ROOTS = ['apps/web/src', 'apps/runner/src', ...listPackageSrcDirs()];
+const SCAN_ROOTS = ['apps/web/src', 'apps/runner/src', 'api', ...listPackageSrcDirs()];
 
 function isExcludedPath(rel) {
   return (
@@ -125,16 +126,56 @@ function matchesAllow(rel, pattern) {
 
 const MENTION = /(['"`])[A-Za-z_$][\w$]*\1|\b[A-Za-z_$][\w$]*\s*:\s*undefined\b/g;
 
-/** Whole-line comments are skipped so docs can mention a banned API by name. */
+/**
+ * Blank out block comments (keeping newlines, so line numbers hold) so docs can mention a banned
+ * API by name while `/* ok *\/ el.innerHTML = y;` still gets scanned. Quotes are honoured, so a
+ * `/*` inside a string does not open a comment.
+ */
+export function stripBlockComments(text) {
+  let out = '';
+  let quote = null;
+  let inBlock = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inBlock) {
+      if (ch === '*' && text[i + 1] === '/') {
+        inBlock = false;
+        out += '  ';
+        i++;
+      } else out += ch === '\n' ? '\n' : ' ';
+    } else if (quote) {
+      out += ch;
+      if (ch === '\\') {
+        out += text[i + 1] ?? '';
+        i++;
+      } else if (ch === quote || (ch === '\n' && quote !== '`')) quote = null;
+    } else if (ch === '/' && text[i + 1] === '*') {
+      inBlock = true;
+      out += '  ';
+      i++;
+    } else if (ch === '/' && text[i + 1] === '/') {
+      // Line comment: keep it (only whole-line ones are skipped later), but don't look for quotes in it.
+      const end = text.indexOf('\n', i);
+      const stop = end === -1 ? text.length : end;
+      out += text.slice(i, stop);
+      i = stop - 1;
+    } else {
+      if (ch === '"' || ch === "'" || ch === '`') quote = ch;
+      out += ch;
+    }
+  }
+  return out;
+}
+
+/** Whole-line `//` comments are skipped so docs can mention a banned API by name. */
 function isCommentLine(line) {
-  const t = line.trim();
-  return t.startsWith('//') || t.startsWith('*') || t.startsWith('/*');
+  return line.trim().startsWith('//');
 }
 
 /** Scan source text for one repo-relative path; returns violation strings. */
 export function scanText(rel, text) {
   const out = [];
-  text.split('\n').forEach((line, i) => {
+  stripBlockComments(text).split('\n').forEach((line, i) => {
     if (isCommentLine(line)) return;
     const stripped = line.replace(MENTION, '');
     for (const rule of RULES) {
@@ -222,7 +263,11 @@ function selfTest() {
     ['[Function (anonymous)] string ok', RT + 'grade.ts', "'[Function (anonymous)]'", 0],
     ['innerHTML in curriculum data ok', 'packages/curriculum/src/levels/region8/x.ts', "'el.innerHTML = x'", 0],
     ['comment lines skipped', WEB + 'components/X.tsx', '// never call eval(x) here', 0],
-    ['block comment lines skipped', WEB + 'components/X.tsx', ' * uses dangerouslySetInnerHTML', 0],
+    ['block comment lines skipped', WEB + 'components/X.tsx', '/**\n * uses dangerouslySetInnerHTML\n */\nconst a = 1;', 0],
+    ['inline block comment does not hide a sink', WEB + 'components/X.tsx', '/* ok */ el.innerHTML = y;', 1],
+    ['leading star line outside a comment is scanned', WEB + 'components/X.tsx', '* el.innerHTML = y;', 1],
+    ['block comment opener inside a string is not a comment', WEB + 'components/X.tsx', "const g = 'a/*'; el.innerHTML = y;", 1],
+    ['code after a closed multi-line block comment is scanned', WEB + 'components/X.tsx', '/* a\n b */ el.innerHTML = y;', 1],
     ['features/sync not yet allowlisted for fetch', WEB + 'features/sync/x.ts', 'await fetch(u)', PHASE3_FETCH_ALLOW.length ? 0 : 1],
   ];
   let failed = 0;

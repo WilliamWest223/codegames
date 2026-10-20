@@ -12,7 +12,9 @@ jobs:
   check:
     name: Typecheck, tests, e2e
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # The e2e suite alone takes ~20 min on one worker.
+    # shortcut: one long job; shard Playwright across a matrix if it passes ~35 min.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -28,6 +30,8 @@ jobs:
         run: npm run typecheck
       - name: Unsafe sink ban (scripts/check-sinks.mjs)
         run: npm run check:sinks
+      - name: Unsafe sink ban self-test
+        run: npm run check:sinks -- --self-test
       - name: Security lint (ESLint)
         run: npm run lint
       - name: Unit + curriculum tests (runs every level solution in Python and JavaScript)

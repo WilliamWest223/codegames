@@ -1,6 +1,6 @@
-import { useEffect, useImperativeHandle, useRef, useState, type Ref } from 'react';
+import { useEffect, useId, useImperativeHandle, useRef, useState, type Ref } from 'react';
 import { autocompletion, closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
-import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
+import { defaultKeymap, history, historyKeymap, indentLess, indentMore } from '@codemirror/commands';
 import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
 import { bracketMatching, indentOnInput, indentUnit } from '@codemirror/language';
@@ -126,6 +126,7 @@ export function CodeEditor({
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
   const [tooLong, setTooLong] = useState(false);
+  const hintId = useId();
   const refuse = useRef<() => void>(() => undefined);
   refuse.current = () => {
     // Deferred: the filter runs in the middle of a transaction, and React state shouldn't change there.
@@ -133,6 +134,15 @@ export function CodeEditor({
   };
 
   useEffect(() => {
+    // Keyboard-trap escape (WCAG 2.1.2): Escape then Tab/Shift-Tab moves focus out of the editor.
+    let tabEscapes = false;
+    const tab = (indent: (v: EditorView) => boolean) => (v: EditorView) => {
+      if (tabEscapes) {
+        tabEscapes = false;
+        return false;
+      }
+      return indent(v);
+    };
     const extensions: Extension[] = [
       lineNumbers(),
       highlightActiveLineGutter(),
@@ -143,7 +153,18 @@ export function CodeEditor({
       closeBrackets(),
       autocompletion({ activateOnTyping: false }),
       highlightActiveLine(),
-      keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, indentWithTab]),
+      keymap.of([
+        ...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap,
+        {
+          key: 'Escape',
+          run: () => {
+            tabEscapes = true;
+            return false;
+          },
+        },
+        { key: 'Tab', run: tab(indentMore), shift: tab(indentLess) },
+      ]),
+      EditorView.domEventHandlers({ blur: () => void (tabEscapes = false) }),
       language === 'python' ? python() : javascript(),
       indentUnit.of(language === 'python' ? '    ' : '  '),
       EditorState.tabSize.of(language === 'python' ? 4 : 2),
@@ -154,7 +175,7 @@ export function CodeEditor({
       runLine.field,
       // Wrap long lines (e.g. route lists) instead of scrolling sideways, which hides line starts.
       EditorView.lineWrapping,
-      EditorView.contentAttributes.of({ 'aria-label': label }),
+      EditorView.contentAttributes.of(readOnly ? { 'aria-label': label } : { 'aria-label': label, 'aria-describedby': hintId }),
       sizeLimit(() => refuse.current()),
       EditorState.readOnly.of(readOnly),
       EditorView.editable.of(!readOnly),
@@ -175,7 +196,7 @@ export function CodeEditor({
     };
     // Recreate only when the language or editability changes; value syncs below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language, readOnly, label]);
+  }, [language, readOnly, label, hintId]);
 
   useImperativeHandle(handle, () => ({
     insert(text: string) {
@@ -240,6 +261,11 @@ export function CodeEditor({
   return (
     <>
       <div className="code-editor" ref={host} style={{ minHeight }} />
+      {!readOnly && (
+        <span id={hintId} className="visually-hidden">
+          Press Escape then Tab to leave the editor.
+        </span>
+      )}
       {tooLong && (
         <p role="status" style={{ margin: '6px 2px 0', fontSize: '0.85rem', color: 'var(--danger)' }}>
           That is more than the editor can hold ({MAX_EDITOR_CHARS.toLocaleString()} characters), so it was not added. Programs here are much shorter: try a smaller piece.

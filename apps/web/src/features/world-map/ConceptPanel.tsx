@@ -21,12 +21,17 @@ export function ConceptPanel({ concept, language, mastery, onClose }: Props) {
   const missing = concept.requires.filter((id) => !['practiced', 'proficient'].includes(mastery[id] ?? 'locked'));
   const closeRef = useRef<HTMLButtonElement>(null);
 
+  // onClose is a new function every parent render: keep it in a ref so the effect (and its
+  // focus grab) runs only on mount / concept change.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   useEffect(() => {
     closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onCloseRef.current();
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [concept.id, onClose]);
+  }, [concept.id]);
 
   return (
     <aside className="concept-panel panel" aria-label={`${concept.title} levels`}>

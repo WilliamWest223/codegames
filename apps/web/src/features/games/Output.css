@@ -86,7 +86,7 @@
   margin: 4px 0 0;
   padding: 8px 10px;
   border-radius: var(--radius-sm);
-  background: #070a11;
+  background: var(--well);
   white-space: pre-wrap;
   font-size: 13px;
 }
@@ -140,7 +140,7 @@
   margin: 0;
   padding: 8px 10px;
   border-radius: var(--radius-sm);
-  background: #070a11;
+  background: var(--well);
   color: var(--text-muted);
   font-size: 12.5px;
   white-space: pre-wrap;
@@ -189,7 +189,7 @@
   margin: 0;
   padding: 6px 10px;
   border-radius: var(--radius-sm);
-  background: #070a11;
+  background: var(--well);
   white-space: pre-wrap;
 }
 .out-diff-mark {
@@ -237,19 +237,6 @@
   font-size: 12px;
 }
 
-/* ── Scientific Diagnostic Oscilloscope ── */
-.oscilloscope-container {
-  margin: 10px 0 14px;
-  background: #06080d;
-  border: 1px solid var(--border-contrast);
-  border-radius: var(--radius-sm);
-  padding: 6px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  display: flex;
-  justify-content: center;
-}
-.oscilloscope-canvas {
-  display: block;
-  border-radius: 2px;
-}
+
+
 

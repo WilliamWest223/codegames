@@ -2,6 +2,7 @@
 import type { PyodideInterface } from 'pyodide';
 import { runPython } from '@codegames/runtime/python';
 import { lockDown } from './lockdown';
+import { internalFailure } from './internalFailure';
 import type { HostMessage, WorkerMessage } from './protocol';
 
 /** Pyodide is served from /pyodide/ (copied from node_modules by scripts/copy-pyodide.mjs). */
@@ -32,6 +33,10 @@ self.addEventListener('message', async (event: MessageEvent<HostMessage>) => {
     return;
   }
   const { id, nonce, code, options } = message;
-  const result = await runPython(await pyodide, code, options);
-  post({ type: 'result', id, nonce, result });
+  try {
+    const result = await runPython(await pyodide, code, options);
+    post({ type: 'result', id, nonce, result });
+  } catch (e) {
+    post({ type: 'result', id, nonce, result: internalFailure(e) });
+  }
 });

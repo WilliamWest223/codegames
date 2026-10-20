@@ -101,9 +101,14 @@ export function runJavaScript(code: string, options: ExecOptions = {}): ExecResu
   const maxOutput = options.maxOutput ?? DEFAULT_MAX_OUTPUT;
   let stdout = '';
   let stderr = '';
+  // Remembered here because the learner's own try/catch can swallow the OutputLimitError.
+  let overflowed = false;
   const write = (text: string) => {
     stdout += text;
-    if (stdout.length > maxOutput) throw new OutputLimitError();
+    if (stdout.length > maxOutput) {
+      overflowed = true;
+      throw new OutputLimitError();
+    }
   };
   const log = (...args: unknown[]) => write(formatLogArgs(args) + '\n');
   // Like the real console: warnings and errors don't go to standard output.
@@ -238,7 +243,12 @@ export function runJavaScript(code: string, options: ExecOptions = {}): ExecResu
   }
   return finish(error);
 
-  function finish(error: ExecError | undefined): ExecResult {
+  function finish(caught: ExecError | undefined): ExecResult {
+    let error = caught;
+    if (overflowed && !error) {
+      const limit = new OutputLimitError();
+      error = { kind: kindForError(limit.name), name: limit.name, message: limit.message, friendly: explainError(limit.name, limit.message, 'javascript') };
+    }
     // The last write may overshoot the limit; the result never carries more than `maxOutput`.
     return {
     stdout: stdout.length > maxOutput ? stdout.slice(0, maxOutput) : stdout,

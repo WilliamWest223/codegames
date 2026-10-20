@@ -1,0 +1,255 @@
+/*
+ * Starmap theme layer: the parts of the look that tokens alone can't express (starfield,
+ * glass, serif display type, region "stars") plus the calm scroll motion that ScrollMotion
+ * drives with mo-* classes. Rules are scoped to :root[data-theme='starmap'] (set in index.html):
+ * the attribute lifts them above the per-component stylesheets, which load later (lazy routes).
+ */
+@import '@fontsource/instrument-serif/400.css';
+@import '@fontsource/instrument-serif/400-italic.css';
+/* Three star layers at different densities + two nebulae. */
+:root[data-theme='starmap'] body {
+  background:
+    radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+    radial-gradient(1px 1px at 90px 140px, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1.5px 1.5px at 160px 60px, #ffe9b8, transparent),
+    radial-gradient(1px 1px at 230px 190px, rgba(200, 210, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 50px 220px, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(ellipse 60% 50% at 85% 10%, rgba(120, 70, 220, 0.28), transparent),
+    radial-gradient(ellipse 50% 60% at 5% 80%, rgba(30, 140, 200, 0.22), transparent),
+    var(--chassis);
+  background-size: 260px 260px, 260px 260px, 260px 260px, 260px 260px, 260px 260px, 100% 100%, 100% 100%, auto;
+  background-attachment: fixed;
+}
+:root[data-theme='starmap'] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 300px 210px, #cfe0ff, transparent),
+    radial-gradient(2px 2px at 520px 40px, #ffe3a3, transparent);
+  background-size: 610px 430px;
+  animation: twinkle 4.5s ease-in-out infinite alternate;
+}
+:root[data-theme='starmap'] #root { position: relative; z-index: 1; }
+@keyframes twinkle {
+  from { opacity: 0.25; }
+  to { opacity: 1; }
+}
+
+:root[data-theme='starmap'] h1,
+:root[data-theme='starmap'] h2,
+:root[data-theme='starmap'] h3 {
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+:root[data-theme='starmap'] h1 { font-size: clamp(32px, 4vw, 42px); }
+:root[data-theme='starmap'] h2 { font-size: 30px; }
+:root[data-theme='starmap'] h3 { font-size: 21px; }
+:root[data-theme='starmap'] .map-hero h1,
+:root[data-theme='starmap'] .welcome-title {
+  font-size: clamp(56px, 7vw, 100px);
+  font-style: italic;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, #fff 30%, #b9b7ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+:root[data-theme='starmap'] .eyebrow { color: var(--amber); letter-spacing: 0.24em; }
+:root[data-theme='starmap'] .eyebrow::before { content: '✦ '; text-shadow: var(--starlight); }
+
+/* Chrome: floating glass console. */
+:root[data-theme='starmap'] .shell-header {
+  margin: 12px 16px 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(10, 14, 40, 0.6);
+  backdrop-filter: blur(14px) saturate(1.4);
+  top: 12px;
+}
+:root[data-theme='starmap'] .shell-logo { font: 400 24px/1 var(--font-display); font-style: italic; }
+:root[data-theme='starmap'] .shell-logo-mark,
+:root[data-theme='starmap'] .auth-logo-mark {
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff6dd, #ffd27a 45%, #c27a1a);
+  color: #2a1700;
+  box-shadow: var(--starlight);
+}
+:root[data-theme='starmap'] .lang-switch { background: rgba(255, 255, 255, 0.04); }
+:root[data-theme='starmap'] .lang-switch-option[aria-checked='true'] { background: rgba(255, 255, 255, 0.12); box-shadow: inset 0 0 0 1px var(--border-contrast); }
+
+:root[data-theme='starmap'] .btn { border-radius: 999px; }
+:root[data-theme='starmap'] .btn-primary,
+:root[data-theme='starmap'] .auth-submit-btn {
+  background: linear-gradient(180deg, #fff3d6, #ffd27a);
+  border: 0;
+  color: #2a1700;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(255, 210, 122, 0.5), 0 8px 30px rgba(255, 210, 122, 0.3);
+}
+:root[data-theme='starmap'] .btn-primary:hover:not(:disabled),
+:root[data-theme='starmap'] .auth-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(180deg, #fff, #ffe0a0);
+  color: #2a1700;
+  box-shadow: 0 0 0 1px rgba(255, 210, 122, 0.8), 0 10px 40px rgba(255, 210, 122, 0.5);
+}
+:root[data-theme='starmap'] .chip { border-radius: 999px; }
+
+/* Glass panels. */
+:root[data-theme='starmap'] .map-region,
+:root[data-theme='starmap'] .auth-box,
+:root[data-theme='starmap'] .welcome-card,
+:root[data-theme='starmap'] .map-legend,
+:root[data-theme='starmap'] .panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), var(--shadow);
+}
+:root[data-theme='starmap'] .map-region-active { border-color: var(--border-contrast); }
+
+/* Region number becomes a star with an orbit ring. */
+:root[data-theme='starmap'] .map-region-number {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px dashed var(--border-contrast);
+  background: radial-gradient(circle, #ffd27a 0 5px, transparent 6px);
+  color: transparent;
+  font-size: 0;
+  box-shadow: 0 0 20px rgba(255, 210, 122, 0.2);
+}
+:root[data-theme='starmap'] .map-region-done .map-region-number { background: radial-gradient(circle, var(--signal) 0 5px, transparent 6px); }
+:root[data-theme='starmap'] .map-region-locked .map-region-number { background: radial-gradient(circle, var(--text-dim) 0 3px, transparent 4px); box-shadow: none; }
+:root[data-theme='starmap'] .map-region-progress { border-radius: 999px; background: rgba(255, 255, 255, 0.06); }
+:root[data-theme='starmap'] .map-region-progress > div { border-radius: 999px; background: linear-gradient(90deg, #8fb6ff, var(--signal)); box-shadow: 0 0 10px rgba(126, 240, 196, 0.6); }
+:root[data-theme='starmap'] .map-region-story { font: italic 400 18px/1.4 var(--font-display); color: var(--text-muted); }
+
+:root[data-theme='starmap'] .map-continue {
+  border: 1px solid rgba(255, 210, 122, 0.45);
+  background: radial-gradient(ellipse at 0% 0%, rgba(255, 210, 122, 0.18), transparent 60%), var(--panel);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-lg);
+}
+:root[data-theme='starmap'] .map-continue-title { font: italic 400 32px/1 var(--font-display); }
+
+/* Stations: constellation nodes, linked by faint lines across the grid. */
+:root[data-theme='starmap'] .map-grid {
+  background-image: radial-gradient(rgba(170, 185, 255, 0.18) 1px, transparent 1px);
+  background-size: 22px 22px;
+  border-radius: var(--radius);
+  padding: 4px;
+}
+:root[data-theme='starmap'] .station-card {
+  background: rgba(10, 14, 40, 0.7);
+  border: 1px solid var(--border);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s var(--ease);
+}
+:root[data-theme='starmap'] .station-card:hover { border-color: rgba(255, 210, 122, 0.5); box-shadow: 0 0 40px rgba(255, 210, 122, 0.12); transform: translateY(-2px); }
+:root[data-theme='starmap'] .station-card-locked { background: rgba(5, 7, 26, 0.5); border-style: dashed; }
+:root[data-theme='starmap'] .station-title { font-family: var(--font-display); font-size: 21px; font-weight: 400; }
+:root[data-theme='starmap'] .station-ring-track { stroke: rgba(170, 185, 255, 0.15); stroke-dasharray: 1 5; stroke-linecap: round; }
+:root[data-theme='starmap'] .station-ring-fill { stroke: var(--amber); filter: drop-shadow(0 0 4px var(--amber)); }
+:root[data-theme='starmap'] .station-core { color: var(--amber); text-shadow: var(--starlight); }
+:root[data-theme='starmap'] .station-level-btn { border-radius: 999px; background: rgba(255, 255, 255, 0.03); }
+:root[data-theme='starmap'] .station-level-num { border-radius: 50%; }
+
+:root[data-theme='starmap'] .welcome-card-name { font-size: 34px; font-style: italic; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme='starmap'] body::before { animation: none; }
+}
+
+/* Calm motion (MotionLayer pointer={false} adds mo-* classes): stars fade in as you scroll,
+   rings and progress draw in, the title drifts back. No tilt, no magnets, no cursor light. */
+:root[data-theme='starmap'] .mo-reveal {
+  opacity: 0;
+  translate: 0 18px;
+  filter: blur(4px);
+  transition: opacity 0.9s var(--ease), translate 1s var(--ease), filter 0.9s var(--ease),
+    border-color 0.2s, box-shadow 0.2s, transform 0.2s var(--ease);
+  transition-delay: calc(var(--mo-i, 0) * 60ms);
+}
+:root[data-theme='starmap'] .mo-reveal.mo-in { opacity: 1; translate: 0 0; filter: none; }
+:root[data-theme='starmap'] .mo-in .station-ring-fill { animation: sm-ring 1.6s var(--ease) 0.25s backwards; }
+@keyframes sm-ring { from { stroke-dashoffset: 400; } }
+:root[data-theme='starmap'] .mo-in .map-region-progress > div { transform-origin: left; animation: sm-grow 1.4s var(--ease) 0.3s backwards; }
+@keyframes sm-grow { from { transform: scaleX(0); } }
+:root[data-theme='starmap'] .map-hero h1 {
+  translate: 0 calc(var(--mo-y, 0) * 0.15px);
+  opacity: calc(1 - var(--mo-y, 0) / 900);
+}
+.mo-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 30;
+  pointer-events: none;
+  transform: scaleX(var(--mo-prog, 0));
+  transform-origin: left;
+}
+:root[data-theme='starmap'] .mo-progress {
+  height: 2px;
+  background: linear-gradient(90deg, rgba(143, 182, 255, 0.4), var(--amber));
+  box-shadow: 0 0 10px rgba(255, 210, 122, 0.6);
+}
+:root[data-theme='starmap'] .btn-primary,
+:root[data-theme='starmap'] .auth-submit-btn { transition: box-shadow 0.25s, scale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+:root[data-theme='starmap'] .btn-primary:hover:not(:disabled),
+:root[data-theme='starmap'] .auth-submit-btn:hover:not(:disabled) { scale: 1.03; }
+:root[data-theme='starmap'] .btn-primary:active:not(:disabled) { scale: 0.97; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme='starmap'] .mo-reveal { opacity: 1; translate: none; filter: none; transition: none; }
+  :root[data-theme='starmap'] .mo-in .station-ring-fill,
+  :root[data-theme='starmap'] .mo-in .map-region-progress > div { animation: none; }
+  :root[data-theme='starmap'] .map-hero h1 { translate: none; opacity: 1; }
+}
+
+/* Sign-in: let the starfield show through, and keep the logo star round. */
+:root[data-theme='starmap'] .auth-page,
+:root[data-theme='starmap'] .auth-splash { background: transparent; }
+:root[data-theme='starmap'] .auth-logo-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font: 700 16px/1 var(--font-code);
+}
+
+/* Anything that floats over content stays opaque: glass is for surfaces, not overlays. */
+:root[data-theme='starmap'] .concept-panel,
+:root[data-theme='starmap'] .shell-menu-popover,
+:root[data-theme='starmap'] .shell-streak-pop,
+:root[data-theme='starmap'] .modal,
+:root[data-theme='starmap'] .glossary,
+:root[data-theme='starmap'] .admin-inspector-drawer,
+:root[data-theme='starmap'] .admin-inspector-tests-modal {
+  background: var(--overlay);
+  border: 1px solid var(--border-contrast);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+}
+
+/* Fill the strip above the floating header so content never scrolls through it. */
+:root[data-theme='starmap'] .shell-header::before {
+  content: '';
+  position: absolute;
+  inset: -13px -17px auto;
+  height: 40px;
+  z-index: -1;
+  background: linear-gradient(var(--chassis) 13px, transparent);
+  pointer-events: none;
+}
+
+/* Phones: a slimmer floating header so every control fits inside the pill. */
+@media (max-width: 640px) {
+  :root[data-theme='starmap'] .shell-header { margin: 8px 8px 0; padding: 0 8px; top: 8px; }
+  :root[data-theme='starmap'] .shell-actions { gap: 2px; }
+  :root[data-theme='starmap'] .shell-header::before { inset: -9px -9px auto; height: 32px; background: linear-gradient(var(--chassis) 9px, transparent); }
+}

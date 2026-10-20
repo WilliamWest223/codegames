@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '../fixtures';
+import type { Page } from '@playwright/test';
 import { BEFORE_BOSS_4, openLevel, pickLanguage, runCode, seedCompleted, typeCode, watch, type Lang, LANG_NAME } from './util';
 
 /**

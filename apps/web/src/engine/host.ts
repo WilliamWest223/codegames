@@ -326,12 +326,18 @@ export class WorkerHost {
       }, timeoutMs);
       // A worker that dies mid-run (e.g. out of memory) never answers: report it and start a
       // fresh worker instead of waiting for the timeout (round-8 P0-1).
-      const onCrash = () => {
+      const onCrash = (event?: Event) => {
         clearTimeout(timer);
         if (grace) clearTimeout(grace);
         worker.removeEventListener('message', onMessage);
         this.replaceWorker();
-        resolve(failure('MemoryError', 'The program stopped the code engine. It probably used too much memory.', 0));
+        // Duck-typed: `ErrorEvent` isn't a global in Node 22 (unit tests), and a real ErrorEvent has `message` too.
+        const detail = (event as { message?: unknown } | undefined)?.message ?? '';
+        if (/memory|allocation failed|heap/i.test(String(detail))) {
+          resolve(failure('MemoryError', 'The program stopped the code engine. It probably used too much memory.', 0));
+        } else {
+          resolve(failure('InternalError', 'The code engine stopped unexpectedly. Try running again.', 0));
+        }
       };
       const onMessage = (event: MessageEvent<WorkerMessage>) => {
         if (event.data.type !== 'result' || event.data.id !== id || event.data.nonce !== nonce) return;

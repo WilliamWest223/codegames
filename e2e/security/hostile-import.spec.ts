@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '../fixtures';
+import type { Page } from '@playwright/test';
 import { crashedScreen, pickLanguage, seedCompleted, typeCode, watch } from './util';
 import { REGION_0 } from '../helpers';
 
@@ -60,8 +61,10 @@ async function expectHealthyEverywhere(page: Page, w: ReturnType<typeof watch>) 
     await page.goto(path);
     await expect(page.locator('#root')).not.toBeEmpty();
     await expect(crashedScreen(page)).toHaveCount(0);
-    const text = (await page.locator('body').innerText()).trim();
-    expect(text.length, `${path} is not blank`).toBeGreaterThan(20);
+    // Poll: right after the launch gate closes, only the header has rendered.
+    const bodyText = async () => (await page.locator('body').innerText()).trim();
+    await expect.poll(async () => (await bodyText()).length, { message: `${path} is not blank` }).toBeGreaterThan(20);
+    const text = await bodyText();
     expect(text, `${path} shows no junk values`).not.toMatch(BAD_TEXT);
   }
   expect(await pristinePrototype(page)).toEqual({ polluted: null, keys: [], pwned: null });
@@ -160,6 +163,8 @@ test.describe('accepted-but-hostile backup files', () => {
     test.setTimeout(60_000);
     await seedProgress(page);
     await importFile(page, 'proto.json', wrap('{"state":{"language":"javascript","__proto__":{"polluted":"yes"},"completed":{"python":{},"javascript":{"__proto__":{"at":1,"polluted":"yes"}}},"drafts":{"__proto__":"x"}},"version":5}'));
+    // Import replaces progress (nothing completed now), so unlock output-1's prerequisite again.
+    await seedCompleted(page, 'javascript', ['sequencing']);
     await page.goto('/play/output-1');
     await typeCode(page, 'console.log("Hello, World!");');
     await page.getByRole('button', { name: /✓ Check/ }).click();

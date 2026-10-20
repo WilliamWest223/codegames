@@ -43,6 +43,11 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
   const hintsUsed = useRef(0);
   const revealed = useRef(false);
   const active = useRef(0);
+  // Which level the screen is on right now; a late pass from another level must not celebrate here.
+  const liveKey = useRef('');
+  // Only the first pass of a mounted game counts: re-checking after "Stay here" has no fresh attempt data.
+  const passedKey = useRef<string | null>(null);
+  const levelKey = `${language}:${levelId ?? ''}`;
 
   useEffect(() => {
     setCompletion(null);
@@ -51,7 +56,9 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
     window.scrollTo(0, 0);
     // A celebration deferred on the previous level must never show on this one.
     active.current += 1;
-  }, [levelId, language]);
+    liveKey.current = levelKey;
+    passedKey.current = null;
+  }, [levelId, language, levelKey]);
 
   const concept = level && concepts.find((c) => c.id === level.conceptId);
   const conceptLevels = useMemo(() => (level ? levels.filter((l) => l.conceptId === level.conceptId) : []), [level]);
@@ -62,13 +69,17 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
       if (!level || !concept) return () => undefined;
       const before = computeMastery(concepts, levels, new Set(Object.keys(completedMap)), reviewCounts(reviews), transfer, weakLevels(completedMap));
       // Save right away, so closing the tab mid-animation never loses a completion.
-      const result = completeLevel(language, level.id, ROLE_XP[level.role], {
-        used: hintsUsed.current,
-        total: level.hints.length,
-        revealed: revealed.current,
-        // Robot levels invite experimenting: the first few runs are free.
-        freeAttempts: level.game === 'grid-quest' || (level.game === 'parsons' && !!level.grid) ? 3 : 0,
-      }, options.par ? options.par.lines <= options.par.target : undefined);
+      const passKey = `${language}:${level.id}`;
+      const result = passedKey.current === passKey
+        ? { firstTime: false, stars: completedMap[level.id]?.stars ?? 1, improved: false }
+        : completeLevel(language, level.id, ROLE_XP[level.role], {
+            used: hintsUsed.current,
+            total: level.hints.length,
+            revealed: revealed.current,
+            // Robot levels invite experimenting: the first few runs are free.
+            freeAttempts: level.game === 'grid-quest' || (level.game === 'parsons' && !!level.grid) ? 3 : 0,
+          }, options.par ? options.par.lines <= options.par.target : undefined);
+      passedKey.current = passKey;
       const best = Math.max(result.stars, completedMap[level.id]?.stars ?? 0);
       const assistedAfter = weakLevels({ ...completedMap, [level.id]: { stars: best } });
       const after = computeMastery(concepts, levels, new Set([...Object.keys(completedMap), level.id]), reviewCounts(reviews), transfer, assistedAfter);
@@ -90,7 +101,7 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
       };
       const token = active.current;
       const celebrate = () => {
-        if (active.current === token) setCompletion(info);
+        if (active.current === token && liveKey.current === passKey) setCompletion(info);
       };
       if (!options.deferCelebration) celebrate();
       return celebrate;
@@ -120,6 +131,7 @@ export function LevelScreen({ language }: { language: PlayableLanguage }) {
     hintsUsed.current = 0;
     revealed.current = false;
     active.current += 1;
+    passedKey.current = null;
     setCompletion(null);
     setRetry((n) => n + 1);
   }, [level, language, resetLevelHelp]);

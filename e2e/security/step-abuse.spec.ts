@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '../fixtures';
+import type { Page } from '@playwright/test';
 import { crashedScreen, expectRecovers, openLevel, runCode, stored, typeCode, watch, type Lang } from './util';
 
 /**
@@ -203,6 +204,8 @@ test.describe('step-through resource abuse', () => {
   test('an infinite loop stops at the step cap with an explanation', async ({ page }) => {
     await openLevel(page, 'javascript');
     await trace(page, 'let i = 0;\nwhile (true) { i++; }');
+    // The explanation sits on the last step (StepThrough starts at step 1).
+    await page.getByRole('button', { name: 'Last step' }).click();
     await expect(page.locator('.steps-note')).toContainText('Stopped after');
   });
 

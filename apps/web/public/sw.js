@@ -2,8 +2,13 @@
  * CodeGames service worker v3: offline-capable PWA with strict origin isolation.
  * API and Auth routes are bypassed from caching and go straight to network.
  */
-const CACHE = 'codegames-v3';
-const CSP = "default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https: wss:; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'";
+// Bump CACHE_VERSION on any change to caching behavior; old caches are deleted on activate.
+const CACHE_VERSION = 4;
+const CACHE = `codegames-v${CACHE_VERSION}`;
+// Fallback CSP when a response has none. Must match e2e EXPECTED_CSP / vite default
+// (connect-src 'self' only). Production HTTP headers (vercel.json) add Supabase origins;
+// secured() never overwrites an existing CSP, so the header wins when present.
+const CSP = "default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'";
 const SECURITY_HEADERS = {
   'Content-Security-Policy': CSP,
   'Cross-Origin-Opener-Policy': 'same-origin',
@@ -81,8 +86,10 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then((response) => {
           const safe = secured(response);
-          const copy = safe.clone();
-          caches.open(CACHE).then((cache) => cache.put('/', copy));
+          if (response.ok && response.type === 'basic') {
+            const copy = safe.clone();
+            caches.open(CACHE).then((cache) => cache.put('/', copy));
+          }
           return safe;
         })
         .catch(() => caches.match('/').then((c) => secured(c)))
@@ -90,18 +97,26 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Vite emits content-hashed files under /assets/: immutable, so cache-first is safe.
+  // Everything else (pyodide, manifest, icons) may change in place: stale-while-revalidate.
+  const hashed = url.pathname.startsWith('/assets/');
   event.respondWith(
     caches.match(request).then((cached) => {
-      if (cached) return secured(cached);
-      return fetch(request).then((response) => {
+      if (cached && hashed) return secured(cached);
+      const network = fetch(request).then((response) => {
         const safe = secured(response);
         const cacheControl = response.headers.get('Cache-Control') || '';
-        if (safe.ok && safe.type === 'basic' && !cacheControl.includes('no-store') && !cacheControl.includes('private')) {
+        if (response.ok && response.type === 'basic' && !cacheControl.includes('no-store') && !cacheControl.includes('private')) {
           const copy = safe.clone();
           caches.open(CACHE).then((cache) => cache.put(request, copy));
         }
         return safe;
       });
+      if (cached) {
+        network.catch(() => undefined);
+        return secured(cached);
+      }
+      return network;
     })
   );
 });

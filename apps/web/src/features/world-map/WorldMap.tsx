@@ -8,7 +8,6 @@ import { useDueConcepts, useMastery, useNextLevel, useReviewPicks } from '../pro
 import { GAME_LABELS, MASTERY_HELP, MASTERY_LABELS, ROLE_LABELS } from '../../lib/labels';
 import { ConceptNode } from './ConceptNode';
 import { ConceptPanel } from './ConceptPanel';
-import { CircuitBusCanvas } from './CircuitBusCanvas';
 import { playSwitch } from '../../lib/soundFx';
 import './WorldMap.css';
 
@@ -49,7 +48,6 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
 
   return (
     <div className="map">
-      <CircuitBusCanvas language={language} />
       <section className="map-hero">
         <div>
           <p className="eyebrow">Your journey in {LANGUAGE_LABELS[language]}</p>
@@ -82,7 +80,7 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
               {concepts.find((c) => c.id === next.conceptId)?.title} · {ROLE_LABELS[next.role]} · {GAME_LABELS[next.game]}
             </span>
             <span className="map-continue-go" aria-hidden="true">
-              ▶
+              {levelsDone === 0 ? 'Start' : 'Play'} ▶
             </span>
           </Link>
         ) : (
@@ -117,7 +115,7 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
       </details>
 
       {language === 'cybersecurity' && (
-        <aside className="map-range-rules" aria-label="Rules of the range" style={{ margin: '-12px 0 24px' }}>
+        <aside className="map-range-rules" aria-label="Rules of the range" data-track="cybersecurity">
           <strong>Rules of the Cyber Range:</strong> Build secure code, test systems responsibly, and protect users. All challenges focus on hands-on defensive programming and applied cryptography.
         </aside>
       )}
@@ -149,47 +147,95 @@ export function WorldMap({ language }: { language: PlayableLanguage }) {
   function renderRegion(region: number, ri: number, sideQuest = false) {
     const regionConcepts = playable.filter((c) => c.region === region);
     const done = regionConcepts.filter((c) => atLeast(mastery[c.id]!, 'practiced')).length;
-    return (
-      <section className={`map-region${sideQuest ? ' is-side-quest' : ''}`} style={{ animationDelay: `${ri * 80}ms` }}>
-        <header className="map-region-head">
-          <span className="map-region-number">{sideQuest ? '◇' : String(region).padStart(2, '0')}</span>
-          <h2>{REGION_NAMES[region]}</h2>
-          <div className="map-region-progress" aria-label={`${done} of ${regionConcepts.length} concepts practiced`}>
-            <div style={{ width: `${(done / regionConcepts.length) * 100}%` }} />
+    const status: RegionStatus =
+      done === regionConcepts.length ? 'done' : regionConcepts.every((c) => mastery[c.id] === 'locked') ? 'locked' : 'active';
+    const head = (
+      <>
+        <span className="map-region-number">{sideQuest ? '◇' : String(region).padStart(2, '0')}</span>
+        <h2>{REGION_NAMES[region]}</h2>
+        {status === 'done' && <span className="chip chip-signal">Complete</span>}
+        {status === 'locked' && <span className="chip">Locked</span>}
+        <div
+          className="map-region-progress"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={regionConcepts.length}
+          aria-valuenow={done}
+          aria-label={`${done} of ${regionConcepts.length} concepts practiced`}
+        >
+          <div style={{ width: `${(done / regionConcepts.length) * 100}%` }} />
+        </div>
+        <span className="map-region-count">
+          {done}/{regionConcepts.length}
+        </span>
+      </>
+    );
+
+    // Only the region being worked on stays open: finished and locked regions fold to one line
+    // so the map reads as "where am I, what's next" instead of a wall of identical cards.
+    if (status !== 'active' && !regionConcepts.some((c) => c.id === selectedId)) {
+      const gate = status === 'locked' ? lockedGate(region) : undefined;
+      return (
+        <details className={`map-region map-region-${status}${sideQuest ? ' is-side-quest' : ''}`}>
+          <summary>
+            <span className="map-region-head">{head}</span>
+            <span className="map-region-teaser">
+              {status === 'locked'
+                ? gate
+                  ? `Beat ${gate.title.replace(/^Boss:\s*/, '')} to open ${regionConcepts.length} new concepts.`
+                  : `Practice the earlier concepts to open ${regionConcepts.length} new concepts.`
+                : `${REGION_STORY[region]?.system ?? 'Region'} restored. Replay any level to raise your stars.`}
+            </span>
+          </summary>
+          <div className="map-grid" role="list">
+            {regionConcepts.map((c) => renderNode(c.id))}
           </div>
-          <span className="map-region-count">
-            {done}/{regionConcepts.length}
-          </span>
-        </header>
+        </details>
+      );
+    }
+
+    return (
+      <section className={`map-region map-region-active${sideQuest ? ' is-side-quest' : ''}`} style={{ animationDelay: `${ri * 80}ms` }}>
+        <header className="map-region-head">{head}</header>
         {REGION_STORY[region] && (
-          <p className={`map-region-story${done === regionConcepts.length ? ' is-restored' : ''}`}>
-            <span aria-hidden="true">{done === regionConcepts.length ? '✓' : '🛠'}</span>{' '}
-            <strong>{REGION_STORY[region]!.system}</strong>
-            {done === regionConcepts.length ? ' restored.' : `: ${REGION_STORY[region]!.beat}`}
+          <p className="map-region-story">
+            <strong>{REGION_STORY[region]!.system}</strong>: {REGION_STORY[region]!.beat}
           </p>
         )}
         <div className="map-grid" role="list">
-          {regionConcepts.map((c) => {
-            const core = coreLevels(c.id, levels);
-            return (
-              <ConceptNode
-                key={c.id}
-                concept={c}
-                mastery={mastery[c.id]!}
-                progress={core.length ? core.filter((l) => completed[l.id]).length / core.length : 0}
-                selected={c.id === selectedId}
-                due={due.has(c.id)}
-                levels={levels.filter((l) => l.conceptId === c.id)}
-                completed={completed}
-                onSelect={() => select(c.id === selectedId ? null : c.id)}
-              />
-            );
-          })}
+          {regionConcepts.map((c) => renderNode(c.id))}
         </div>
       </section>
     );
   }
+
+  /** The boss of the closest earlier core region: what stands between the learner and `region`. */
+  function lockedGate(region: number) {
+    const earlier = regions.filter((r) => r < region);
+    const prev = earlier.at(-1);
+    return prev === undefined ? undefined : playable.find((c) => c.region === prev && c.boss);
+  }
+
+  function renderNode(id: string) {
+    const c = playable.find((p) => p.id === id)!;
+    const core = coreLevels(c.id, levels);
+    return (
+      <ConceptNode
+        key={c.id}
+        concept={c}
+        mastery={mastery[c.id]!}
+        progress={core.length ? core.filter((l) => completed[l.id]).length / core.length : 0}
+        selected={c.id === selectedId}
+        due={due.has(c.id)}
+        levels={levels.filter((l) => l.conceptId === c.id)}
+        completed={completed}
+        onSelect={() => select(c.id === selectedId ? null : c.id)}
+      />
+    );
+  }
 }
+
+type RegionStatus = 'done' | 'active' | 'locked';
 
 /** The Security side quest: the only one that needs the "rules of the range" reminder. */
 const SECURITY_REGION = 10;

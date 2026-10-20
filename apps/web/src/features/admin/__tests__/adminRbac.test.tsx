@@ -46,22 +46,17 @@ describe('Admin RBAC and Master Pass Verification', () => {
   });
 
   describe('checkIsAdmin', () => {
-    it('identifies dedicated admin account admin@email.com as admin', () => {
+    it('does not trust email alone (no hardcoded admin email)', () => {
       const user = { email: 'admin@email.com' } as User;
-      expect(checkIsAdmin(user)).toBe(true);
-    });
-
-    it('treats wwest0708@gmail.com as a regular player account', () => {
-      const user = { email: 'wwest0708@gmail.com' } as User;
       expect(checkIsAdmin(user)).toBe(false);
     });
 
-    it('identifies users with user_metadata.role = "admin" as admin', () => {
+    it('does not trust user_metadata.role (user-writable)', () => {
       const user = {
         email: 'custom@example.com',
         user_metadata: { role: 'admin' },
       } as unknown as User;
-      expect(checkIsAdmin(user)).toBe(true);
+      expect(checkIsAdmin(user)).toBe(false);
     });
 
     it('identifies users with app_metadata.app_roles including "admin" as admin', () => {

@@ -1,73 +1,75 @@
 /*
- * Design tokens — Machined Instrument / Matte Chassis
- * Inspired by Teenage Engineering OP-1, Dieter Rams / Braun, PCB schematics.
- * Rule: NO ambient glow box-shadows, NO backdrop-filter blur, NO gradient backgrounds.
+ * Design Tokens — Starmap
+ * The ship's navigation chart: deep-space ground, frosted-glass instruments, starlight-gold
+ * accents and a serif display face. Each region on the world map is a star system on the way home.
  */
 :root {
   color-scheme: dark;
 
-  /* ── Surface Elevations (matte chassis layers) ─────── */
-  --chassis: #090A0F;       /* page ground — deep obsidian */
-  --panel: #0F1117;         /* primary panel surface */
-  --raised: #161820;        /* raised cards */
-  --bezel: #1D2030;         /* button / input bezels */
-  --overlay: #252840;       /* modals, drawers */
+  /* ── Surface Elevations (glass over deep space) ──── */
+  --chassis:        #05071A;  /* page ground — deep space */
+  --panel:          rgba(16, 22, 56, 0.55);  /* primary glass panel */
+  --raised:         rgba(22, 30, 72, 0.6);   /* card & workbench glass */
+  --surface-hover:  rgba(120, 140, 255, 0.12);
+  --bezel:          rgba(60, 74, 150, 0.5);
+  --overlay:        #0F1534;  /* modals & dropdowns (opaque: they sit over content) */
+  --well:           rgba(4, 6, 22, 0.85);    /* code wells & output screens */
+  --editor-bg:      #070A20;  /* CodeMirror surface */
 
-  /* Legacy aliases (keep for backward compat) */
-  --bg: var(--chassis);
-  --bg-dot: transparent;
-  --surface: var(--panel);
-  --surface-solid: var(--raised);
-  --surface-2: var(--raised);
-  --surface-3: var(--bezel);
-  --signal-glow: 0 0 0 transparent;
+  /* Legacy aliases for backward compatibility */
+  --bg:             var(--chassis);
+  --bg-dot:         transparent;
+  --surface:        var(--panel);
+  --surface-solid:  var(--raised);
+  --surface-2:      var(--raised);
+  --surface-3:      var(--bezel);
+  --signal-glow:    0 0 0 transparent;
 
-  /* ── Border System (physical hairlines, NO glow) ───── */
-  --border-subtle:   #1E2235;  /* lowest contrast divider */
-  --border:          #252840;  /* standard structural border */
-  --border-contrast: #343858;  /* high-contrast border */
-  --border-control:  #404468;  /* input/button edge */
-  --border-focus:    #5B6AFF;  /* keyboard focus ring */
-  --border-strong:   var(--border-contrast); /* legacy alias */
+  /* ── Hairline Borders (starlight on glass) ───────── */
+  --border-subtle:   rgba(160, 175, 255, 0.1);
+  --border:          rgba(160, 175, 255, 0.18);
+  --border-contrast: rgba(170, 185, 255, 0.38);
+  --border-control:  rgba(170, 185, 255, 0.38);
+  --border-focus:    #FFD98A;
+  --border-strong:   var(--border-contrast);
 
   /* ── Typography ──────────────────────────────────── */
-  --text:       #E8ECF4;   /* primary — near-white */
-  --text-muted: #8892AA;   /* secondary */
-  --text-faint: #5C6680;   /* tertiary — still ≥4.5:1 on chassis */
-  --text-dim:   #3A4055;   /* disabled state */
+  --text:       #F1F0FF;
+  --text-muted: #B3B6DC;
+  --text-faint: #8288B8;
+  --text-dim:   #555B8C;
 
-  /* ── Functional Signal Accents (surgical, no halos) ── */
-  /* Mastery / Pass — signal green */
-  --signal:       #10B981;
-  --signal-strong: #0D9268;
-  --signal-soft:  rgba(16, 185, 129, 0.10);
-  /* LED indicator only — no ambient glow on non-LED elements */
-  --signal-led:   0 0 0 2px #10B981;  /* ONLY for literal LED dots */
+  /* ── Semantic Accents ────────────────────────────── */
+  /* Pass / Truth / Solved — aurora mint */
+  --signal:        #7EF0C4;
+  --signal-strong: #4FD9A8;
+  --signal-soft:   rgba(126, 240, 196, 0.1);
+  --signal-led:    0 0 0 1px #7EF0C4;
 
-  /* Python — technical cobalt */
-  --lang-python:  #3B82F6;
-  --lang-python-soft: rgba(59, 130, 246, 0.10);
+  /* Python — nebula blue */
+  --lang-python:      #8FB6FF;
+  --lang-python-soft: rgba(143, 182, 255, 0.1);
 
-  /* JavaScript — cadmium amber */
-  --amber:        #F59E0B;
-  --lang-javascript: #F59E0B;
-  --amber-soft:   rgba(245, 158, 11, 0.10);
+  /* JavaScript / highlight — starlight gold */
+  --amber:            #FFD27A;
+  --lang-javascript:  #FFD27A;
+  --amber-soft:       rgba(255, 210, 122, 0.1);
 
-  /* Cybersecurity — infrared */
-  --danger:       #EF4444;
-  --lang-cybersecurity: #EF4444;
-  --danger-soft:  rgba(239, 68, 68, 0.10);
+  /* Error / Cybersecurity — rose */
+  --danger:              #FF8FB0;
+  --lang-cybersecurity:  #FF8FB0;
+  --danger-soft:         rgba(255, 143, 176, 0.1);
 
-  /* Info / System */
-  --info:         #6B7FD4;
-  --info-soft:    rgba(107, 127, 212, 0.10);
+  /* Informational */
+  --info:      #8FB6FF;
+  --info-soft: rgba(143, 182, 255, 0.1);
 
-  /* Gem / puzzle accent */
-  --gem:          #A78BFA;
+  /* Gem / Secondary accent */
+  --gem:       #C9A8FF;
 
-  /* Per-language aliases (legacy) */
-  --lang-java:    #F97316;
-  --lang-cpp:     #6B7FD4;
+  /* Legacy language aliases */
+  --lang-java: #FFB089;
+  --lang-cpp:  #8FE3FF;
 
   /* ── Mastery States ──────────────────────────────── */
   --mastery-available:  var(--border-contrast);
@@ -76,40 +78,40 @@
   --mastery-proficient: var(--amber);
 
   /* ── Grid World ──────────────────────────────────── */
-  --tile:           #0C0E16;
-  --tile-wall:      #4A5275;
-  --tile-wall-stripe: #3A4060;
-  --robot:          var(--signal);
-  --flag:           var(--amber);
+  --tile:             #0A0F2A;
+  --tile-wall:        #1E2756;
+  --tile-wall-stripe: #161D44;
+  --robot:            var(--signal);
+  --flag:             var(--amber);
 
   /* ── Belt Colors ─────────────────────────────────── */
-  --belt-none:    #2A3050;
-  --belt-white:   #D8DDE8;
-  --belt-yellow:  #F59E0B;
-  --belt-orange:  #F97316;
-  --belt-green:   #10B981;
-  --belt-stripe:  #0C0E14;
+  --belt-none:    #2A3266;
+  --belt-white:   #E9E8FF;
+  --belt-yellow:  #FFD27A;
+  --belt-orange:  #FFB089;
+  --belt-green:   #7EF0C4;
+  --belt-blue:    #8FB6FF;
+  --belt-stripe:  #05071A;
 
-  /* ── Spacing & Geometry ──────────────────────────── */
-  --radius-sm: 4px;   /* tight: inputs, small chips */
-  --radius:    6px;   /* standard cards */
-  --radius-lg: 8px;   /* large panels */
+  /* ── Geometry & Layout ───────────────────────────── */
+  --radius-sm: 8px;   /* chips, inputs, small tags */
+  --radius:    16px;  /* standard controls & panels */
+  --radius-lg: 22px;  /* modal dialogs */
   --space:     8px;
 
-  /* ── Physical Button Press Shadow ───────────────── */
-  /* This is a DROP SHADOW for physical depth — NOT a glow */
-  --btn-shadow:    0 2px 0 #000;
-  --btn-shadow-sm: 0 1px 0 #000;
-
-  /* Modal elevation shadow — structural, not decorative glow */
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+  /* ── Shadows & Light ─────────────────────────────── */
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --btn-shadow: none;
+  --btn-shadow-sm: none;
+  --starlight: 0 0 12px rgba(255, 210, 122, 0.7);
 
   /* ── Typography Families ─────────────────────────── */
-  --font-display: 'Bricolage Grotesque Variable', 'Trebuchet MS', sans-serif;
-  --font-ui:      'Instrument Sans', 'Segoe UI', sans-serif;
-  --font-code:    'JetBrains Mono Variable', ui-monospace, monospace;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-ui:      'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  --font-code:    'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
-  /* ── Easing ──────────────────────────────────────── */
-  --ease:        cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-press:  cubic-bezier(0.4, 0, 0.2, 1);
+  /* ── Easing & Transitions ────────────────────────── */
+  --ease:       cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-press: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }

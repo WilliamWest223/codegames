@@ -35,3 +35,17 @@ describe('security side quest safety rules', () => {
     }
   });
 });
+
+describe('security levels stay out of programming languages', () => {
+  it('excludes exactly the levels of region-10 concepts', async () => {
+    const { concepts, levels, levelsFor } = await import('../src');
+    const security = new Set(concepts.filter((c) => c.region === 10).map((c) => c.id));
+    expect(security.size).toBeGreaterThan(0);
+    for (const language of ['python', 'javascript'] as const) {
+      const ids = new Set(levelsFor(language).map((l) => l.id));
+      for (const level of levels) {
+        if (security.has(level.conceptId)) expect(ids.has(level.id), level.id).toBe(false);
+      }
+    }
+  });
+});

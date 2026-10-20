@@ -36,8 +36,12 @@ export function JournalScreen({ language }: { language: PlayableLanguage }) {
   const regions = [...new Set(practiced.map((c) => c.region))].sort((a, b) => a - b);
   const notes = Object.entries(reflections)
     .filter(([key]) => key.startsWith(`${language}:`))
-    .map(([key, r]) => ({ level: levels.find((l) => l.id === key.slice(language.length + 1)), ...r }))
-    .filter((n) => n.level)
+    .map(([key, r]) => {
+      if (!r || typeof r !== 'object' || typeof r.text !== 'string' || typeof r.at !== 'number') return null;
+      const level = levels.find((l) => l.id === key.slice(language.length + 1));
+      return level ? { level, text: r.text, at: r.at } : null;
+    })
+    .filter((n): n is { level: (typeof levels)[number]; text: string; at: number } => n !== null)
     .sort((a, b) => b.at - a.at);
   const bosses = concepts.filter((c) => c.boss && completed[c.id]);
   const errors = Object.entries(errorCounts)
@@ -153,8 +157,8 @@ export function JournalScreen({ language }: { language: PlayableLanguage }) {
         {notes.length ? (
           <ul className="journal-notes">
             {notes.map((n) => (
-              <li key={n.level!.id}>
-                <Link to={`/play/${n.level!.id}`}>{n.level!.title}</Link>
+              <li key={n.level.id}>
+                <Link to={`/play/${n.level.id}`}>{n.level.title}</Link>
                 <q>{n.text}</q>
               </li>
             ))}

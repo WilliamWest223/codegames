@@ -6,7 +6,6 @@ import type { Language, PlayableLanguage } from '@codegames/shared';
 import { useMastery } from '../progress/useMastery';
 import { useProgress } from '../progress/store';
 import { Markdown } from '../../lib/markdown';
-import { OscilloscopeCanvas } from './OscilloscopeCanvas';
 import { playPass, playError } from '../../lib/soundFx';
 import './Output.css';
 
@@ -154,10 +153,6 @@ export function TestResults({ tests, language }: { tests: TestResult[]; language
       <div className="out-tests-head">
         Tests <span className={passed === tests.length ? 'is-pass' : 'is-fail'}>{passed}/{tests.length} passed</span>
       </div>
-      <OscilloscopeCanvas
-        state={allPassed ? 'pass' : 'fail'}
-        label={`CH1 TELEMETRY · ${passed}/${tests.length} OK`}
-      />
       {shared && (
         <div className="out-tests-shared">
           <p>{errors.length === tests.length ? 'Every test' : `${errors.length} of ${tests.length} tests`} stopped with the same error:</p>

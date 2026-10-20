@@ -179,17 +179,40 @@ export function stripComments(code: string, language: Language): string {
     .join('\n');
 }
 
+/** Replace the inside of every string literal with nothing (placeholder code stays), keeping the quotes. */
+function blankStrings(code: string, language: Language): string {
+  let out = '';
+  let from = 0;
+  for (const s of stringLiterals(code, language)) {
+    const closed = code.startsWith(s.quote, s.end - s.quote.length) && s.end - s.quote.length >= s.start + s.quote.length;
+    out += code.slice(from, s.start) + s.quote + (s.placeholders.length ? ` ${s.placeholders.join(' ')} ` : '') + (closed ? s.quote : '');
+    from = s.end;
+  }
+  return out + code.slice(from);
+}
+
+/**
+ * Does the pattern look for string syntax or string text (quotes, backticks, `%` formatting,
+ * `{...}` placeholders, or plain words like a password)? Those must see string contents.
+ */
+function targetsStrings(pattern: string): boolean {
+  if (/["'`%]|\\[{$]/.test(pattern)) return true;
+  return !/[\\^$.*+?()[\]{}]/.test(pattern.replace(/\|/g, ''));
+}
+
 /**
  * Check regex requirements. Patterns that are about comments (they contain `#` or `//`)
- * see the raw code; all others see the code with comments removed, so a requirement like
- * "use a for loop" can't be met by writing "for" in a comment.
+ * see the raw code; patterns about strings see comment-free code; all others also have string
+ * contents blanked, so `len(` inside a string or comment can't satisfy (or trip) a requirement.
  */
 export function checkRequirements(code: string, requirements: CodeRequirement[] = [], language: Language = 'python'): string[] {
   const withoutComments = stripComments(code, language);
+  const codeOnly = blankStrings(withoutComments, language);
   return requirements
     .filter((req) => {
       const aboutComments = req.pattern.includes('#') || req.pattern.includes('//');
-      const found = new RegExp(req.pattern, 'm').test(aboutComments ? code : withoutComments);
+      const source = aboutComments ? code : targetsStrings(req.pattern) ? withoutComments : codeOnly;
+      const found = new RegExp(req.pattern, 'm').test(source);
       return req.forbid ? found : !found;
     })
     .map((req) => req.message);
@@ -258,21 +281,31 @@ async function runTests(tests: TestCase[], language: Language, code: string, exe
  * Run variants: the same program with different starting values. Returns test results,
  * or blocked messages if the learner changed a line the variants rely on.
  */
-/** Match a starting line loosely: any spacing, optional trailing semicolon. */
+/** Match a starting line loosely: any spacing, optional trailing semicolon, not inside a longer name. */
 function looseLine(from: string): RegExp {
-  return new RegExp(
-    from
-      .replace(/;\s*$/, '')
-      .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      .replace(/\s+/g, '\\s*')
-      .replace(/(=)/g, '\\s*$1\\s*') + ';?',
-  );
+  const body = from
+    .replace(/;\s*$/, '')
+    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    .replace(/\s+/g, '\\s*')
+    .replace(/(=)/g, '\\s*$1\\s*');
+  const before = /^[\w$]/.test(from.trimStart()) ? '(?<![\\w$])' : '';
+  return new RegExp(before + body + ';?', 'g');
 }
 
-/** Swap starting lines in the learner's code; reports lines the learner changed. */
+/** Is the offset on a line that starts with a comment marker? */
+function inCommentLine(code: string, offset: number): boolean {
+  const start = code.lastIndexOf('\n', offset - 1) + 1;
+  return /^\s*(#|\/\/|\/\*|\*)/.test(code.slice(start, offset + 1));
+}
+
+/** Swap starting lines in the learner's code (skipping commented-out copies); reports lines the learner changed. */
 function applyReplacements(pairs: [string, string][], code: string): { missing: string[]; changed: string } {
-  const missing = pairs.filter(([from]) => !looseLine(from).test(code)).map(([from]) => from);
-  const changed = pairs.reduce((c, [from, to]) => c.replace(looseLine(from), to), code);
+  const firstLive = (from: string, source: string) => [...source.matchAll(looseLine(from))].find((m) => !inCommentLine(source, m.index));
+  const missing = pairs.filter(([from]) => !firstLive(from, code)).map(([from]) => from);
+  const changed = pairs.reduce((c, [from, to]) => {
+    const m = firstLive(from, c);
+    return m ? c.slice(0, m.index) + to + c.slice(m.index + m[0].length) : c;
+  }, code);
   return { missing, changed };
 }
 

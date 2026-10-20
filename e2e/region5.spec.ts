@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { levels } from '@codegames/curriculum';
 import { REGION_0, REGION_1, REGION_2, REGION_3, REGION_4, REGION_5, pickLanguage, seedCompleted, typeCode } from './helpers';
 

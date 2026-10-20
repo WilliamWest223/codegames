@@ -51,13 +51,13 @@ export function SignIn({ onSuccess }: SignInProps) {
             <div className="auth-logo">
               <span className="auth-logo-mark">&gt;_</span> CodeGames
             </div>
-            <h1 className="auth-tagline">Offline Local Mode</h1>
+            <h1 className="auth-tagline">Learn to code by playing</h1>
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-            No Supabase connection configured. You can play all tracks, curriculum levels, and games in offline local storage mode.
+          <p className="auth-offline-note">
+            Every track, level and game is ready to play. Your progress is saved on this device.
           </p>
           <button className="auth-submit-btn" type="button" onClick={continueAsGuest}>
-            Continue as Guest →
+            Start playing →
           </button>
         </div>
       </div>

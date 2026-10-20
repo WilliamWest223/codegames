@@ -73,7 +73,7 @@
 .welcome-card-sample {
   padding: 10px 12px;
   border-radius: var(--radius-sm);
-  background: #070a11;
+  background: var(--well);
   color: var(--signal);
 }
 .welcome-card-go {

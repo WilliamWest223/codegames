@@ -3,7 +3,7 @@
 // Respects mute state and user interaction policies.
 
 let audioCtx: AudioContext | null = null;
-let soundEnabled = true;
+let soundEnabled = false;
 
 function getContext(): AudioContext | null {
   if (typeof window === 'undefined') return null;

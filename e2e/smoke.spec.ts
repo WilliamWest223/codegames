@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { pickLanguage, typeCode } from './helpers';
 
 test('first run: welcome → map → first robot level (JavaScript)', async ({ page }) => {
@@ -16,7 +16,7 @@ test('Python runs in the browser and grades build-it tests', async ({ page }) =>
   // Seed progress so Region 0's output concept is open.
   await page.evaluate(() => {
     const raw = JSON.parse(localStorage.getItem('codegames-progress')!);
-    raw.state.completed.python = { 'sequencing-1': { at: 1, attempts: 0, hintsUsed: 0 }, 'sequencing-2': { at: 1, attempts: 0, hintsUsed: 0 }, 'sequencing-3': { at: 1, attempts: 0, hintsUsed: 0 } };
+    raw.state.completed.python = { 'sequencing-1': { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0 }, 'sequencing-2': { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0 }, 'sequencing-3': { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0 } };
     localStorage.setItem('codegames-progress', JSON.stringify(raw));
   });
   await page.goto('/play/output-1');
@@ -42,7 +42,7 @@ test('infinite loops time out and the engine recovers (JavaScript)', async ({ pa
   await pickLanguage(page, 'JavaScript');
   await page.evaluate(() => {
     const raw = JSON.parse(localStorage.getItem('codegames-progress')!);
-    raw.state.completed.javascript = { 'sequencing-1': { at: 1, attempts: 0, hintsUsed: 0 }, 'sequencing-2': { at: 1, attempts: 0, hintsUsed: 0 }, 'sequencing-3': { at: 1, attempts: 0, hintsUsed: 0 } };
+    raw.state.completed.javascript = { 'sequencing-1': { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0 }, 'sequencing-2': { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0 }, 'sequencing-3': { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0 } };
     localStorage.setItem('codegames-progress', JSON.stringify(raw));
   });
   await page.goto('/play/output-1');
@@ -65,7 +65,7 @@ test('a Python infinite loop is interrupted in place, without reloading Python',
   expect(await page.evaluate(() => crossOriginIsolated)).toBe(true);
   await page.evaluate(() => {
     const raw = JSON.parse(localStorage.getItem('codegames-progress')!);
-    raw.state.completed.python = { 'sequencing-1': { at: 1, attempts: 0, hintsUsed: 0 }, 'sequencing-2': { at: 1, attempts: 0, hintsUsed: 0 }, 'sequencing-3': { at: 1, attempts: 0, hintsUsed: 0 } };
+    raw.state.completed.python = { 'sequencing-1': { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0 }, 'sequencing-2': { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0 }, 'sequencing-3': { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0 } };
     localStorage.setItem('codegames-progress', JSON.stringify(raw));
   });
   await page.goto('/play/output-1');

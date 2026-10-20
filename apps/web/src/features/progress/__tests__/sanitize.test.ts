@@ -240,3 +240,37 @@ describe('saveDraft caps', () => {
     useProgress.getState().resetProgress();
   });
 });
+
+describe('sanitize: day keys and modify drafts', () => {
+  it('rejects activity and goal-history days before 2020 or far in the future', () => {
+    const s = sanitize({
+      activity: { '0001-01-01': 1, '2019-12-31': 1, '2020-01-01': 1, '9999-12-31': 1, '2026-10-13': 2 },
+      goalHistory: { '': 3, '0001-01-01': 5, '2026-10-13': 1 },
+    });
+    expect(Object.keys(s.activity!).sort()).toEqual(['2020-01-01', '2026-10-13']);
+    expect(Object.keys(s.goalHistory!).sort()).toEqual(['', '2026-10-13']);
+  });
+
+  it('keeps #modify drafts for valid level ids only', () => {
+    const s = sanitize({
+      drafts: { [`python:${LEVEL}#modify`]: 'm', 'python:nope#modify': 'x', [`python:${LEVEL}#other`]: 'x' },
+    });
+    expect(Object.keys(s.drafts!)).toEqual([`python:${LEVEL}#modify`]);
+  });
+});
+
+describe('completeLevel replays', () => {
+  it('never lowers recorded stars and keeps XP awarded once', () => {
+    useProgress.getState().resetProgress();
+    const s = useProgress.getState();
+    s.recordAttempt('python', LEVEL);
+    s.recordAttempt('python', LEVEL);
+    s.recordAttempt('python', LEVEL);
+    const first = s.completeLevel('python', LEVEL, 10, { used: 0, total: 3, revealed: false });
+    const xp = useProgress.getState().xp;
+    const replay = useProgress.getState().completeLevel('python', LEVEL, 10, { used: 0, total: 3, revealed: false });
+    expect(replay.firstTime).toBe(false);
+    expect(useProgress.getState().xp).toBe(xp);
+    expect(useProgress.getState().completed.python[LEVEL]?.stars).toBeGreaterThanOrEqual(first.stars);
+  });
+});

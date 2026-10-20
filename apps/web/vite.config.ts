@@ -28,9 +28,10 @@ function cspMeta(dev: boolean, supabaseUrl?: string): Plugin {
   };
 }
 
-export default defineConfig(({ mode, command }) => {
+export default defineConfig(({ mode, command, isPreview }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
-  const isDev = command === 'serve';
+  // `vite preview` also reports command 'serve'; it serves the production build, so it gets the strict CSP.
+  const isDev = command === 'serve' && !isPreview;
   const supabaseUrl = env.VITE_SUPABASE_URL;
 
   const csp = contentSecurityPolicy({

@@ -1,11 +1,11 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { pickLanguage, typeCode } from './helpers';
 
 test('step through shows each line, the variables and the output so far', async ({ page }) => {
   await pickLanguage(page, 'JavaScript');
   await page.evaluate(() => {
     const raw = JSON.parse(localStorage.getItem('codegames-progress')!);
-    for (const id of ['sequencing-1', 'sequencing-2', 'sequencing-3']) raw.state.completed.javascript[id] = { at: 1, attempts: 0, hintsUsed: 0, stars: 3 };
+    for (const id of ['sequencing-1', 'sequencing-2', 'sequencing-3']) raw.state.completed.javascript[id] = { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0, stars: 3 };
     localStorage.setItem('codegames-progress', JSON.stringify(raw));
   });
   await page.goto('/play/output-1');
@@ -25,7 +25,7 @@ test('early predictions are multiple choice: a wrong pick is ruled out, the righ
   await page.evaluate(() => {
     const raw = JSON.parse(localStorage.getItem('codegames-progress')!);
     const ids = ['sequencing-1', 'sequencing-2', 'sequencing-3', 'output-1', 'output-2', 'output-3', 'output-4'];
-    for (const id of ids) raw.state.completed.python[id] = { at: 1, attempts: 0, hintsUsed: 0, stars: 3 };
+    for (const id of ids) raw.state.completed.python[id] = { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0, stars: 3 };
     localStorage.setItem('codegames-progress', JSON.stringify(raw));
   });
   await page.goto('/play/comments-1');
@@ -39,7 +39,7 @@ test('after two failed checks a write-code level offers the puzzle version; repe
   await pickLanguage(page, 'Python');
   await page.evaluate(() => {
     const raw = JSON.parse(localStorage.getItem('codegames-progress')!);
-    for (const id of ['sequencing-1', 'sequencing-2', 'sequencing-3']) raw.state.completed.python[id] = { at: 1, attempts: 0, hintsUsed: 0, stars: 3 };
+    for (const id of ['sequencing-1', 'sequencing-2', 'sequencing-3']) raw.state.completed.python[id] = { at: 1_600_000_000_000, attempts: 0, hintsUsed: 0, stars: 3 };
     localStorage.setItem('codegames-progress', JSON.stringify(raw));
   });
   await page.goto('/play/output-1');

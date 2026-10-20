@@ -22,6 +22,12 @@ describe('JavaScript sandbox', () => {
     }
   });
 
+  it('reports output overflow even when the program catches the error', () => {
+    const r = runJavaScript('try { for (;;) console.log("spam spam spam"); } catch (e) {}\nconsole.log("after");', { maxOutput: 100 });
+    expect(r.error?.name).toBe('OutputLimitError');
+    expect(r.stdout.length).toBeLessThanOrEqual(100);
+  });
+
   it('leaves normal array code and Array semantics alone', () => {
     const r = runJavaScript(
       'const a = new Array(3).fill(0); a.push(1); const b = Array(2); class Stack extends Array {}\nconst s = new Stack(); s.push(5);\nconsole.log(a, b.length, a instanceof Array, s instanceof Array, s.length, Array.isArray([]));',
@@ -58,9 +64,23 @@ describe('JavaScript global escapes (round-8 P1-1)', () => {
     });
   }
 
-  it('restores the constructors and eval after the run', () => {
+  it('keeps the guards up for promise callbacks, then restores them', async () => {
+    await new Promise((resolve) => setTimeout(resolve, 5)); // let earlier runs finish restoring
+    const before = (() => undefined).constructor;
+    const g = globalThis as unknown as Record<string, unknown>;
+    runJavaScript('Promise.resolve().then(() => { [].constructor.constructor("return globalThis")().LEAK = 1; }).catch(() => {});');
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(g.LEAK).toBeUndefined();
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    expect((() => undefined).constructor).toBe(before);
+  });
+
+  it('restores the constructors and eval after the run', async () => {
+    await new Promise((resolve) => setTimeout(resolve, 5));
     const before = (() => undefined).constructor;
     runJavaScript('Function("return 1")');
+    await new Promise((resolve) => setTimeout(resolve, 5));
     expect((() => undefined).constructor).toBe(before);
     expect(typeof globalThis.eval('1')).toBe('number');
   });

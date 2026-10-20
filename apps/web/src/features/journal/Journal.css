@@ -80,6 +80,7 @@
 .belt-yellow .journal-belt-swatch { background: var(--belt-yellow); }
 .belt-orange .journal-belt-swatch { background: var(--belt-orange); }
 .belt-green .journal-belt-swatch { background: var(--belt-green); }
+.belt-blue .journal-belt-swatch { background: var(--belt-blue); }
 .journal-stats dl {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));

@@ -16,17 +16,14 @@ export function AudioToggle() {
   return (
     <button
       type="button"
-      className={`shell-audio-toggle ${enabled ? 'is-active' : ''}`}
+      className="btn btn-ghost btn-sm shell-audio-toggle"
       onClick={() => setEnabled(toggleSound())}
-      title={enabled ? 'Mute sound effects' : 'Enable mechanical sound effects'}
+      title={enabled ? 'Mute sound effects' : 'Enable sound effects'}
       aria-label={enabled ? 'Sound effects enabled' : 'Sound effects muted'}
       aria-pressed={enabled}
     >
-      <span className="shell-audio-icon" aria-hidden="true">
-        {enabled ? '🔊' : '🔈'}
-      </span>
-      <span className="shell-audio-label">{enabled ? 'SFX ON' : 'MUTED'}</span>
-      <span className={`shell-audio-led ${enabled ? 'is-on' : ''}`} aria-hidden="true" />
+      <span aria-hidden="true">{enabled ? '🔊' : '🔇'}</span>
+      <span className="shell-label">{enabled ? 'Audio' : 'Muted'}</span>
     </button>
   );
 }

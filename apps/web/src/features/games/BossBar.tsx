@@ -13,7 +13,15 @@ export function BossBar({ tests, results }: { tests: TestCase[]; results?: TestR
   const hp = Math.round(100 * (1 - dealt / total));
   const defeated = dealt === total;
   return (
-    <div className={`boss-bar${defeated ? ' is-defeated' : ''}`} aria-label={`Boss health ${hp}%`}>
+    <div
+      className={`boss-bar${defeated ? ' is-defeated' : ''}`}
+      role="progressbar"
+      aria-label="Boss health"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={hp}
+      aria-valuetext={`${hp}%`}
+    >
       <div className="boss-bar-head">
         <span className="eyebrow">{defeated ? 'Boss defeated!' : 'Boss health'}</span>
         <span className="boss-bar-hp">{hp}%</span>

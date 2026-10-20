@@ -5,14 +5,16 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 export type AuthStatus = 'loading' | 'signed-out' | 'signed-in';
 
+/**
+ * Client-side admin hint from the JWT only.
+ * Trust `app_metadata.app_roles` (set by the custom access token hook), never
+ * `user_metadata` (user-writable) or a hardcoded email. Authoritative check is
+ * still `get_my_role` / server `private.is_admin()` on every admin RPC.
+ */
 export function checkIsAdmin(user: User | null): boolean {
   if (!user) return false;
-  if (user.email === 'admin@email.com') return true;
   const appRoles = (user.app_metadata?.app_roles ?? []) as string[];
-  if (Array.isArray(appRoles) && appRoles.includes('admin')) return true;
-  const userRole = (user.user_metadata?.role ?? '') as string;
-  if (userRole === 'admin') return true;
-  return false;
+  return Array.isArray(appRoles) && appRoles.includes('admin');
 }
 
 interface AuthState {
@@ -57,7 +59,8 @@ export const useAuth = create<AuthState>((set, get) => ({
     // Get current session
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
-      set({ status: 'signed-in', session, user: session.user, isAdmin: checkIsAdmin(session.user) });
+      // Optimistic JWT hint only; refreshProfile overwrites from get_my_role.
+      set({ status: 'signed-in', session, user: session.user, isAdmin: false });
       await get().refreshProfile();
     } else {
       set({ status: 'signed-out', session: null, user: null, isAdmin: false });
@@ -66,7 +69,7 @@ export const useAuth = create<AuthState>((set, get) => ({
     // Subscribe to auth state updates
     supabase.auth.onAuthStateChange(async (_event, newSession) => {
       if (newSession) {
-        set({ status: 'signed-in', session: newSession, user: newSession.user, isAdmin: checkIsAdmin(newSession.user) });
+        set({ status: 'signed-in', session: newSession, user: newSession.user, isAdmin: false });
         await get().refreshProfile();
       } else {
         set({ status: 'signed-out', session: null, user: null, ageOk: false, displayName: null, isAdmin: false });
@@ -95,10 +98,13 @@ export const useAuth = create<AuthState>((set, get) => ({
     try {
       const { data: roleData, error: roleError } = await supabase.rpc('get_my_role');
       if (!roleError && typeof roleData === 'string') {
-        set({ isAdmin: roleData === 'admin' || checkIsAdmin(user) });
+        // Server RPC is authoritative for UI gating; never OR with client heuristics.
+        set({ isAdmin: roleData === 'admin' });
+      } else {
+        set({ isAdmin: false });
       }
     } catch {
-      // Ignore if RPC not yet deployed or in offline mode
+      set({ isAdmin: false });
     }
   },
 

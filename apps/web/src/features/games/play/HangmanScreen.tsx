@@ -24,7 +24,7 @@ export function HangmanScreen({ view }: { view: HangmanView }) {
   // Hearts are a picture, not a counter: cap them so a huge number can't flood the page.
   const hearts = Math.min(Math.max(startLives ?? 0, lives ?? 0), MAX_HEARTS);
   return (
-    <div className={`hangman${outcome ? ` is-${outcome}` : ''}`} aria-label="Hangman board">
+    <div className={`hangman${outcome ? ` is-${outcome}` : ''}`} role="group" aria-label="Hangman board">
       <svg className="hangman-gallows" viewBox="0 0 170 160" role="img" aria-label={`${lost} of ${PARTS.length} parts drawn`}>
         <g className="hangman-frame">
           <line x1="20" y1="150" x2="150" y2="150" />

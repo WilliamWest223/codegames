@@ -46,7 +46,16 @@ export function noStringTimers<T extends (...args: never[]) => unknown>(timer: T
   }) as unknown as T;
 }
 
-export function withClosedEscapes<T>(fn: () => T): T {
+/** True inside a Web Worker, which is torn down after the run: the guards never need to come off. */
+function inWorker(): boolean {
+  const scope = (globalThis as { WorkerGlobalScope?: new () => object }).WorkerGlobalScope;
+  return typeof scope === 'function' && globalThis instanceof scope;
+}
+
+let guardDepth = 0;
+let restoreGuards: (() => void) | undefined;
+
+function installGuards(): () => void {
   const g = globalThis as unknown as Record<string, unknown>;
   const saved: [object, PropertyDescriptor][] = [];
   for (const proto of functionPrototypes()) {
@@ -69,10 +78,32 @@ export function withClosedEscapes<T>(fn: () => T): T {
       },
     });
   }
+  return () => {
+    for (const [proto, descriptor] of saved) Object.defineProperty(proto, 'constructor', descriptor);
+    if (evalDescriptor?.configurable) Object.defineProperty(g, 'eval', evalDescriptor);
+  };
+}
+
+/**
+ * Runs `fn` with the escapes closed. Learner callbacks (promises, timers, DOM listeners) run after
+ * `fn` returns, so the guards outlive it: in a worker they are never removed; elsewhere (Node
+ * tests) they come off in a later macrotask, once the microtasks and zero-delay timers it queued
+ * have run. Overlapping runs share one set of guards.
+ */
+export function withClosedEscapes<T>(fn: () => T): T {
+  if (guardDepth === 0 && !restoreGuards) restoreGuards = installGuards();
+  guardDepth++;
   try {
     return fn();
   } finally {
-    for (const [proto, descriptor] of saved) Object.defineProperty(proto, 'constructor', descriptor);
-    if (evalDescriptor?.configurable) Object.defineProperty(g, 'eval', evalDescriptor);
+    guardDepth--;
+    if (guardDepth === 0 && !inWorker()) {
+      const timer = setTimeout(() => {
+        if (guardDepth !== 0) return;
+        restoreGuards?.();
+        restoreGuards = undefined;
+      }, 0);
+      (timer as { unref?: () => void }).unref?.();
+    }
   }
 }

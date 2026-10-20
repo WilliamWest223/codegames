@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../fixtures';
 import { GRADED_LEVEL, coreProgress, HONEST, check, expectRecovers, isCompleted, openLevel, openUngraded, runCode, typeCode, watch } from './util';
 
 /**
