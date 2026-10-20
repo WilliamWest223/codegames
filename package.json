@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
-    "eslint": "^9.39.5",
+    "eslint": "^10.12.0",
     "eslint-plugin-react": "^7.37.5",
     "simple-git-hooks": "^2.14.0",
     "typescript-eslint": "^8.71.2"
