@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppShell } from './components/AppShell';
 import { useProgress } from './features/progress/store';
@@ -29,6 +30,7 @@ export function App() {
             <Route path="/auth/callback" element={<AuthCallback />} />
           </Routes>
         </ErrorBoundary>
+        <Analytics />
       </AppShell>
     );
   }
@@ -36,19 +38,25 @@ export function App() {
   // 2. Loading session state from local storage/Supabase
   if (authStatus === 'loading') {
     return (
-      <div className="auth-splash">
-        <span className="auth-splash-mark">&gt;_</span>
-        <p>Loading CodeGames…</p>
-      </div>
+      <>
+        <div className="auth-splash">
+          <span className="auth-splash-mark">&gt;_</span>
+          <p>Loading CodeGames…</p>
+        </div>
+        <Analytics />
+      </>
     );
   }
 
   // 3. Mandatory Auth Gate: Not signed in -> Launch Screen is Sign In / Sign Up
   if (authStatus !== 'signed-in') {
     return (
-      <ErrorBoundary resetKey="auth">
-        <SignIn />
-      </ErrorBoundary>
+      <>
+        <ErrorBoundary resetKey="auth">
+          <SignIn />
+        </ErrorBoundary>
+        <Analytics />
+      </>
     );
   }
 
@@ -104,6 +112,7 @@ export function App() {
           )}
         </Routes>
       </ErrorBoundary>
+      <Analytics />
     </AppShell>
   );
 }
